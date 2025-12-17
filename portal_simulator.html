@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>高龄领导办公模拟器 · 门户版</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=PingFang+SC:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== 设计令牌 （现代化样式更新）==== */
+    :root {
+      /* 颜色 - 更现代的调色板 */
+      --blue-primary: #3b82f6;
+      --blue-light: #eff6ff;
+      --blue-dark: #1d4ed8;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-900: #111827;
+      --white: #ffffff;
+      --red-500: #ef4444;
+      --orange-500: #f97316;
+      --green-500: #10b981;
+      
+      /* 阴影 - 更现代的分层阴影 */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      
+      /* 圆角 - 更一致的圆角规范 */
+      --radius-sm: 0.25rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+      --radius-full: 9999px;
+      
+      /* 过渡 - 统一的动画时间 */
+      --transition-fast: 0.15s ease-in-out;
+      --transition-normal: 0.25s ease-in-out;
+      --transition-slow: 0.35s ease-in-out;
+    }
+    
+    /* 基础重置和全局样式 */
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+    
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--gray-100);
+      color: var(--gray-900);
+      line-height: 1.6;
+    }
+    
+    /* 左侧内容字体缩放过渡 - 增加更多属性的过渡 */
+    .left-side {
+      transition: all var(--transition-normal);
+    }
+    
+    /* 页面左右布局 8:2 */
+    .page-layout {
+      display: flex;
+      align-items: flex-start;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    .left-side {
+      flex: 8;
+      min-width: 0;
+    }
+    
+    /* 顶部门户头部 - 更现代的设计 */
+    .portal-header {
+      width: 100%;
+      background: var(--white);
+      box-shadow: var(--shadow-md);
+      padding: 16px 24px;
+      border-radius: var(--radius-lg);
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: box-shadow var(--transition-normal);
+    }
+    
+    .portal-header:hover {
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .nav-tabs {
+      display: flex;
+      gap: 1px;
+      background: var(--gray-200);
+      padding: 4px;
+      border-radius: var(--radius-full);
+    }
+    
+    .nav-tabs a {
+      text-decoration: none;
+      color: var(--gray-600);
+      padding: 8px 20px;
+      font-weight: 500;
+      border-radius: var(--radius-full);
+      transition: all var(--transition-normal);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .nav-tabs a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--blue-primary);
+      transition: all var(--transition-normal);
+      transform: translateX(-50%);
+    }
+    
+    .nav-tabs a:hover {
+      background: var(--gray-100);
+      color: var(--blue-primary);
+    }
+    
+    .nav-tabs a.active {
+      background: var(--white);
+      color: var(--blue-primary);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .nav-tabs a.active::after {
+      width: 30%;
+    }
+    
+    .search-input {
+      width: 320px;
+      height: 40px;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-full);
+      padding: 0 20px;
+      font-size: 14px;
+      transition: all var(--transition-normal);
+      outline: none;
+    }
+    
+    .search-input:focus {
+      border-color: var(--blue-primary);
+      box-shadow: 0 0 0 3px var(--blue-light);
+    }
+    
+    /* 主区域等高布局 - 支持滚动 */
+    .portal-body {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 0 48px;
+      overflow-x: auto; /* 支持横向滚动 */
+    }
+    
+    .col-left {
+      width: 348px;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    
+    .col-right {
+      width: 348px;
+      min-height: 776px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex-shrink: 0;
+    }
+    
+    .col-center {
+      flex: 1;
+      min-width: 300px;
+      flex-shrink: 0;
+    }
+    
+    /* 卡片样式 - 现代化设计 */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      padding: 20px;
+      flex: 1;
+      transition: all var(--transition-normal);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--blue-primary), var(--blue-dark));
+      transform: translateX(-100%);
+      transition: transform var(--transition-normal);
+    }
+    
+    .card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+    
+    .card:hover::before {
+      transform: translateX(0);
+    }
+    
+    .card-header {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--gray-800);
+    }
+    
+    /* 待办事项列表 - 增强交互性 */
+    .todo-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .todo-item {
+      padding: 12px 16px;
+      background: var(--gray-100);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all var(--transition-normal);
+      border: 1px solid transparent;
+    }
+    
+    .todo-item:hover {
+      background: var(--white);
+      border-color: var(--gray-300);
+      box-shadow: var(--shadow-sm);
+      transform: translateX(4px);
+    }
+    
+    .todo-item:has(.important-tag) {
+      justify-content: flex-start;
+      gap: 12px;
+    }
+    
+    .todo-item span {
+      color: var(--gray-500);
+      font-size: 0.8em;
+    }
+    
+    .todo-text {
+      flex: 1;
+      color: var(--gray-900) !important;
+      font-size: inherit !important;
+      line-height: 1.4;
+    }
+    
+    .todo-time {
+      flex-shrink: 0;
+      background: var(--gray-200);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      font-size: 0.75em;
+    }
+    
+    /* 重要标签 - 更醒目的设计 */
+    .important-tag {
+      font-size: 12px;
+      padding: 3px 12px;
+      border-radius: var(--radius-full);
+      font-weight: 500;
+      white-space: nowrap;
+      display: inline-block;
+      flex-shrink: 0;
+      transition: all var(--transition-fast);
+    }
+    
+    .tag-important {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--blue-primary) !important;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    
+    .tag-secret {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--red-500) !important;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    
+    .tag-special {
+      background: rgba(249, 115, 22, 0.15);
+      color: var(--orange-500) !important;
+      border: 1px solid rgba(249, 115, 22, 0.3);
+    }
+    
+    .important-tag:hover {
+      transform: scale(1.05);
+    }
+    
+    /* 流程步骤样式 */
+    .flow-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    
+    .step-card {
+      background: var(--gray-100);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      text-align: center;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      border: 1px solid transparent;
+    }
+    
+    .step-card:hover {
+      background: var(--white);
+      border-color: var(--blue-primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    
+    /* 快速卡片样式 */
+    .quick-card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+      transition: all var(--transition-normal);
+    }
+    
+    .quick-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+    
+    .quick-card h4 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+    
+    .quick-card p {
+      font-size: 14px;
+      color: var(--gray-500);
+      line-height: 1.5;
+    }
+    
+    /* 限制待办与公文卡片高度并优化滚动条 */
+    .todo-card {
+      flex: none;
+      max-height: 805px;
+      overflow-y: auto;
+    }
+    
+    .flow-card {
+      flex: none;
+      max-height: 900px;
+      overflow: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    /* 自定义滚动条 */
+    .todo-card::-webkit-scrollbar,
+    .flow-card::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .todo-card::-webkit-scrollbar-track,
+    .flow-card::-webkit-scrollbar-track {
+      background: var(--gray-200);
+      border-radius: var(--radius-full);
+    }
+    
+    .todo-card::-webkit-scrollbar-thumb,
+    .flow-card::-webkit-scrollbar-thumb {
+      background: var(--gray-400);
+      border-radius: var(--radius-full);
+      transition: background var(--transition-fast);
+    }
+    
+    .todo-card::-webkit-scrollbar-thumb:hover,
+    .flow-card::-webkit-scrollbar-thumb:hover {
+      background: var(--gray-500);
+    }
+    
+    /* 模拟设置侧栏 - 现代化设计 */
+    .sim-panel {
+      flex: 2;
+      max-width: 515px;
+      position: sticky;
+      top: 20px;
+      margin-left: 24px;
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      padding: 24px 28px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all var(--transition-normal);
+    }
+    
+    :root {
+      --red-primary: #ef4444;
+      --red-dark: #dc2626;
+    }
+    
+    .sim-panel:hover {
+      box-shadow: var(--shadow-hover);
+    }
+    
+    .sim-panel h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--blue-primary);
+      text-align: center;
+      margin-bottom: 0;
+      padding-bottom: 0;
+      background: linear-gradient(135deg, var(--blue-primary), var(--blue-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    /* 全局重置按钮 - 低调样式 */
+    .reset-all-btn {
+      width: 100%;
+      padding: 8px 14px;
+      background-color: #f3f4f6;
+      color: #6b7280;
+      border: 1px solid #d1d5db;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      box-shadow: none;
+      margin-bottom: 8px;
+    }
+    
+    .reset-all-btn:hover {
+      background-color: #e5e7eb;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .reset-all-btn:active {
+      background-color: #d1d5db;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    /* 模拟设置组样式 */
+    .sim-group {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-rows: repeat(3, auto);
+      gap: 4px 20px;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    
+    .sim-group:last-of-type {
+      border-bottom: none;
+    }
+    
+    .sim-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-800);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-align: left;
+      justify-self: start;
+    }
+
+    .sim-desc {
+      grid-column: 1 / -1;
+      font-size: 13px;
+      color: var(--gray-500);
+      line-height: 1.4;
+      padding-left: 0;
+      text-align: left;
+      display: block;
+      justify-self: start;
+      width: 100%;
+      margin-bottom: 4px;
+    }
+    
+    .sim-value {
+      font-size: 16px;
+      color: var(--blue-primary);
+      justify-self: end;
+      font-weight: 600;
+    }
+    
+    /* 进度条样式 - 现代化设计 */
+    .progress-bar {
+      position: relative;
+      width: 100%;
+      height: 6px;
+      background: var(--gray-200);
+      border-radius: var(--radius-full);
+      grid-column: 1 / -1;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue-primary), var(--blue-dark));
+      border-radius: var(--radius-full);
+      transition: width var(--transition-fast);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .bar-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    .progress-thumb {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      background: var(--blue-primary);
+      border: 4px solid var(--white);
+      border-radius: 50%;
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5), 0 0 0 1px rgba(59, 130, 246, 0.3);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      z-index: 1;
+    }
+
+    .progress-thumb:hover {
+      transform: translateY(-50%) scale(1.3);
+      box-shadow: 0 6px 24px rgba(59, 130, 246, 0.6), 0 0 0 2px rgba(59, 130, 246, 0.4);
+    }
+    
+    /* 隐藏真实 range */
+    .sim-range {
+      width: 100%;
+      height: 30px;
+      opacity: 0;
+      position: absolute;
+      top: -10px;
+      left: 0;
+      cursor: pointer;
+      z-index: 2;
+    }
+    
+    /* 应用网格 - 现代化设计 */
+    .app-grid {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      background: var(--white);
+      box-shadow: var(--shadow-md);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      margin-top: 20px;
+      transition: all var(--transition-normal);
+    }
+    
+    .app-grid:hover {
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .app-item {
+      width: 100px;
+      height: 100px;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-300);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--gray-800);
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .app-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--blue-primary);
+      transform: translateX(-100%);
+      transition: transform var(--transition-normal);
+    }
+    
+    .app-item:hover {
+      transform: translateY(-4px);
+      border-color: var(--blue-primary);
+      box-shadow: var(--shadow-md);
+      color: var(--blue-primary);
+    }
+    
+    .app-item:hover::before {
+      transform: translateX(0);
+    }
+    
+    .app-item:active {
+      transform: translateY(0);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    /* 文字缩放控件 - 现代化设计 */
+    .zoom-control {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+      background: var(--gray-100);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-300);
+    }
+    
+    .zoom-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+    
+    .zoom-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: var(--radius-full);
+      background: var(--blue-primary);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      transition: all var(--transition-normal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+    
+    .zoom-btn:hover:not(:disabled) {
+      transform: scale(1.1);
+      background: var(--blue-dark);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    }
+    
+    .zoom-btn:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+    
+    .zoom-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    #fontReset {
+      font-size: 14px;
+      background: var(--white);
+      color: var(--gray-700);
+      border: 1px solid var(--gray-400);
+      box-shadow: var(--shadow-sm);
+      padding: 0 16px;
+      height: 40px;
+    }
+    
+    #fontReset:hover {
+      border-color: var(--blue-primary);
+      color: var(--blue-primary);
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+    }
+    
+    #zoom-percent {
+      min-width: 60px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--gray-800);
+      background: var(--white);
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--gray-300);
+    }
+    
+    /* 分心气泡样式 - 更现代的设计 */
+    .distraction-bubble {
+      position: fixed;
+      min-width: 140px;
+      max-width: 240px;
+      padding: 12px 20px;
+      background: rgba(59, 130, 246, 0.95);
+      color: #fff;
+      font-size: 14px;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity var(--transition-normal), transform var(--transition-normal);
+      pointer-events: none;
+      user-select: none;
+      word-break: break-word;
+      z-index: 1000;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .distraction-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 20px;
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid rgba(59, 130, 246, 0.95);
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(10px); }
+      50% { transform: translateY(0); }
+    }
+    
+    /* Switch 开关样式 - 现代化设计 */
+    .switch-label {
+      position: relative;
+      display: inline-block;
+      width: 52px;
+      height: 28px;
+    }
+    
+    .switch-label input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--gray-300);
+      border-radius: var(--radius-full);
+      transition: all var(--transition-normal);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .switch-slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      bottom: 3px;
+      background: var(--white);
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      transition: all var(--transition-normal);
+    }
+    
+    .switch-label input:checked + .switch-slider {
+      background: var(--blue-primary);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+    
+    .switch-label input:checked + .switch-slider:before {
+      transform: translateX(24px);
+    }
+    
+    /* 返回首页按钮 - 现代化设计 */
+    .back-to-home {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+    
+    .back-to-home a {
+      display: inline-flex;
+      align-items: center;
+      background: linear-gradient(135deg, var(--blue-primary), var(--blue-dark));
+      color: white;
+      text-decoration: none;
+      padding: 12px 20px;
+      border-radius: var(--radius-full);
+      font-size: 16px;
+      font-weight: 600;
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+      transition: all var(--transition-normal);
+      border: 2px solid transparent;
+    }
+    
+    .back-to-home a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 1200px) {
+      .page-layout {
+        flex-direction: column;
+        padding: 16px;
+      }
+      
+      .sim-panel {
+        position: static;
+        max-width: 100%;
+        margin-left: 0;
+        margin-top: 20px;
+      }
+      
+      .portal-body {
+        flex-direction: column;
+        overflow-x: visible;
+      }
+      
+      .col-left, .col-right {
+        width: 100%;
+        min-height: auto;
+        flex-shrink: 1;
+      }
+      
+      .col-center {
+        flex-shrink: 1;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .header-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .search-input {
+        width: 100%;
+      }
+      
+      .nav-tabs {
+        overflow-x: auto;
+        justify-content: flex-start;
+      }
+      
+      .app-grid {
+        gap: 12px;
+        padding: 16px;
+      }
+      
+      .app-item {
+        width: 80px;
+        height: 80px;
+        font-size: 12px;
+      }
+      
+      .back-to-home {
+        top: 10px;
+        right: 10px;
+      }
+      
+      .back-to-home a {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 返回首页按钮 -->
+  <div class="back-to-home">
+    <a href="index.html">
+      ← 返回首页
+    </a>
+  </div>
+
+  <div class="page-layout">
+    <div class="left-side">
+  <!-- 门户头部 -->
+  <header class="portal-header">
+    <div class="header-row">
+      <nav class="nav-tabs">
+        <a href="#" class="active">首页</a>
+        <a href="#">流程中心</a>
+        <a href="#">资源中心</a>
+        <a href="#">报表中心</a>
+      </nav>
+      <input class="search-input" placeholder="搜索" />
+    </div>
+    <div class="header-row">
+      <!-- 可放置二级导航或快捷入口，这里留空 -->
+    </div>
+  </header>
+
+  <!-- 主内容区域（等高布局） -->
+  <main class="portal-body" style="display:flex; gap:20px; flex-wrap:nowrap;">
+    <section class="col-left" style="display:flex; flex-direction:column;">
+      <div class="card todo-card" style="flex:1; overflow-y:auto;">
+        <div class="card-header">待办事项<span>今日</span></div>
+        <ul class="todo-list">
+          <li class="todo-item"><span class="important-tag tag-important">重要</span><span class="todo-text">核心人才离职竞业限制豁免特批申请</span><span class="todo-time">09:30</span></li>
+          <li class="todo-item"><span class="important-tag tag-special">特提</span><span class="todo-text">集团纪检要案跨部门联合处置方案的紧急核准</span><span class="todo-time">10:15</span></li>
+          <li class="todo-item"><span class="important-tag tag-secret">绝密</span><span class="todo-text">哈萨克斯坦油田资产减值计提差异的绝密调整指令</span><span class="todo-time">14:00</span></li>
+          <li class="todo-item">中央审计署预审问题清单整改措施密级签报 <span>17:30</span></li>
+          <li class="todo-item"><span class="important-tag tag-secret">绝密</span><span class="todo-text">关于核心领导班子人事变动的绝密请示</span><span class="todo-time">18:30</span></li>
+          <li class="todo-item">财务共享中心岗位编制扩容及内部竞聘流程签批 <span>19:30</span></li>
+          <li class="todo-item">集团半年度超额利润分配及涉密补贴调整终审决策 <span>20:45</span></li>
+          <li class="todo-item">2026年度战略预算中涉密研发经费超额配置核准 <span>22:00</span></li>
+          <li class="todo-item">东南亚区域公司重组及负责人任命建议的请示批复 <span>23:15</span></li>
+        </ul>
+      </div>
+    </section>
+    <section class="col-center" style="display:flex; flex-direction:column;">
+      <div class="flow-card" style="flex:1; display:flex; align-items:center; justify-content:center; padding:0; overflow:auto; background:var(--white); border-radius:var(--radius-xl); box-shadow:var(--shadow-md); transition:all var(--transition-normal);">
+        <img src="公文.png" alt="公文" style="width:80%; height:auto; display:block;">
+      </div>
+    </section>
+  </main>
+
+
+
+  <!-- 隐藏图片容器保持在左侧 -->
+  <div style="display:none;">
+    <div class="image-wrapper" id="hidden-wrapper">
+      <!-- svg image -->
+    </div>
+  </div>
+
+    </div><!-- end .left-side -->
+    
+    <!-- 模拟设置侧栏移到右侧 -->
+  <aside class="sim-panel">
+    <h2>模拟设置</h2>
+    <button id="reset-all" class="reset-all-btn">重置所有设置</button>
+
+    <!-- 视力 -->
+    <div class="sim-group" data-bind="blur">
+      <span class="sim-title">视力：老花</span>
+      <span class="sim-value" id="blur-value">0%</span>
+      <div class="sim-desc">体验年龄相关的视力变化，如白内障、黄斑变性等</div>
+      <div class="progress-bar"><div class="bar-fill" style="width:0%"></div>
+        <input type="range" class="sim-range" id="visionBlur" min="0" max="100" value="0">
+        <span class="progress-thumb"></span>
+      </div>
+    </div>
+
+    <!-- 认知延迟 -->
+    <div class="sim-group" data-bind="delay">
+      <span class="sim-title">生理机能：信息处理 慢</span>
+      <span class="sim-value" id="delay-value">0%</span>
+      <div class="sim-desc">模拟决策与信息处理的迟缓</div>
+      <div class="progress-bar"><div class="bar-fill" style="width:0%"></div>
+        <input type="range" class="sim-range" id="cognitiveDelay" min="0" max="100" value="0">
+        <span class="progress-thumb"></span>
+      </div>
+    </div>
+
+    <!-- 手部颤抖 -->
+    <div class="sim-group" data-bind="tremor">
+      <span class="sim-title">手部颤抖</span>
+      <span class="sim-value" id="tremor-value">0%</span>
+      <div class="sim-desc">模拟手部颤抖对操作的影响</div>
+      <div class="progress-bar"><div class="bar-fill" style="width:0%"></div>
+        <input type="range" class="sim-range" id="handTremor" min="0" max="100" value="0">
+        <span class="progress-thumb"></span>
+      </div>
+    </div>
+
+    <!-- 繁忙：分心干扰 -->
+    <div class="sim-group" data-bind="busy">
+      <span class="sim-title">繁忙：分心干扰</span>
+      <span class="sim-value" id="busy-value">0%</span>
+      <span class="sim-desc">模拟分心干扰的频率和强度，影响信息理解能力</span>
+      <div class="progress-bar"><div class="bar-fill" style="width:0%"></div>
+        <input type="range" class="sim-range" id="busyLevel" min="0" max="100" value="0">
+        <span class="progress-thumb"></span>
+      </div>
+    </div>
+
+    <!-- 权威敏感性（radio 开关） -->
+    <div class="sim-group" data-bind="authority" style="align-items:center;">
+      <span class="sim-title" style="grid-column:1;">权威性、敏感性</span>
+      <label class="switch-label" style="grid-column:2;justify-self:end;">
+        <input type="checkbox" id="authoritySwitch">
+        <span class="switch-slider"></span>
+      </label>
+      <span class="sim-desc" style="grid-column:1/-1;">话语权、重大决策、隐私敏感度</span>
+    </div>
+
+    <!-- 文字缩放控件 -->
+    <div class="zoom-control">
+      <span class="sim-title">文字缩放</span>
+      <div class="zoom-buttons">
+        <button id="fontDec" class="zoom-btn" aria-label="缩小">-</button>
+        <span id="zoom-percent" style="min-width:48px;text-align:center;">100%</span>
+        <button id="fontInc" class="zoom-btn" aria-label="放大">+</button>
+      </div>
+    </div>
+  </aside>
+
+  </div><!-- end .page-layout -->
+
+  <!-- 模拟图片与分心气泡（隐藏，功能同 index.html） -->
+  <div style="display:none;">
+    <div class="image-wrapper" id="hidden-wrapper">
+      <img id="sim-img" src="data:image/svg+xml;utf8,<svg width='600' height='800' xmlns='http://www.w3.org/2000/svg'><rect width='100%' height='100%' fill='white'/><text x='50%' y='60' font-size='24' font-family='SimSun, serif' fill='red' text-anchor='middle' font-weight='bold'>康定市人民政府文件</text><text x='50%' y='120' font-size='16' font-family='SimSun, serif' fill='black' text-anchor='middle'>康府发〔2024〕66 号</text><text x='50%' y='180' font-size='22' font-family='SimSun, serif' fill='black' text-anchor='middle' font-weight='bold'>康定市人民政府</text><text x='50%' y='220' font-size='22' font-family='SimSun, serif' fill='black' text-anchor='middle' font-weight='bold'>森林草原防火期封山令</text></svg>" alt="政府文件" />
+    </div>
+  </div>
+
+  <!-- 交互脚本（与 index.html 相同逻辑，但绑定新 UI） -->
+  <script>
+    // DOM元素引用
+    const tremorValue = document.getElementById('tremor-value');
+    const busyValue = document.getElementById('busy-value');
+    const blurValue = document.getElementById('blur-value');
+    const delayValue = document.getElementById('delay-value');
+    const fontInc = document.getElementById('fontInc');
+    const fontDec = document.getElementById('fontDec');
+    const zoomPercent = document.getElementById('zoom-percent');
+    const handTremor = document.getElementById('handTremor');
+    const visionBlur = document.getElementById('visionBlur');
+    const cognitiveDelay = document.getElementById('cognitiveDelay');
+    const busyLevel = document.getElementById('busyLevel');
+    const simImg = document.getElementById('sim-img');
+    const leftSide = document.querySelector('.left-side');
+    const imageWrapper = document.body;
+
+    // 进度 UI 更新函数
+    function updateProgress(element, value) {
+      const group = document.querySelector(`.sim-group[data-bind="${element}"]`);
+      group.querySelector('.bar-fill').style.width = value + '%';
+      group.querySelector('.progress-thumb').style.left = value + '%';
+    }
+
+    let tremor = 0, blur = 0, delay = 0, busy = 0, authority = 0;
+    let lastSwitch = Date.now();
+    const bubbles = ['2点有一个会议','您有新的审批待办','收到一条新消息','请尽快提交周报','客户反馈待处理'];
+    // 字体缩放变量
+    let scaleVal = 1; // 初始 100%
+    let originalScaleVal = 1; // 记住当前状态作为重置目标
+    const MIN_PX = 12, MAX_PX = 32;
+    let distractionOn = false;
+    let bubbleTimers = [];
+
+    function updateLabels() {
+      tremorValue.textContent = `${tremor}%`;
+      blurValue.textContent = `${blur}%`;
+      delayValue.textContent = `${delay}%`;
+      updateProgress('tremor', tremor);
+      updateProgress('blur', blur);
+      updateProgress('delay', delay);
+      busyValue.textContent = `${busy}%`;
+      // authorityValue、进度条已移除
+      updateProgress('busy', busy);
+    }
+    function randomBetween(min, max) { return Math.random() * (max - min) + min; }
+
+    // 动画函数 - 处理手部颤抖和模糊效果
+    function animate() {
+      const now = Date.now();
+      const period = 3000;
+      const clearTime = period * (1 - delay / 100);
+      let shouldBeClear = true;
+      
+      if (delay > 0) {
+        const cycle = (now - lastSwitch) % period;
+        shouldBeClear = cycle < clearTime;
+      }
+      
+      // 手部颤抖：增强效果，使变化更加明显
+      let tremorPx = 0;
+      if (tremor > 0) {
+        // 大幅增加颤抖强度，使其更容易被察觉
+        tremorPx = tremor / 1.5; // 更强的效果
+      }
+      
+      let tx = randomBetween(-tremorPx, tremorPx);
+      let ty = randomBetween(-tremorPx, tremorPx);
+      
+      // 确保transform属性被正确应用到所有需要颤抖的元素
+      const elementsToTremor = [leftSide, simImg];
+      elementsToTremor.forEach(el => {
+        if (el) {
+          el.style.transform = `translate(${tx}px, ${ty}px)`;
+          // 添加transition使动画更流畅但不过度平滑
+          el.style.transition = 'transform 0.05s';
+        }
+      });
+      
+      // 视力模糊效果
+      let blurPx = blur / 10;
+      let finalBlur = shouldBeClear ? blurPx : Math.max(blurPx, 2.5);
+      
+      // 局部交替模糊逻辑
+      // 0:待办事项 1:公文图片 2:其他区域
+      const todoCard = document.querySelector('.todo-card');
+      const flowImg = document.querySelector('.col-center img');
+      const portalHeader = document.querySelector('.portal-header');
+      const appGrid = document.querySelector('.app-grid');
+      
+      // 首先应用基础模糊效果（直接来自视力滑块）
+      if (todoCard) todoCard.style.filter = `blur(${blurPx}px)`;
+      if (flowImg) flowImg.style.filter = `blur(${blurPx}px)`;
+      
+      // 交替周期模糊逻辑（在有认知延迟时额外叠加）
+      let altIdx = 0;
+      let blurStage = false;
+      if (delay > 0) {
+        // 周期随 delay 增长，最短6秒，最长18秒
+        const minPeriod = 6000, maxPeriod = 18000;
+        const period = minPeriod + (maxPeriod - minPeriod) * (delay / 100);
+        const stageLen = period / 3;
+        const cycle = (now - lastSwitch) % period;
+        altIdx = Math.floor(cycle / stageLen); // 0,1,2
+        // 每段的后3秒为模糊阶段
+        const inBlur = (cycle % stageLen) > (stageLen - 3000);
+        blurStage = inBlur;
+        
+        // 认知延迟时的额外模糊效果
+        if (blurStage) {
+          if (altIdx === 0 && todoCard) todoCard.style.filter = `blur(${finalBlur}px)`;
+          if (altIdx === 1 && flowImg) flowImg.style.filter = `blur(${finalBlur}px)`;
+          if (altIdx === 2 && appGrid && appGrid.style.display !== 'none') appGrid.style.filter = `blur(${finalBlur}px)`;
+        }
+      }
+      
+      // 应用模糊效果到隐藏的模拟图片
+      if (simImg) simImg.style.filter = `blur(${blurPx}px)`;
+      // 确保leftSide没有被错误地模糊，但我们可以模糊其内部内容
+      if (leftSide) leftSide.style.filter = '';
+      if (portalHeader) portalHeader.style.filter = `blur(${blurPx}px)`;
+      
+      requestAnimationFrame(animate);
+    }
+
+    function createBubble(text) {
+      const bubble = document.createElement('div');
+      bubble.className = 'distraction-bubble';
+      bubble.textContent = text;
+      const left = 20 + Math.random() * 60; // 20% - 80%
+      const top = 10 + Math.random() * 70;  // 10% - 80%
+      bubble.style.left = left + 'vw';
+      bubble.style.top = top + 'vh';
+      imageWrapper.appendChild(bubble);
+      // 渐显
+      setTimeout(() => bubble.style.opacity = 1, 10);
+      // 1.8-3s 后消失
+      const t = setTimeout(() => {
+        bubble.style.opacity = 0;
+        setTimeout(() => bubble.remove(), 600);
+      }, 1800 + Math.random() * 1200);
+      bubbleTimers.push(t);
+    }
+    function startDistraction() {
+      if (distractionOn || busy===0) return;
+      distractionOn = true;
+      (function loop() {
+        if (!distractionOn) return;
+        const count = 1 + Math.floor(busy / 50); // 0-49 ->1, 50-99 ->2
+        for (let i = 0; i < count; i++) {
+          const msg = bubbles[Math.floor(Math.random() * bubbles.length)];
+          createBubble(msg);
+        }
+        const interval = 2000 - busy * 15; // busy 越大间隔越短
+        const t = setTimeout(loop, Math.max(400, interval));
+        bubbleTimers.push(t);
+      })();
+    }
+    function stopDistraction() {
+      distractionOn = false;
+      bubbleTimers.forEach(t => clearTimeout(t));
+      bubbleTimers = [];
+      document.querySelectorAll('.distraction-bubble').forEach(b => b.remove());
+    }
+    function checkBusy() { busy>0 ? startDistraction() : stopDistraction(); }
+
+    function updateFontUI() {
+      // 通过 font-size 缩放左侧内容
+      leftSide.style.fontSize = `${16 * scaleVal}px`;
+      
+      // 缩放右侧图片
+      const centerImage = document.querySelector('.col-center img');
+      if (centerImage) {
+        centerImage.style.transform = `scale(${scaleVal})`;
+        centerImage.style.transition = 'transform 0.3s ease';
+      }
+      
+      const percent = Math.round(scaleVal * 100);
+      zoomPercent.textContent = percent + '%';
+      const currentPx = 16 * scaleVal;
+      fontInc.disabled = currentPx >= MAX_PX;
+      fontDec.disabled = currentPx <= MIN_PX;
+    }
+
+    // 权威性标签显示/隐藏控制
+    function updateAuthorityTags() {
+      const show = authority === 1;
+      document.querySelectorAll('.todo-item').forEach(item => {
+        const tag = item.querySelector('.important-tag');
+        if (tag) {
+          tag.style.display = show ? '' : 'none';
+        }
+        // 有标签时 flex-start+gap，无标签时恢复默认
+        if (tag) {
+          if (show) {
+            item.style.justifyContent = 'flex-start';
+            item.style.gap = '8px';
+          } else {
+            item.style.justifyContent = '';
+            item.style.gap = '';
+          }
+        }
+      });
+    }
+
+    // 事件监听器
+    handTremor.addEventListener('input', e => { tremor = +e.target.value; updateLabels(); });
+    visionBlur.addEventListener('input', e => { 
+      blur = +e.target.value; 
+      updateLabels(); 
+      // 为了更好的即时反馈，在滑块变化时立即应用模糊效果
+      const todoCard = document.querySelector('.todo-card');
+      const flowImg = document.querySelector('.col-center img');
+      const portalHeader = document.querySelector('.portal-header');
+      const blurPx = blur / 10;
+      
+      if (todoCard) todoCard.style.filter = `blur(${blurPx}px)`;
+      if (flowImg) flowImg.style.filter = `blur(${blurPx}px)`;
+      if (portalHeader) portalHeader.style.filter = `blur(${blurPx}px)`;
+    });
+    cognitiveDelay.addEventListener('input', e => { delay = +e.target.value; updateLabels(); });
+    busyLevel.addEventListener('input', e => { busy = +e.target.value; busyValue.textContent = `${busy}%`; updateLabels(); checkBusy(); });
+    
+    // radio 事件绑定
+    const authoritySwitch = document.getElementById('authoritySwitch');
+    authoritySwitch.addEventListener('change', e => {
+      authority = authoritySwitch.checked ? 1 : 0;
+      updateAuthorityTags();
+    });
+    
+    // 全局重置函数
+    function resetAllSettings() {
+      // 重置所有模拟参数
+      tremor = 0;
+      blur = 0;
+      delay = 0;
+      busy = 0;
+      authority = 0;
+      scaleVal = 1;
+      originalScaleVal = 1;
+      
+      // 重置滑块值
+      handTremor.value = 0;
+      visionBlur.value = 0;
+      cognitiveDelay.value = 0;
+      busyLevel.value = 0;
+      authoritySwitch.checked = false;
+      
+      // 更新UI
+      updateLabels();
+      updateFontUI();
+      updateAuthorityTags();
+      stopDistraction();
+    }
+    
+    // 字体缩放事件
+    fontInc.addEventListener('click', () => {
+      const newPx = Math.min(MAX_PX, 16 * scaleVal * 1.2);
+      scaleVal = newPx / 16;
+      originalScaleVal = scaleVal;
+      updateFontUI();
+    });
+    fontDec.addEventListener('click', () => {
+      const newPx = Math.max(MIN_PX, 16 * scaleVal * 0.8);
+      scaleVal = newPx / 16;
+      originalScaleVal = scaleVal;
+      updateFontUI();
+    });
+    
+    // 全局重置按钮事件
+    document.getElementById('reset-all').addEventListener('click', resetAllSettings);
+
+    // 初始化
+    authority = 0;
+    authoritySwitch.checked = false;
+    updateAuthorityTags();
+    updateLabels();
+    animate();
+    updateFontUI();
+  </script>
+</body>
+</html>

@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mac OS 风格数字小提琴</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Chicago", "Geneva", "Monaco", monospace;
+            background: linear-gradient(135deg, #c0c0c0 0%, #e0e0e0 50%, #f0f0f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .violin-container {
+            background: linear-gradient(145deg, #d0d0d0, #b0b0b0);
+            border: 3px solid #404040;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 
+                inset 2px 2px 4px rgba(255, 255, 255, 0.7),
+                inset -2px -2px 4px rgba(0, 0, 0, 0.3),
+                0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .violin-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #404040;
+        }
+
+        .violin-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .violin-subtitle {
+            font-size: 14px;
+            color: #606060;
+        }
+
+        .violin-body {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .violin-neck {
+            width: 300px;
+            height: 400px;
+            background: linear-gradient(145deg, #8B4513, #A0522D);
+            border: 3px solid #654321;
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 
+                inset 2px 2px 4px rgba(255, 255, 255, 0.2),
+                inset -2px -2px 4px rgba(0, 0, 0, 0.4),
+                0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .fingerboard {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #2F1B14 0%, #1A0F0A 100%);
+            border-radius: 15px;
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .string {
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, #FFD700, #FFA500);
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            position: relative;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .string:hover {
+            width: 4px;
+            background: linear-gradient(180deg, #FFED4E, #FFB84D);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        .string:active,
+        .string.playing {
+            width: 5px;
+            background: linear-gradient(180deg, #FFC800, #FF8C00);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.7);
+        }
+
+        .string-label {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .fret {
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, #C0C0C0, #A0A0A0);
+            border-radius: 1px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .fret-1 { left: 15%; }
+        .fret-2 { left: 35%; }
+        .fret-3 { left: 55%; }
+        .fret-4 { left: 75%; }
+
+        .finger-position {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #FFD700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .finger-position:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.2);
+        }
+
+        .finger-position.active {
+            background: rgba(255, 215, 0, 0.3);
+            border-color: #FFD700;
+            transform: scale(1.3);
+        }
+
+        .violin-bridge {
+            width: 20px;
+            height: 60px;
+            background: linear-gradient(145deg, #8B4513, #A0522D);
+            border: 2px solid #654321;
+            border-radius: 10px;
+            margin: 0 20px;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255, 255, 255, 0.2),
+                inset -1px -1px 2px rgba(0, 0, 0, 0.4);
+        }
+
+        .violin-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .control-button {
+            background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
+            border: 2px solid #808080;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: bold;
+            color: #404040;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255, 255, 255, 0.7),
+                inset -1px -1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-button:hover {
+            background: linear-gradient(145deg, #d0d0d0, #b0b0b0);
+            transform: translateY(1px);
+        }
+
+        .control-button:active {
+            background: linear-gradient(145deg, #c0c0c0, #a0a0a0);
+            transform: translateY(2px);
+            box-shadow: 
+                inset 2px 2px 4px rgba(0, 0, 0, 0.3),
+                inset -1px -1px 2px rgba(255, 255, 255, 0.5);
+        }
+
+        .volume-slider {
+            width: 120px;
+            height: 20px;
+            background: linear-gradient(145deg, #d0d0d0, #b0b0b0);
+            border: 2px solid #808080;
+            border-radius: 10px;
+            outline: none;
+            box-shadow: 
+                inset 1px 1px 2px rgba(0, 0, 0, 0.2),
+                inset -1px -1px 2px rgba(255, 255, 255, 0.7);
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
+            border: 2px solid #808080;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255, 255, 255, 0.7),
+                inset -1px -1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
+            border: 2px solid #808080;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255, 255, 255, 0.7),
+                inset -1px -1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .bow-control {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bow-button {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(145deg, #8B4513, #A0522D);
+            border: 2px solid #654321;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255, 255, 255, 0.2),
+                inset -1px -1px 2px rgba(0, 0, 0, 0.4);
+        }
+
+        .bow-button:hover {
+            background: linear-gradient(145deg, #A0522D, #8B4513);
+            transform: scale(1.1);
+        }
+
+        .bow-button:active {
+            background: linear-gradient(145deg, #654321, #8B4513);
+            transform: scale(0.95);
+        }
+
+        .bow-button.active {
+            background: linear-gradient(145deg, #A0522D, #8B4513);
+            box-shadow: 
+                inset 2px 2px 4px rgba(0, 0, 0, 0.4),
+                inset -1px -1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .bow-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #404040;
+        }
+
+        .status-bar {
+            background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
+            border: 2px solid #808080;
+            border-radius: 8px;
+            padding: 10px 20px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #404040;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255, 255, 255, 0.7),
+                inset -1px -1px 2px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- 返回首页按钮 -->
+    <div style="position: fixed; top: 20px; left: 20px; z-index: 1000;">
+        <a href="index.html" style="display: inline-flex; align-items: center; background: #4598f0; color: white; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; box-shadow: 0 2px 8px rgba(69, 152, 240, 0.3); transition: all 0.3s ease;">
+            ← 返回首页
+        </a>
+    </div>
+
+    <div class="violin-container">
+        <div class="violin-header">
+            <div class="violin-title">🎻 数字小提琴</div>
+            <div class="violin-subtitle">Mac OS 风格 - 点击琴弦演奏</div>
+        </div>
+
+        <div class="violin-body">
+            <div class="violin-neck">
+                <div class="fingerboard">
+                    <div class="fret fret-1"></div>
+                    <div class="fret fret-2"></div>
+                    <div class="fret fret-3"></div>
+                    <div class="fret fret-4"></div>
+                    
+                    <!-- G弦指位 -->
+                    <div class="string" data-note="G3" data-frequency="196.00" data-string="G">
+                        <span class="string-label">G</span>
+                        <div class="finger-position" data-position="1" data-note="G#3" data-frequency="207.65" style="left: 15%; top: 20%;">1</div>
+                        <div class="finger-position" data-position="2" data-note="A3" data-frequency="220.00" style="left: 15%; top: 35%;">2</div>
+                        <div class="finger-position" data-position="3" data-note="A#3" data-frequency="233.08" style="left: 15%; top: 50%;">3</div>
+                        <div class="finger-position" data-position="4" data-note="B3" data-frequency="246.94" style="left: 15%; top: 65%;">4</div>
+                    </div>
+                    
+                    <!-- D弦指位 -->
+                    <div class="string" data-note="D3" data-frequency="146.83" data-string="D">
+                        <span class="string-label">D</span>
+                        <div class="finger-position" data-position="1" data-note="D#3" data-frequency="155.56" style="left: 35%; top: 20%;">1</div>
+                        <div class="finger-position" data-position="2" data-note="E3" data-frequency="164.81" style="left: 35%; top: 35%;">2</div>
+                        <div class="finger-position" data-position="3" data-note="F3" data-frequency="174.61" style="left: 35%; top: 50%;">3</div>
+                        <div class="finger-position" data-position="4" data-note="F#3" data-frequency="185.00" style="left: 35%; top: 65%;">4</div>
+                    </div>
+                    
+                    <!-- A弦指位 -->
+                    <div class="string" data-note="A3" data-frequency="220.00" data-string="A">
+                        <span class="string-label">A</span>
+                        <div class="finger-position" data-position="1" data-note="A#3" data-frequency="233.08" style="left: 55%; top: 20%;">1</div>
+                        <div class="finger-position" data-position="2" data-note="B3" data-frequency="246.94" style="left: 55%; top: 35%;">2</div>
+                        <div class="finger-position" data-position="3" data-note="C4" data-frequency="261.63" style="left: 55%; top: 50%;">3</div>
+                        <div class="finger-position" data-position="4" data-note="C#4" data-frequency="277.18" style="left: 55%; top: 65%;">4</div>
+                    </div>
+                    
+                    <!-- E弦指位 -->
+                    <div class="string" data-note="E4" data-frequency="329.63" data-string="E">
+                        <span class="string-label">E</span>
+                        <div class="finger-position" data-position="1" data-note="F4" data-frequency="349.23" style="left: 75%; top: 20%;">1</div>
+                        <div class="finger-position" data-position="2" data-note="F#4" data-frequency="369.99" style="left: 75%; top: 35%;">2</div>
+                        <div class="finger-position" data-position="3" data-note="G4" data-frequency="392.00" style="left: 75%; top: 50%;">3</div>
+                        <div class="finger-position" data-position="4" data-note="G#4" data-frequency="415.30" style="left: 75%; top: 65%;">4</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="violin-bridge"></div>
+            
+            <div class="bow-control">
+                <div class="bow-button" id="bow-up">⬆️</div>
+                <span class="bow-label">弓法控制</span>
+                <div class="bow-button" id="bow-down">⬇️</div>
+            </div>
+        </div>
+
+        <div class="violin-controls">
+            <button class="control-button" id="play-chord">和弦演奏</button>
+            <button class="control-button" id="stop-all">停止</button>
+            <button class="control-button" id="demo-mode">演示模式</button>
+            <button class="control-button" id="reset-audio">重置音频</button>
+            
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 12px; color: #404040;">音量:</span>
+                <input type="range" class="volume-slider" id="volume" min="0" max="100" value="50">
+            </div>
+        </div>
+
+        <div class="status-bar" id="status">
+            准备就绪 - 点击琴弦演奏空弦，点击指位贴演奏不同音高 | 弓法控制：按住弓法按钮，然后点击并拖动琴弦 | 快捷键：ESC或空格键停止所有演奏
+        </div>
+    </div>
+
+    <script>
+        class ViolinSimulator {
+            constructor() {
+                this.audioContext = null;
+                this.oscillators = new Map();
+                this.gainNodes = new Map();
+                this.volume = 0.5;
+                this.isPlaying = false;
+                this.demoMode = false;
+                this.demoInterval = null;
+                
+                this.initAudio();
+                this.bindEvents();
+            }
+
+            initAudio() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (error) {
+                    console.error('音频上下文初始化失败:', error);
+                    this.updateStatus('音频初始化失败');
+                }
+            }
+
+            resetAudio() {
+                // 强制停止所有音频
+                this.stopAll();
+                
+                // 重新初始化音频上下文
+                if (this.audioContext) {
+                    try {
+                        this.audioContext.close();
+                    } catch (error) {
+                        console.log('关闭音频上下文时出错:', error);
+                    }
+                }
+                
+                // 重新创建音频上下文
+                this.initAudio();
+                this.updateStatus('音频系统已重置');
+            }
+
+            bindEvents() {
+                // 琴弦点击事件（空弦）
+                document.querySelectorAll('.string').forEach(string => {
+                    string.addEventListener('mousedown', (e) => {
+                        // 检查是否点击在指位贴上
+                        if (e.target.classList.contains('finger-position')) {
+                            return; // 如果点击的是指位贴，不播放空弦音
+                        }
+                        this.playString(e.target);
+                    });
+                    string.addEventListener('mouseup', (e) => this.stopString(e.target));
+                    string.addEventListener('mouseleave', (e) => this.stopString(e.target));
+                    
+                    // 添加弓法交互
+                    string.addEventListener('mousemove', (e) => {
+                        if (this.isPlaying && this.bowDirection) {
+                            this.applyBowEffect(e.target);
+                        }
+                    });
+                });
+
+                // 指位贴点击事件
+                document.querySelectorAll('.finger-position').forEach(position => {
+                    position.addEventListener('mousedown', (e) => {
+                        e.stopPropagation(); // 阻止事件冒泡到琴弦
+                        this.playFingerPosition(e.target);
+                    });
+                    position.addEventListener('mouseup', (e) => {
+                        e.stopPropagation();
+                        this.stopFingerPosition(e.target);
+                    });
+                    position.addEventListener('mouseleave', (e) => {
+                        e.stopPropagation();
+                        this.stopFingerPosition(e.target);
+                    });
+                });
+
+                // 控制按钮事件
+                document.getElementById('play-chord').addEventListener('click', () => this.playChord());
+                document.getElementById('stop-all').addEventListener('click', () => this.stopAll());
+                document.getElementById('demo-mode').addEventListener('click', () => this.toggleDemoMode());
+                document.getElementById('reset-audio').addEventListener('click', () => this.resetAudio());
+
+                // 音量控制
+                document.getElementById('volume').addEventListener('input', (e) => {
+                    this.volume = e.target.value / 100;
+                    this.updateVolume();
+                });
+
+                // 弓法控制
+                document.getElementById('bow-up').addEventListener('mousedown', () => this.startBowUp());
+                document.getElementById('bow-up').addEventListener('mouseup', () => this.stopBow());
+                document.getElementById('bow-down').addEventListener('mousedown', () => this.startBowDown());
+                document.getElementById('bow-down').addEventListener('mouseup', () => this.stopBow());
+
+                // 键盘快捷键
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' || e.key === ' ') {
+                        e.preventDefault();
+                        this.stopAll();
+                    }
+                });
+            }
+
+            playString(stringElement) {
+                if (!this.audioContext) return;
+
+                const frequency = parseFloat(stringElement.dataset.frequency);
+                const note = stringElement.dataset.note;
+
+                // 创建振荡器
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                
+                // 设置小提琴音色（使用正弦波和锯齿波的混合）
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+                
+                // 添加泛音
+                const harmonic1 = this.audioContext.createOscillator();
+                const harmonic2 = this.audioContext.createOscillator();
+                harmonic1.type = 'sine';
+                harmonic2.type = 'sine';
+                harmonic1.frequency.setValueAtTime(frequency * 2, this.audioContext.currentTime);
+                harmonic2.frequency.setValueAtTime(frequency * 3, this.audioContext.currentTime);
+                
+                // 创建混合节点
+                const merger = this.audioContext.createChannelMerger(3);
+                
+                // 连接音频节点
+                oscillator.connect(merger, 0, 0);
+                harmonic1.connect(merger, 0, 1);
+                harmonic2.connect(merger, 0, 2);
+                merger.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                
+                // 设置音量包络
+                gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(this.volume * 0.3, this.audioContext.currentTime + 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(this.volume * 0.1, this.audioContext.currentTime + 2.0);
+                
+                // 启动振荡器
+                oscillator.start();
+                harmonic1.start();
+                harmonic2.start();
+                
+                // 存储引用
+                this.oscillators.set(note, { oscillator, harmonic1, harmonic2 });
+                this.gainNodes.set(note, gainNode);
+                
+                // 视觉反馈
+                stringElement.classList.add('playing');
+                this.updateStatus(`演奏 ${note} (${frequency}Hz)`);
+            }
+
+            stopString(stringElement) {
+                const note = stringElement.dataset.note;
+                const audioNodes = this.oscillators.get(note);
+                const gainNode = this.gainNodes.get(note);
+                
+                if (audioNodes && gainNode) {
+                    try {
+                        // 立即停止振荡器
+                        if (audioNodes.oscillator && audioNodes.oscillator.stop) {
+                            audioNodes.oscillator.stop();
+                        }
+                        if (audioNodes.harmonic1 && audioNodes.harmonic1.stop) {
+                            audioNodes.harmonic1.stop();
+                        }
+                        if (audioNodes.harmonic2 && audioNodes.harmonic2.stop) {
+                            audioNodes.harmonic2.stop();
+                        }
+                        
+                        // 立即设置音量为0
+                        if (gainNode && gainNode.gain) {
+                            gainNode.gain.cancelScheduledValues(0);
+                            gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                        }
+                        
+                        // 立即清理引用
+                        this.oscillators.delete(note);
+                        this.gainNodes.delete(note);
+                    } catch (error) {
+                        console.log('停止琴弦时出错:', error);
+                        // 强制清理
+                        this.oscillators.delete(note);
+                        this.gainNodes.delete(note);
+                    }
+                }
+                
+                // 移除视觉反馈
+                stringElement.classList.remove('playing');
+            }
+
+            playChord() {
+                const strings = document.querySelectorAll('.string');
+                strings.forEach((string, index) => {
+                    setTimeout(() => {
+                        this.playString(string);
+                    }, index * 200);
+                });
+                
+                setTimeout(() => {
+                    strings.forEach(string => {
+                        this.stopString(string);
+                    });
+                }, 2000);
+                
+                this.updateStatus('演奏和弦');
+            }
+
+            stopAll() {
+                console.log('停止所有演奏');
+                
+                // 强制停止所有振荡器
+                this.oscillators.forEach((audioNodes, note) => {
+                    try {
+                        if (audioNodes.oscillator && audioNodes.oscillator.stop) {
+                            audioNodes.oscillator.stop();
+                        }
+                        if (audioNodes.harmonic1 && audioNodes.harmonic1.stop) {
+                            audioNodes.harmonic1.stop();
+                        }
+                        if (audioNodes.harmonic2 && audioNodes.harmonic2.stop) {
+                            audioNodes.harmonic2.stop();
+                        }
+                    } catch (error) {
+                        console.log('停止振荡器时出错:', error);
+                    }
+                });
+                
+                // 强制设置所有增益节点为0
+                this.gainNodes.forEach((gainNode, note) => {
+                    try {
+                        if (gainNode && gainNode.gain) {
+                            gainNode.gain.cancelScheduledValues(0);
+                            gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                        }
+                    } catch (error) {
+                        console.log('设置增益为0时出错:', error);
+                    }
+                });
+                
+                // 清除所有引用
+                this.oscillators.clear();
+                this.gainNodes.clear();
+                
+                // 停止弓法模式
+                if (this.isPlaying) {
+                    this.stopBow();
+                }
+                
+                // 停止演示模式
+                if (this.demoMode) {
+                    this.toggleDemoMode();
+                }
+                
+                // 移除所有视觉反馈
+                document.querySelectorAll('.string').forEach(string => {
+                    string.classList.remove('playing');
+                });
+                document.querySelectorAll('.finger-position').forEach(position => {
+                    position.classList.remove('active');
+                });
+                
+                // 恢复鼠标样式
+                document.body.style.cursor = 'default';
+                
+                this.updateStatus('停止所有演奏');
+            }
+
+            startBowUp() {
+                this.isPlaying = true;
+                this.bowDirection = 'up';
+                this.updateStatus('上弓演奏 - 按住琴弦并拖动鼠标');
+                
+                // 添加弓法指示器
+                document.body.style.cursor = 'crosshair';
+                
+                // 添加视觉反馈
+                document.getElementById('bow-up').classList.add('active');
+                document.getElementById('bow-down').classList.remove('active');
+                
+                // 如果当前有琴弦在演奏，改变其音色
+                this.gainNodes.forEach((gainNode, note) => {
+                    gainNode.gain.setValueAtTime(this.volume * 0.4, this.audioContext.currentTime);
+                });
+            }
+
+            startBowDown() {
+                this.isPlaying = true;
+                this.bowDirection = 'down';
+                this.updateStatus('下弓演奏 - 按住琴弦并拖动鼠标');
+                
+                // 添加弓法指示器
+                document.body.style.cursor = 'crosshair';
+                
+                // 添加视觉反馈
+                document.getElementById('bow-down').classList.add('active');
+                document.getElementById('bow-up').classList.remove('active');
+                
+                // 如果当前有琴弦在演奏，改变其音色
+                this.gainNodes.forEach((gainNode, note) => {
+                    gainNode.gain.setValueAtTime(this.volume * 0.4, this.audioContext.currentTime);
+                });
+            }
+
+            stopBow() {
+                this.isPlaying = false;
+                this.bowDirection = null;
+                this.updateStatus('弓法停止');
+                
+                // 恢复鼠标样式
+                document.body.style.cursor = 'default';
+                
+                // 移除视觉反馈
+                document.getElementById('bow-up').classList.remove('active');
+                document.getElementById('bow-down').classList.remove('active');
+                
+                // 恢复正常音量
+                this.gainNodes.forEach((gainNode, note) => {
+                    gainNode.gain.setValueAtTime(this.volume * 0.3, this.audioContext.currentTime);
+                });
+            }
+
+            applyBowEffect(stringElement) {
+                const note = stringElement.dataset.note;
+                const gainNode = this.gainNodes.get(note);
+                
+                if (gainNode) {
+                    // 根据弓法方向调整音色
+                    const bowIntensity = this.bowDirection === 'up' ? 0.5 : 0.4;
+                    gainNode.gain.setValueAtTime(this.volume * bowIntensity, this.audioContext.currentTime);
+                    
+                    // 添加视觉反馈
+                    stringElement.style.transform = this.bowDirection === 'up' ? 'scaleY(1.1)' : 'scaleY(0.9)';
+                    
+                    // 更新状态
+                    this.updateStatus(`${this.bowDirection === 'up' ? '上弓' : '下弓'}演奏 ${note}`);
+                }
+            }
+
+            playFingerPosition(positionElement) {
+                if (!this.audioContext) return;
+
+                const frequency = parseFloat(positionElement.dataset.frequency);
+                const note = positionElement.dataset.note;
+                const stringName = positionElement.parentElement.dataset.string;
+                const position = positionElement.dataset.position;
+
+                // 创建振荡器
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                
+                // 设置小提琴音色
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+                
+                // 添加泛音
+                const harmonic1 = this.audioContext.createOscillator();
+                const harmonic2 = this.audioContext.createOscillator();
+                harmonic1.type = 'sine';
+                harmonic2.type = 'sine';
+                harmonic1.frequency.setValueAtTime(frequency * 2, this.audioContext.currentTime);
+                harmonic2.frequency.setValueAtTime(frequency * 3, this.audioContext.currentTime);
+                
+                // 创建混合节点
+                const merger = this.audioContext.createChannelMerger(3);
+                
+                // 连接音频节点
+                oscillator.connect(merger, 0, 0);
+                harmonic1.connect(merger, 0, 1);
+                harmonic2.connect(merger, 0, 2);
+                merger.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                
+                // 设置音量包络
+                gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(this.volume * 0.3, this.audioContext.currentTime + 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(this.volume * 0.1, this.audioContext.currentTime + 2.0);
+                
+                // 启动振荡器
+                oscillator.start();
+                harmonic1.start();
+                harmonic2.start();
+                
+                // 存储引用
+                this.oscillators.set(note, { oscillator, harmonic1, harmonic2 });
+                this.gainNodes.set(note, gainNode);
+                
+                // 视觉反馈
+                positionElement.classList.add('active');
+                this.updateStatus(`演奏 ${stringName}弦 ${position}指位 ${note} (${frequency}Hz)`);
+            }
+
+            stopFingerPosition(positionElement) {
+                const note = positionElement.dataset.note;
+                const audioNodes = this.oscillators.get(note);
+                const gainNode = this.gainNodes.get(note);
+                
+                if (audioNodes && gainNode) {
+                    try {
+                        // 立即停止振荡器
+                        if (audioNodes.oscillator && audioNodes.oscillator.stop) {
+                            audioNodes.oscillator.stop();
+                        }
+                        if (audioNodes.harmonic1 && audioNodes.harmonic1.stop) {
+                            audioNodes.harmonic1.stop();
+                        }
+                        if (audioNodes.harmonic2 && audioNodes.harmonic2.stop) {
+                            audioNodes.harmonic2.stop();
+                        }
+                        
+                        // 立即设置音量为0
+                        if (gainNode && gainNode.gain) {
+                            gainNode.gain.cancelScheduledValues(0);
+                            gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                        }
+                        
+                        // 立即清理引用
+                        this.oscillators.delete(note);
+                        this.gainNodes.delete(note);
+                    } catch (error) {
+                        console.log('停止指位贴时出错:', error);
+                        // 强制清理
+                        this.oscillators.delete(note);
+                        this.gainNodes.delete(note);
+                    }
+                }
+                
+                // 移除视觉反馈
+                positionElement.classList.remove('active');
+            }
+
+            toggleDemoMode() {
+                this.demoMode = !this.demoMode;
+                const button = document.getElementById('demo-mode');
+                
+                if (this.demoMode) {
+                    button.textContent = '停止演示';
+                    this.startDemo();
+                    this.updateStatus('演示模式开启');
+                } else {
+                    button.textContent = '演示模式';
+                    this.stopDemo();
+                    this.updateStatus('演示模式关闭');
+                }
+            }
+
+            startDemo() {
+                const strings = document.querySelectorAll('.string');
+                let currentIndex = 0;
+                
+                this.demoInterval = setInterval(() => {
+                    if (currentIndex < strings.length) {
+                        this.playString(strings[currentIndex]);
+                        setTimeout(() => {
+                            this.stopString(strings[currentIndex]);
+                        }, 500);
+                        currentIndex++;
+                    } else {
+                        currentIndex = 0;
+                    }
+                }, 600);
+            }
+
+            stopDemo() {
+                if (this.demoInterval) {
+                    clearInterval(this.demoInterval);
+                    this.demoInterval = null;
+                }
+                this.stopAll();
+            }
+
+            updateVolume() {
+                this.gainNodes.forEach(gainNode => {
+                    gainNode.gain.setValueAtTime(this.volume * 0.3, this.audioContext.currentTime);
+                });
+            }
+
+            updateStatus(message) {
+                document.getElementById('status').textContent = message;
+            }
+        }
+
+        // 初始化小提琴模拟器
+        document.addEventListener('DOMContentLoaded', () => {
+            new ViolinSimulator();
+        });
+    </script>
+</body>
+</html>

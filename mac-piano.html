@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mac OS 风格数字钢琴</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Chicago", "Geneva", "Monaco", monospace;
+            background: linear-gradient(135deg, #c0c0c0 0%, #e0e0e0 50%, #f0f0f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .piano-container {
+            background: linear-gradient(145deg, #d0d0d0, #b0b0b0);
+            border: 3px solid #404040;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 
+                inset 2px 2px 4px rgba(255, 255, 255, 0.7),
+                inset -2px -2px 4px rgba(0, 0, 0, 0.3),
+                0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .piano-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #404040;
+        }
+
+        .piano-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .piano-subtitle {
+            font-size: 14px;
+            color: #606060;
+        }
+
+        .piano-keys {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .white-key {
+            width: 60px;
+            height: 200px;
+            background: linear-gradient(180deg, #ffffff 0%, #f8f8f8 100%);
+            border: 2px solid #808080;
+            border-radius: 0 0 8px 8px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            position: relative;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255, 255, 255, 0.9),
+                inset -1px -1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .white-key:hover {
+            background: linear-gradient(180deg, #f0f0f0 0%, #e8e8e8 100%);
+            transform: translateY(2px);
+        }
+
+        .white-key:active,
+        .white-key.playing {
+            background: linear-gradient(180deg, #e0e0e0 0%, #d8d8d8 100%);
+            transform: translateY(4px);
+            box-shadow: 
+                inset 2px 2px 4px rgba(0, 0, 0, 0.2),
+                inset -1px -1px 2px rgba(255, 255, 255, 0.5);
+        }
+
+        .black-key {
+            width: 36px;
+            height: 120px;
+            background: linear-gradient(180deg, #404040 0%, #202020 100%);
+            border: 2px solid #000000;
+            border-radius: 0 0 6px 6px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            position: absolute;
+            z-index: 10;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255, 255, 255, 0.1),
+                inset -1px -1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .black-key:hover {
+            background: linear-gradient(180deg, #505050 0%, #303030 100%);
+            transform: translateY(2px);
+        }
+
+        .black-key:active,
+        .black-key.playing {
+            background: linear-gradient(180deg, #303030 0%, #101010 100%);
+            transform: translateY(4px);
+            box-shadow: 
+                inset 2px 2px 4px rgba(0, 0, 0, 0.9),
+                inset -1px -1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .key-label {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: bold;
+            color: #404040;
+        }
+
+        .black-key .key-label {
+            color: #ffffff;
+            bottom: 8px;
+        }
+
+        .piano-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .control-button {
+            background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
+            border: 2px solid #808080;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: bold;
+            color: #404040;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255, 255, 255, 0.7),
+                inset -1px -1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-button:hover {
+            background: linear-gradient(145deg, #d0d0d0, #b0b0b0);
+            transform: translateY(1px);
+        }
+
+        .control-button:active {
+            background: linear-gradient(145deg, #c0c0c0, #a0a0a0);
+            transform: translateY(2px);
+            box-shadow: 
+                inset 2px 2px 4px rgba(0, 0, 0, 0.3),
+                inset -1px -1px 2px rgba(255, 255, 255, 0.5);
+        }
+
+        .volume-slider {
+            width: 120px;
+            height: 20px;
+            background: linear-gradient(145deg, #d0d0d0, #b0b0b0);
+            border: 2px solid #808080;
+            border-radius: 10px;
+            outline: none;
+            box-shadow: 
+                inset 1px 1px 2px rgba(0, 0, 0, 0.2),
+                inset -1px -1px 2px rgba(255, 255, 255, 0.7);
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
+            border: 2px solid #808080;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255, 255, 255, 0.7),
+                inset -1px -1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
+            border: 2px solid #808080;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255, 255, 255, 0.7),
+                inset -1px -1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .status-bar {
+            background: linear-gradient(145deg, #b0b0b0, #909090);
+            border: 2px solid #808080;
+            border-radius: 8px;
+            padding: 8px 15px;
+            margin-top: 20px;
+            text-align: center;
+            color: #404040;
+            font-size: 12px;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255, 255, 255, 0.5),
+                inset -1px -1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .piano-container {
+                padding: 20px;
+                transform: scale(0.8);
+            }
+            
+            .white-key {
+                width: 50px;
+                height: 160px;
+            }
+            
+            .black-key {
+                width: 32px;
+                height: 96px;
+                margin-left: -16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 返回首页按钮 -->
+    <div style="position: fixed; top: 20px; left: 20px; z-index: 1000;">
+        <a href="index.html" style="display: inline-flex; align-items: center; background: #4598f0; color: white; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; box-shadow: 0 2px 8px rgba(69, 152, 240, 0.3); transition: all 0.3s ease;">
+            ← 返回首页
+        </a>
+    </div>
+
+    <div class="piano-container">
+        <div class="piano-header">
+            <div class="piano-title">🎹 数字钢琴</div>
+            <div class="piano-subtitle">Mac OS 经典风格</div>
+        </div>
+
+        <div class="piano-keys">
+            <!-- 白键 -->
+            <div class="white-key" data-note="C4" data-key="a">
+                <div class="key-label">A</div>
+            </div>
+            <div class="white-key" data-note="D4" data-key="s">
+                <div class="key-label">S</div>
+            </div>
+            <div class="white-key" data-note="E4" data-key="d">
+                <div class="key-label">D</div>
+            </div>
+            <div class="white-key" data-note="F4" data-key="f">
+                <div class="key-label">F</div>
+            </div>
+            <div class="white-key" data-note="G4" data-key="g">
+                <div class="key-label">G</div>
+            </div>
+            <div class="white-key" data-note="A4" data-key="h">
+                <div class="key-label">H</div>
+            </div>
+            <div class="white-key" data-note="B4" data-key="j">
+                <div class="key-label">J</div>
+            </div>
+            <div class="white-key" data-note="C5" data-key="k">
+                <div class="key-label">K</div>
+            </div>
+
+            <!-- 黑键 -->
+            <div class="black-key" data-note="C#4" data-key="w" style="left: 33px;">
+                <div class="key-label">W</div>
+            </div>
+            <div class="black-key" data-note="D#4" data-key="e" style="left: 95px;">
+                <div class="key-label">E</div>
+            </div>
+            <div class="black-key" data-note="F#4" data-key="t" style="left: 219px;">
+                <div class="key-label">T</div>
+            </div>
+            <div class="black-key" data-note="G#4" data-key="y" style="left: 281px;">
+                <div class="key-label">Y</div>
+            </div>
+            <div class="black-key" data-note="A#4" data-key="u" style="left: 343px;">
+                <div class="key-label">U</div>
+            </div>
+        </div>
+
+        <div class="piano-controls">
+            <button class="control-button" id="testAudio">测试音频</button>
+            <button class="control-button" id="playDemo">播放演示</button>
+            <button class="control-button" id="stopDemo">停止</button>
+            <button class="control-button" id="toggleSustain">延音踏板</button>
+            
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="color: #404040; font-size: 12px;">音量:</span>
+                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="70">
+            </div>
+        </div>
+
+        <div class="status-bar" id="statusBar">
+            就绪 - 使用键盘或鼠标演奏钢琴
+        </div>
+    </div>
+
+    <script>
+        class MacPiano {
+            constructor() {
+                this.audioContext = null;
+                this.sustainMode = false;
+                this.isPlaying = false;
+                this.volume = 0.7;
+                this.demoNotes = [
+                    { note: 'C4', duration: 500 },
+                    { note: 'E4', duration: 500 },
+                    { note: 'G4', duration: 500 },
+                    { note: 'C5', duration: 1000 },
+                    { note: 'G4', duration: 500 },
+                    { note: 'E4', duration: 500 },
+                    { note: 'C4', duration: 1000 }
+                ];
+                this.demoInterval = null;
+                this.activeOscillators = new Map();
+
+                this.init();
+                this.bindEvents();
+            }
+
+            init() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.updateStatus('音频已初始化 - 点击任意键开始演奏');
+                } catch (error) {
+                    console.error('Web Audio API 不支持:', error);
+                    this.updateStatus('Web Audio API 不支持，请使用现代浏览器');
+                }
+            }
+
+            noteToFrequency(note) {
+                const noteMap = {
+                    'C4': 261.63, 'C#4': 277.18, 'D4': 293.66, 'D#4': 311.13,
+                    'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'G4': 392.00,
+                    'G#4': 415.30, 'A4': 440.00, 'A#4': 466.16, 'B4': 493.88,
+                    'C5': 523.25
+                };
+                return noteMap[note] || 440;
+            }
+
+            playNote(note) {
+                if (!this.audioContext) {
+                    return;
+                }
+
+                // 确保音频上下文已启动
+                if (this.audioContext.state === 'suspended') {
+                    this.audioContext.resume();
+                }
+
+                // 停止之前的相同音符
+                if (this.activeOscillators.has(note)) {
+                    this.stopNote(note);
+                }
+
+                // 创建新的振荡器和增益节点
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(this.noteToFrequency(note), this.audioContext.currentTime);
+                oscillator.type = 'triangle';
+                
+                // 设置音量
+                gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(this.volume, this.audioContext.currentTime + 0.01);
+                
+                // 如果不是延音模式，设置衰减
+                if (!this.sustainMode) {
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 1.0);
+                }
+
+                oscillator.start();
+                
+                // 存储活跃的振荡器
+                this.activeOscillators.set(note, { oscillator, gainNode });
+
+                // 视觉反馈
+                this.highlightKey(note, true);
+                
+                // 如果不是延音模式，自动停止
+                if (!this.sustainMode) {
+                    setTimeout(() => {
+                        this.stopNote(note);
+                    }, 1000);
+                }
+            }
+
+            stopNote(note) {
+                if (this.activeOscillators.has(note)) {
+                    const { oscillator, gainNode } = this.activeOscillators.get(note);
+                    
+                    // 淡出音量
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.1);
+                    
+                    // 停止振荡器
+                    setTimeout(() => {
+                        oscillator.stop();
+                    }, 100);
+                    
+                    this.activeOscillators.delete(note);
+                    this.highlightKey(note, false);
+                }
+            }
+
+            highlightKey(note, isPlaying) {
+                const keyElement = document.querySelector(`[data-note="${note}"]`);
+                if (keyElement) {
+                    if (isPlaying) {
+                        keyElement.classList.add('playing');
+                    } else {
+                        keyElement.classList.remove('playing');
+                    }
+                }
+            }
+
+            playDemo() {
+                if (this.isPlaying) return;
+                
+                this.isPlaying = true;
+                this.updateStatus('正在播放演示曲目...');
+                
+                let noteIndex = 0;
+                this.demoInterval = setInterval(() => {
+                    if (noteIndex < this.demoNotes.length) {
+                        const noteData = this.demoNotes[noteIndex];
+                        this.playNote(noteData.note);
+                        noteIndex++;
+                    } else {
+                        this.stopDemo();
+                    }
+                }, 600);
+            }
+
+            stopDemo() {
+                if (this.demoInterval) {
+                    clearInterval(this.demoInterval);
+                    this.demoInterval = null;
+                }
+                this.isPlaying = false;
+                this.updateStatus('演示已停止');
+                
+                // 停止所有活跃的音符
+                this.activeOscillators.forEach((_, note) => {
+                    this.stopNote(note);
+                });
+            }
+
+            toggleSustain() {
+                this.sustainMode = !this.sustainMode;
+                const button = document.getElementById('toggleSustain');
+                button.textContent = this.sustainMode ? '延音开启' : '延音踏板';
+                button.style.background = this.sustainMode ? 
+                    'linear-gradient(145deg, #a0d0a0, #80b080)' : 
+                    'linear-gradient(145deg, #e0e0e0, #c0c0c0)';
+                
+                this.updateStatus(this.sustainMode ? '延音模式已开启' : '延音模式已关闭');
+                
+                // 如果关闭延音模式，停止所有活跃的音符
+                if (!this.sustainMode) {
+                    this.activeOscillators.forEach((_, note) => {
+                        this.stopNote(note);
+                    });
+                }
+            }
+
+            setVolume(value) {
+                this.volume = value / 100;
+                this.updateStatus(`音量设置为 ${value}%`);
+            }
+
+            testAudio() {
+                if (!this.audioContext) {
+                    this.updateStatus('音频上下文未初始化');
+                    return;
+                }
+
+                // 确保音频上下文已启动
+                if (this.audioContext.state === 'suspended') {
+                    this.audioContext.resume();
+                }
+
+                this.updateStatus('正在测试音频...');
+                
+                // 播放一个简单的测试音
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(440, this.audioContext.currentTime); // A4
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(this.volume * 0.5, this.audioContext.currentTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 1.0);
+                
+                oscillator.start();
+                oscillator.stop(this.audioContext.currentTime + 1.0);
+                
+                setTimeout(() => {
+                    this.updateStatus('音频测试完成 - 可以开始演奏');
+                }, 1000);
+            }
+
+            updateStatus(message) {
+                const statusBar = document.getElementById('statusBar');
+                statusBar.textContent = message;
+            }
+
+            bindEvents() {
+                // 鼠标事件
+                document.querySelectorAll('.white-key, .black-key').forEach(key => {
+                    key.addEventListener('mousedown', () => {
+                        const note = key.dataset.note;
+                        this.playNote(note);
+                    });
+                    
+                    key.addEventListener('mouseup', () => {
+                        if (!this.sustainMode) {
+                            const note = key.dataset.note;
+                            this.stopNote(note);
+                        }
+                    });
+                    
+                    key.addEventListener('mouseleave', () => {
+                        if (!this.sustainMode) {
+                            const note = key.dataset.note;
+                            this.stopNote(note);
+                        }
+                    });
+                });
+
+                // 键盘事件
+                document.addEventListener('keydown', (e) => {
+                    if (e.repeat) return;
+                    
+                    const key = e.key.toLowerCase();
+                    const keyElement = document.querySelector(`[data-key="${key}"]`);
+                    
+                    if (keyElement) {
+                        const note = keyElement.dataset.note;
+                        this.playNote(note);
+                    }
+                });
+
+                document.addEventListener('keyup', (e) => {
+                    if (!this.sustainMode) {
+                        const key = e.key.toLowerCase();
+                        const keyElement = document.querySelector(`[data-key="${key}"]`);
+                        
+                        if (keyElement) {
+                            const note = keyElement.dataset.note;
+                            this.stopNote(note);
+                        }
+                    }
+                });
+
+                // 控制按钮
+                document.getElementById('testAudio').addEventListener('click', () => this.testAudio());
+                
+                document.getElementById('playDemo').addEventListener('click', () => {
+                    // 确保音频上下文已启动
+                    if (this.audioContext && this.audioContext.state === 'suspended') {
+                        this.audioContext.resume();
+                    }
+                    this.playDemo();
+                });
+                
+                document.getElementById('stopDemo').addEventListener('click', () => this.stopDemo());
+                document.getElementById('toggleSustain').addEventListener('click', () => this.toggleSustain());
+                
+                // 音量控制
+                document.getElementById('volumeSlider').addEventListener('input', (e) => {
+                    this.setVolume(e.target.value);
+                });
+
+                // 防止右键菜单
+                document.addEventListener('contextmenu', (e) => e.preventDefault());
+                
+                // 添加点击事件来启动音频上下文
+                document.addEventListener('click', () => {
+                    if (this.audioContext && this.audioContext.state === 'suspended') {
+                        this.audioContext.resume();
+                        this.updateStatus('音频已启动 - 可以开始演奏');
+                    }
+                });
+            }
+        }
+
+        // 初始化钢琴
+        document.addEventListener('DOMContentLoaded', () => {
+            new MacPiano();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>斜条纹背景效果演示</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Arial', sans-serif;
+            background-color: #fff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .stripe-bg {
+            width: 100%;
+            height: 200px; /* 可根据需要调整高度 */
+            /* 定义斜条纹背景，角度为 45 度，条纹颜色为浅灰色，与白色交替 */
+            background: linear-gradient(45deg, #f0f0f0 15%, transparent 15%, transparent 50%, #f0f0f0 50%, #f0f0f0 65%, transparent 65%, transparent);
+            background-size: 5px 5px; /* 控制条纹的大小，可根据需要调整 */
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stripe-bg::before {
+            content: '斜条纹背景效果';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-section {
+            margin-bottom: 40px;
+        }
+
+        .demo-section h2 {
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        /* 不同尺寸的条纹演示 */
+        .stripe-small {
+            background-size: 10px 10px;
+            height: 150px;
+        }
+
+        .stripe-large {
+            background-size: 40px 40px;
+            height: 150px;
+        }
+
+        /* 不同颜色的条纹演示 */
+        .stripe-blue {
+            background: linear-gradient(45deg, #e3f2fd 15%, transparent 15%, transparent 50%, #e3f2fd 50%, #e3f2fd 65%, transparent 65%, transparent);
+            background-size: 5px 5px;
+            height: 150px;
+        }
+
+        .stripe-green {
+            background: linear-gradient(45deg, #e8f5e8 15%, transparent 15%, transparent 50%, #e8f5e8 50%, #e8f5e8 65%, transparent 65%, transparent);
+            background-size: 5px 5px;
+            height: 150px;
+        }
+
+        .description {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007acc;
+        }
+
+        .description p {
+            margin: 0;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* 代码展示区域 */
+        .code-section {
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #e0e0e0;
+        }
+
+        .code-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .code-block {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- 返回首页按钮 -->
+    <div style="position: fixed; top: 20px; left: 20px; z-index: 1000;">
+        <a href="index.html" style="display: inline-flex; align-items: center; background: #4598f0; color: white; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-size: 14px; box-shadow: 0 2px 8px rgba(69, 152, 240, 0.3); transition: all 0.3s ease;">
+            ← 返回首页
+        </a>
+    </div>
+
+    <div class="container">
+        <h1>斜条纹背景效果演示</h1>
+        
+        <div class="description">
+            <p><strong>CSS 代码说明：</strong> 使用 linear-gradient 创建 45 度角的斜条纹，条纹颜色为浅灰色 (#f0f0f0)，与透明色交替，background-size 控制条纹大小。</p>
+        </div>
+
+        <div class="demo-section">
+            <h2>原始效果（条纹大小：5px × 5px）</h2>
+            <div class="stripe-bg"></div>
+        </div>
+
+        <div class="demo-section">
+            <h2>不同条纹大小对比</h2>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <p><strong>小条纹 (10px × 10px)</strong></p>
+                    <div class="stripe-bg stripe-small"></div>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <p><strong>大条纹 (40px × 40px)</strong></p>
+                    <div class="stripe-bg stripe-large"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>更细条纹对比</h2>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <p><strong>超细条纹 (5px × 5px)</strong></p>
+                    <div class="stripe-bg" style="background-size: 5px 5px; height: 150px;"></div>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <p><strong>细条纹 (10px × 10px)</strong></p>
+                    <div class="stripe-bg" style="background-size: 10px 10px; height: 150px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>不同颜色效果</h2>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <p><strong>蓝色条纹</strong></p>
+                    <div class="stripe-bg stripe-blue"></div>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <p><strong>绿色条纹</strong></p>
+                    <div class="stripe-bg stripe-green"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="code-section">
+            <h3>推荐使用的CSS代码</h3>
+            <div class="code-block">
+.stripe-bg {
+    /* 5px粗细的斜条纹背景，45度角，浅灰色条纹 */
+    background: linear-gradient(45deg, #f0f0f0 15%, transparent 15%, transparent 50%, #f0f0f0 50%, #f0f0f0 65%, transparent 65%, transparent);
+    background-size: 5px 5px;
+}
+            </div>
+        </div>
+
+        <div class="description">
+            <p><strong>使用建议：</strong> 可以通过调整 background-size 的值来改变条纹的粗细，调整 linear-gradient 中的颜色值来改变条纹颜色，调整角度（如 30deg, 60deg）来改变条纹方向。</p>
+        </div>
+    </div>
+</body>
+</html>

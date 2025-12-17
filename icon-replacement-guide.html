@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>如何将卡片emoji替换为图片或网站logo</title>
+    <style>
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #6366f1;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: "Courier New", monospace;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        .example {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        .demo-card {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .demo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            background: #f5f5f5;
+        }
+        .demo-icon img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 4px;
+        }
+        .demo-content {
+            flex: 1;
+        }
+        .demo-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .demo-subtitle {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>如何将卡片emoji替换为图片或网站logo</h1>
+    
+    <h2>当前实现方式</h2>
+    <p>目前，项目卡片使用emoji作为图标，实现方式如下：</p>
+    
+    <div class="example">
+        <h3>当前HTML结构：</h3>
+        <pre><code>&lt;div class="project-header"&gt;
+    &lt;div class="project-icon"&gt;🎨&lt;/div&gt;
+    &lt;div&gt;
+        &lt;h3 class="project-title"&gt;Google AI Studio&lt;/h3&gt;
+        &lt;p class="project-subtitle"&gt;AI设计与创作平台&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        
+        <h3>当前CSS样式：</h3>
+        <pre><code>.project-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-size: 1.25rem;
+    background: #f5f5f5;
+    color: #333;
+}</code></pre>
+    </div>
+    
+    <h2>替换方法</h2>
+    
+    <h3>方法一：使用&lt;img&gt;标签</h3>
+    <p>这是最简单直接的方法，将emoji替换为&lt;img&gt;标签，指向你想要使用的图片URL。</p>
+    
+    <div class="example">
+        <h4>HTML结构：</h4>
+        <pre><code>&lt;div class="project-header"&gt;
+    &lt;div class="project-icon"&gt;
+        &lt;img src="https://example.com/logo.png" alt="Google AI Studio Logo"&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+        &lt;h3 class="project-title"&gt;Google AI Studio&lt;/h3&gt;
+        &lt;p class="project-subtitle"&gt;AI设计与创作平台&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    
+    <h4>效果演示：</h4>
+    <div class="demo-card">
+        <div class="demo-icon">
+            <img src="https://www.gstatic.com/devrel-devsite/prod/v118f0889d7b1c364222b64c7d205948c51f98c3b8c10b839fce1691e73d82c5e/ai-studio/images/lockup.svg" alt="Google AI Studio Logo" width="24" height="24">
+        </div>
+        <div class="demo-content">
+            <div class="demo-title">Google AI Studio</div>
+            <div class="demo-subtitle">AI设计与创作平台</div>
+        </div>
+    </div>
+    </div>
+    
+    <h3>方法二：使用背景图片（background-image）</h3>
+    <p>这种方法使用CSS的background-image属性设置图标，保持HTML结构简洁。</p>
+    
+    <div class="example">
+        <h4>HTML结构：</h4>
+        <pre><code>&lt;div class="project-header"&gt;
+    &lt;div class="project-icon google-studio-icon"&gt;&lt;/div&gt;
+    &lt;div&gt;
+        &lt;h3 class="project-title"&gt;Google AI Studio&lt;/h3&gt;
+        &lt;p class="project-subtitle"&gt;AI设计与创作平台&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    
+    <h4>CSS样式：</h4>
+    <pre><code>.project-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    background: #f5f5f5;
+}
+
+/* 为特定项目添加logo */
+.google-studio-icon {
+    background-image: url('https://www.gstatic.com/devrel-devsite/prod/v118f0889d7b1c364222b64c7d205948c51f98c3b8c10b839fce1691e73d82c5e/ai-studio/images/lockup.svg');
+    background-size: 24px 24px; /* 调整图片大小 */
+    background-position: center; /* 居中显示 */
+    background-repeat: no-repeat; /* 不重复 */
+}</code></pre>
+    
+    <h4>效果演示：</h4>
+    <div class="demo-card">
+        <div class="demo-icon" style="background-image: url('https://www.gstatic.com/devrel-devsite/prod/v118f0889d7b1c364222b64c7d205948c51f98c3b8c10b839fce1691e73d82c5e/ai-studio/images/lockup.svg'); background-size: 24px 24px; background-position: center; background-repeat: no-repeat;"></div>
+        <div class="demo-content">
+            <div class="demo-title">Google AI Studio</div>
+            <div class="demo-subtitle">AI设计与创作平台</div>
+        </div>
+    </div>
+    </div>
+    
+    <h3>方法三：使用SVG图标（推荐）</h3>
+    <p>SVG图标具有良好的可缩放性和清晰度，是网站logo的理想选择。</p>
+    
+    <div class="example">
+        <h4>HTML结构：</h4>
+        <pre><code>&lt;div class="project-header"&gt;
+    &lt;div class="project-icon"&gt;
+        &lt;svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"&gt;
+            &lt;!-- 这里是SVG代码 --&gt;
+            &lt;path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/&gt;
+        &lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+        &lt;h3 class="project-title"&gt;Google AI Studio&lt;/h3&gt;
+        &lt;p class="project-subtitle"&gt;AI设计与创作平台&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    
+    <h4>效果演示：</h4>
+    <div class="demo-card">
+        <div class="demo-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
+        </div>
+        <div class="demo-content">
+            <div class="demo-title">Google AI Studio</div>
+            <div class="demo-subtitle">AI设计与创作平台</div>
+        </div>
+    </div>
+    </div>
+    
+    <h2>具体步骤</h2>
+    
+    <h3>步骤1：准备图片或logo</h3>
+    <ul>
+        <li>使用网站官方logo（通常可以在网站的About或Press页面找到）</li>
+        <li>确保图片尺寸适中（推荐24x24或32x32像素）</li>
+        <li>优先使用SVG格式（清晰度高，文件小），其次是PNG格式（支持透明背景）</li>
+    </ul>
+    
+    <h3>步骤2：获取图片URL</h3>
+    <ul>
+        <li>如果是网络图片，复制图片的直接URL（以.jpg、.png、.svg等结尾）</li>
+        <li>如果是本地图片，需要先上传到网络服务器获取URL</li>
+    </ul>
+    
+    <h3>步骤3：修改HTML代码</h3>
+    <p>打开index.html文件，找到需要修改的项目卡片，使用上述方法之一替换emoji。</p>
+    
+    <div class="example">
+        <h4>修改前：</h4>
+        <pre><code>&lt;div class="project-icon"&gt;🎨&lt;/div&gt;</code></pre>
+        
+        <h4>修改后（使用img标签）：</h4>
+        <pre><code>&lt;div class="project-icon"&gt;
+    &lt;img src="https://www.gstatic.com/devrel-devsite/prod/v118f0889d7b1c364222b64c7d205948c51f98c3b8c10b839fce1691e73d82c5e/ai-studio/images/lockup.svg" alt="Google AI Studio Logo"&gt;
+&lt;/div&gt;</code></pre>
+    </div>
+    
+    <h2>实用技巧</h2>
+    
+    <div class="note">
+        <strong>提示1：</strong>为了确保图片在不同设备上显示正常，可以添加width和height属性控制图片大小。
+    </div>
+    
+    <div class="note">
+        <strong>提示2：</strong>为了提高可访问性，不要忘记添加alt属性，描述图片内容。
+    </div>
+    
+    <div class="note">
+        <strong>提示3：</strong>如果图片加载失败，可以添加onerror事件处理，显示备用内容。
+    </div>
+    
+    <div class="note">
+        <strong>提示4：</strong>对于多个卡片，可以创建一个CSS类库，方便统一管理所有logo样式。
+    </div>
+    
+    <h2>示例：为多个项目添加logo</h2>
+    
+    <pre><code>&lt;!-- CSS部分 -->
+&lt;style&gt;
+    /* 通用图标样式 */
+    .project-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        background: #f5f5f5;
+    }
+    
+    /* 为每个项目创建特定的logo样式 */
+    .google-studio-icon img {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .notebooklm-icon img {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .granola-icon img {
+        width: 24px;
+        height: 24px;
+    }
+&lt;/style&gt;
+
+&lt;!-- HTML部分 -->
+&lt;div class="projects-grid"&gt;
+    &lt;div class="project-card" data-href="https://aistudio.google.com/..."&gt;
+        &lt;div class="project-header"&gt;
+            &lt;div class="project-icon google-studio-icon"&gt;
+                &lt;img src="https://www.gstatic.com/devrel-devsite/prod/.../lockup.svg" alt="Google AI Studio Logo"&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+                &lt;h3 class="project-title"&gt;Google AI Studio&lt;/h3&gt;
+                &lt;p class="project-subtitle"&gt;AI设计与创作平台&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;!-- 其他卡片内容 -->
+    &lt;/div&gt;
+    
+    &lt;div class="project-card" data-href="https://notebooklm.google.com/..."&gt;
+        &lt;div class="project-header"&gt;
+            &lt;div class="project-icon notebooklm-icon"&gt;
+                &lt;img src="https://notebooklm.google.com/favicon.ico" alt="NotebookLM Logo"&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+                &lt;h3 class="project-title"&gt;NotebookLM&lt;/h3&gt;
+                &lt;p class="project-subtitle"&gt;Remix everything&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;!-- 其他卡片内容 -->
+    &lt;/div&gt;
+    
+    &lt;!-- 更多卡片 -->
+&lt;/div&gt;</code></pre>
+    
+    <h2>总结</h2>
+    
+    <p>将emoji替换为图片或网站logo是一个简单但有效的方法，可以提升网站的专业性和视觉吸引力。你可以根据自己的需求选择适合的方法：</p>
+    
+    <ul>
+        <li><strong>img标签：</strong>最简单直接，适合快速替换</li>
+        <li><strong>背景图片：</strong>保持HTML结构简洁，适合统一管理</li>
+        <li><strong>SVG图标：</strong>清晰度高，文件小，适合作为品牌logo</li>
+    </ul>
+    
+    <p>希望这个指南对你有所帮助！如果你有任何问题，请随时询问。</p>
+</body>
+</html>
