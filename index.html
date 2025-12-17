@@ -1,0 +1,971 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoho的实验室</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #8b5cf6;
+            --accent-color: #06b6d4;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        /* 确保网格布局中的卡片高度一致 */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        /* 确保描述内容区域充分展开 */
+        .project-description {
+            flex-grow: 1;
+            margin-bottom: 8px; /* 保持适当间距 */
+        }
+        
+        /* 项目卡片样式调整 - 确保标签和详情链接固定在底部 */
+        .project-tags {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: auto; /* 关键：将标签容器推到底部 */
+            padding-top: 12px; /* 适当的顶部内边距 */
+        }
+
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+    text-align: center;
+    padding: 60px 0 40px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    margin-bottom: 40px;
+    border-radius: 15px;
+    box-shadow: var(--shadow-lg);
+}
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .project-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+            border: 1px solid #f0f0f0;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            contain: layout style paint;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 确保文本选择正常工作 */
+        .project-card {
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            pointer-events: auto;
+        }
+        
+        .project-card * {
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            cursor: text;
+        }
+        
+        /* 确保只有详情链接是链接样式 */
+        .project-detail-link {
+            cursor: pointer;
+            pointer-events: auto;
+        }
+        
+        /* 确保选中文本有可见效果 */
+        ::selection {
+            background-color: rgba(99, 102, 241, 0.2);
+        }
+        
+        .project-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+        
+        /* 详情链接样式 */
+        .project-detail-link {
+            color: #6366f1; /* 紫色文字 */
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-left: auto;
+            white-space: nowrap;
+            margin-top: 4px;
+        }
+        .project-detail-link:hover {
+            text-decoration: underline;
+        }
+
+        /* 移除渐变条装饰 */
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .project-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 1.25rem;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        /* 确保favicon图片正确显示 */
+        .project-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: inherit;
+        }
+
+        .project-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .project-subtitle {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .project-description {
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px; /* 固定的4px间距 */
+        }
+
+        .tag {
+            background: #f0f0f0;
+            color: #666;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: none;
+        }
+        
+        .tag:hover {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .project-link:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .project-link::after {
+            content: "→";
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .project-link:hover::after {
+            transform: translateX(4px);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .project-card {
+                padding: 16px;
+            }
+            
+            .project-title {
+                font-size: 1.1rem;
+            }
+            
+            .project-description {
+                font-size: 0.9rem;
+            }
+            
+            /* 移动端标签样式优化 */
+            .tag {
+                padding: 1px 5px;
+                font-size: 0.6rem;
+                border-radius: 3px;
+            }
+            
+            .project-tags {
+                gap: 3px;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .project-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .project-card:nth-child(1) { animation-delay: 0.1s; }
+        .project-card:nth-child(2) { animation-delay: 0.2s; }
+        .project-card:nth-child(3) { animation-delay: 0.3s; }
+        .project-card:nth-child(4) { animation-delay: 0.4s; }
+        .project-card:nth-child(5) { animation-delay: 0.5s; }
+        .project-card:nth-child(6) { animation-delay: 0.6s; }
+        
+        /* Granola卡片标签链接样式 */
+        .project-card a {
+            text-decoration: none;
+            display: block;
+        }
+        
+        .project-card a:hover .project-tags {
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header" style="padding: 20px 0; height: 120px; display: flex; flex-direction: column; justify-content: center;">
+            <h1 style="margin-bottom: 0px;">Hoho的AI实验室</h1>
+            <p style="margin-top: 0;">探索创意与AI的无限可能，这里是我各种有趣AI项目的集合</p>
+        </header>
+
+        <div class="projects-grid">
+            <div class="project-card" data-href="portal_simulator.html">
+                <div class="project-header">
+                    <div class="project-icon">👴</div>
+                    <div>
+                        <h3 class="project-title">高龄领导办公模拟器</h3>
+                        <p class="project-subtitle">体验式设计研究</p>
+                    </div>
+                </div>
+                <p class="project-description">
+                    通过模拟高龄领导在办公场景中遇到的各种困难，帮助设计师更好地理解无障碍设计的重要性。
+                </p>
+                <div class="project-tags">
+                    <span class="tag">无障碍设计</span>
+                    <span class="tag">用户体验</span>
+                    <span class="tag">模拟器</span>
+                    <a href="portal_simulator.html" class="project-detail-link" target="_blank">详情</a>
+                </div>
+            </div>
+
+            <div class="project-card" data-href="stripe-bg-demo.html">
+                <div class="project-header">
+                    <div class="project-icon">🎨</div>
+                    <div>
+                        <h3 class="project-title">网页端暗纹bg</h3>
+                        <p class="project-subtitle">CSS条纹背景效果</p>
+                    </div>
+                </div>
+                <p class="project-description">
+                    展示不同粗细和颜色的斜条纹背景效果，提供可直接使用的CSS代码，无需切图即可实现精美的暗纹背景。
+                </p>
+                <div class="project-tags">
+                    <span class="tag">CSS</span>
+                    <span class="tag">背景效果</span>
+                    <span class="tag">条纹</span>
+                    <a href="stripe-bg-demo.html" class="project-detail-link" target="_blank">详情</a>
+                </div>
+            </div>
+
+            <div class="project-card" data-href="mac-violin.html">
+                <div class="project-header">
+                    <div class="project-icon">🎻</div>
+                    <div>
+                        <h3 class="project-title">Mac风格数字小提琴</h3>
+                        <p class="project-subtitle">复古音乐应用</p>
+                    </div>
+                </div>
+                <p class="project-description">
+                    采用经典Mac OS风格设计的数字小提琴应用，结合复古美学与现代交互。
+                </p>
+                <div class="project-tags">
+                    <span class="tag">音乐</span>
+                    <span class="tag">复古设计</span>
+                    <span class="tag">交互</span>
+                    <a href="mac-violin.html" class="project-detail-link" target="_blank">详情</a>
+                </div>
+            </div>
+
+            <div class="project-card" data-href="mac-piano.html">
+                <div class="project-header">
+                    <div class="project-icon">🎹</div>
+                    <div>
+                        <h3 class="project-title">Mac风格钢琴</h3>
+                        <p class="project-subtitle">数字钢琴应用</p>
+                    </div>
+                </div>
+                <p class="project-description">
+                    经典Mac OS风格的虚拟钢琴，提供沉浸式的音乐创作体验。
+                </p>
+                <div class="project-tags">
+                    <span class="tag">音乐</span>
+                    <span class="tag">钢琴</span>
+                    <span class="tag">Mac风格</span>
+                    <a href="mac-piano.html" class="project-detail-link" target="_blank">详情</a>
+                </div>
+            </div>
+            
+            <div class="project-card" data-href="hand-drawn-portfolio.html">
+                <div class="project-header">
+                    <div class="project-icon">🎨</div>
+                    <div>
+                        <h3 class="project-title">手绘风格作品集</h3>
+                        <p class="project-subtitle">创意设计展示</p>
+                    </div>
+                </div>
+                <p class="project-description">
+                    采用手绘风格设计的作品集封面，展现独特的艺术创意和设计理念。
+                </p>
+                <div class="project-tags">
+                    <span class="tag">作品集</span>
+                    <span class="tag">手绘风格</span>
+                    <span class="tag">创意设计</span>
+                    <a href="hand-drawn-portfolio.html" class="project-detail-link" target="_blank">详情</a>
+                </div>
+            </div>
+
+            <div class="project-card" data-href="calendar.html">
+                <div class="project-header">
+                    <div class="project-icon">📅</div>
+                    <div>
+                        <h3 class="project-title">日历应用</h3>
+                        <p class="project-subtitle">时间管理工具</p>
+                    </div>
+                </div>
+                <p class="project-description">
+                    现代化的日历应用，支持月视图和周视图，提供直观的时间管理体验。
+                </p>
+                <div class="project-tags">
+                    <span class="tag">日历</span>
+                    <span class="tag">时间管理</span>
+                    <span class="tag">工具</span>
+                    <a href="calendar.html" class="project-detail-link" target="_blank">详情</a>
+                </div>
+            </div>
+        </div>
+
+        <section class="header" style="padding: 20px 0; height: 120px; display: flex; flex-direction: column; justify-content: center; margin-top: 40px;">
+            <h1 style="margin-bottom: 5px; line-height: 1.2;">沉淀与实践</h1>
+            <p style="margin-top: 0;">我分享的AI学习笔记、深度文章与实用教程等干货</p>
+        </section>
+        
+        <div class="container" style="margin-top: 40px;">
+            <!-- 知识库介绍 -->
+            <div style="margin-bottom: 60px; text-align: center;">
+                <!-- 介绍文本已删除 -->
+            </div>
+            
+            <!-- AI基础概念 -->
+            <section style="margin-bottom: 40px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2 style="font-size: 2rem; color: var(--primary-color); margin: 0; text-align: left; font-weight: 700; line-height: 1.2;">How I AI</h2>
+                <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=Mzg2MzU1ODIxNw==&action=getalbum&album_id=4000647027351535636#wechat_redirect" style="color: var(--secondary-color); text-decoration: none; font-size: 1rem;" target="_blank">更多 &gt;</a>
+                </div>
+
+                
+                <div class="projects-grid" style="grid-template-columns: repeat(3, minmax(300px, 1fr));">
+                    <div class="project-card" data-href="https://www.notion.so/Hoho-s-260a76c7fdd38091aa2ff87e1bee50d5">
+                        <div class="project-header">
+                            <div class="project-icon">📝</div>
+                            <div>
+                                <h3 class="project-title">Hoho的提示库</h3>
+                                <p class="project-subtitle">AI提示词资源库</p>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            收集整理的AI提示词资源库，包含各类场景下的有效提示词模板，帮助你更高效地使用AI工具。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">提示词</span>
+                            <span class="tag">AI资源</span>
+                            <span class="tag">效率工具</span>
+                            <a href="https://www.notion.so/Hoho-s-260a76c7fdd38091aa2ff87e1bee50d5" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+
+                    <div class="project-card" data-href="https://www.notion.so/22ca76c7fdd38097941dc45de73fa268?v=22ca76c7fdd3807ab4f5000ce4008553">
+                        <div class="project-header">
+                            <div class="project-icon">🧠</div>
+                            <div>
+                                <h3 class="project-title">2025年的AI大脑</h3>
+                                <p class="project-subtitle">未来人工智能发展展望</p>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            探索2025年AI技术的发展趋势与应用前景，分析人工智能如何重塑我们的生活和工作方式。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">AI未来</span>
+                            <span class="tag">技术趋势</span>
+                            <span class="tag">人工智能</span>
+                            <a href="https://www.notion.so/22ca76c7fdd38097941dc45de73fa268?v=22ca76c7fdd3807ab4f5000ce4008553" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+
+                    <div class="project-card" data-href="https://mp.weixin.qq.com/s/qxq_64zMN3PdVGYGT6cHKA">
+                        <div class="project-header">
+                            <div class="project-icon">🔍</div>
+                            <div>
+                                <h3 class="project-title">AI含量透明度的方向分析</h3>
+                                <p class="project-subtitle">内容创作的未来趋势</p>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            分析内容创作中AI含量透明化的三个方向：创作者标注、读者监督与反馈、分享AI创作方法。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">AI透明度</span>
+                            <span class="tag">内容创作</span>
+                            <span class="tag">AI伦理</span>
+                            <a href="https://mp.weixin.qq.com/s/qxq_64zMN3PdVGYGT6cHKA" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+
+                    
+
+                    
+
+                    
+
+                    
+
+                </div>
+            </section>
+            
+            <!-- 实践教程 -->
+            <section style="margin-bottom: 40px;">
+                <h2 style="font-size: 2rem; color: var(--primary-color); margin-bottom: 15px; text-align: left; font-weight: 700; line-height: 1.2;">实践教程</h2>
+
+                
+                <div class="projects-grid" style="grid-template-columns: repeat(3, minmax(300px, 1fr));">
+                    
+
+                    
+                    <div class="project-card" data-href="https://mp.weixin.qq.com/s?__biz=Mzg2MzU1ODIxNw==&mid=2247485154&idx=1&sn=8c8d6555a77726c847b10239c7d5dc11&chksm=ce7789c4f90000d2cfe06f8cdd16f8fc77cbc5ccf5f42579820f4a7a9f9cdb82053a10da4e81&scene=178&cur_album_id=4000647027351535636&search_click_id=#rd">
+                        <div class="project-header">
+                            <div class="project-icon">�️</div>
+                            <div>
+                                <h3 class="project-title">Cursor试用2h后，我听懂了Andrej Karpathy在YC的演讲</h3>
+                                <p class="project-subtitle">体验AI编程工具的实战感受</p>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            探索Cursor的实际体验，帮助理解Andrej Karpathy关于AI产品的前沿观点，开启软件3.0时代的思考。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Cursor</span>
+                            <span class="tag">Andrej Karpathy</span>
+                            <span class="tag">AI编程</span>
+                            <a href="https://mp.weixin.qq.com/s?__biz=Mzg2MzU1ODIxNw==&mid=2247485154&idx=1&sn=8c8d6555a77726c847b10239c7d5dc11&chksm=ce7789c4f90000d2cfe06f8cdd16f8fc77cbc5ccf5f42579820f4a7a9f9cdb82053a10da4e81&scene=178&cur_album_id=4000647027351535636&search_click_id=#rd" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-href="https://mp.weixin.qq.com/s/0WQHIOZKlL4TAZxB1PHv5w">
+                        <div class="project-header">
+                            <div class="project-icon"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/wJwFEPnyIYPhCibIREGgyE92hEeCvMP9oeHibo6ubNvXvVLsXtXmyJlp8ds8n2d5qkJibHY8icKfbic2I2iaK2ZU3Wmg/0?wx_fmt=jpeg" alt="设计师如何用Cursor" style="width: 100%; height: 100%; object-fit: cover;"></div>
+                            <div>
+                                <h3 class="project-title">设计师如何用Cursor</h3>
+                                <p class="project-subtitle">AI辅助设计工作流程</p>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            分享设计师使用Cursor的实战经验，包括设计方向探索、复杂交互实现和AI方法应用技巧。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">设计师</span>
+                            <span class="tag">Cursor</span>
+                            <span class="tag">AI设计</span>
+                            <a href="https://mp.weixin.qq.com/s/0WQHIOZKlL4TAZxB1PHv5w" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-href="https://mp.weixin.qq.com/s/b5fvc9a16Zh42lfUWVRz4w">
+                        <div class="project-header">
+                            <div class="project-icon">�</div>
+                            <div>
+                                <h3 class="project-title">工作中如何用AI辅助做埋点</h3>
+                                <p class="project-subtitle">设计师的数据驱动实践</p>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            分享设计师利用AI辅助完成埋点工作的方法，包括生成埋点事件表和产品行为漏斗的技巧。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">数据埋点</span>
+                            <span class="tag">AI辅助</span>
+                            <span class="tag">用户体验</span>
+                            <a href="https://mp.weixin.qq.com/s/b5fvc9a16Zh42lfUWVRz4w" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-href="https://mp.weixin.qq.com/s?__biz=Mzg2MzU1ODIxNw==&mid=2247485376&idx=1&sn=e67618d80f186513ae4f346b7ce22582&chksm=ce7788e6f90001f0c129cab3c332247f9231b8232bbfe30e7362f37c23a5af9e3637766936f5&scene=178&cur_album_id=4000647027351535636&search_click_id=#rd">
+                        <div class="project-header">
+                            <div class="project-icon">�️</div>
+                            <div>
+                                <h3 class="project-title">设计师用AI生成：样式代码</h3>
+                                <p class="project-subtitle">从需求到代码的AI辅助流程</p>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            使用AI（豆包和Cursor）快速生成CSS样式代码的实用流程，包括生成斜条纹背景、参数调整和效果预览。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">AI辅助设计</span>
+                            <span class="tag">CSS生成</span>
+                            <span class="tag">设计师工作流</span>
+                            <a href="https://mp.weixin.qq.com/s?__biz=Mzg2MzU1ODIxNw==&mid=2247485376&idx=1&sn=e67618d80f186513ae4f346b7ce22582&chksm=ce7788e6f90001f0c129cab3c332247f9231b8232bbfe30e7362f37c23a5af9e3637766936f5&scene=178&cur_album_id=4000647027351535636&search_click_id=#rd" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-href="https://mp.weixin.qq.com/s/XA6Yl1EZ6JMTEteqKEe-pA">
+                        <div class="project-header">
+                            <div class="project-icon"><img src="https://mmbiz.qpic.cn/mmbiz_jpg/wJwFEPnyIYMpFhpnECOjlwdrQyM4Tq89HsuC9oXKMu9FrbXK3q7IJKxreOk4OicGpro4YkUedfkJetCib7nJnvCQ/0?wx_fmt=jpeg" alt="解锁谷歌Notebook LM" style="width: 100%; height: 100%; object-fit: cover;"></div>
+                            <div>
+                                <h3 class="project-title">解锁谷歌Notebook LM，生成播客、面试神器、读外文书</h3>
+                                <p class="project-subtitle">AI辅助学习与工作工具</p>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            探索谷歌Notebook LM的核心功能：文档生成播客、面试辅助内容、快速拆书学习，以及其数据安全和多模态优势。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Notebook LM</span>
+                            <span class="tag">AI工具</span>
+                            <span class="tag">播客生成</span>
+                            <a href="https://mp.weixin.qq.com/s/XA6Yl1EZ6JMTEteqKEe-pA" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+            
+            <!-- 深度研究 -->
+            <section style="margin-bottom: 40px;">
+                <h2 style="font-size: 2rem; color: var(--primary-color); margin-bottom: 15px; text-align: left; font-weight: 700; line-height: 1.2;">深度研究</h2>
+
+                
+                <div class="projects-grid" style="grid-template-columns: repeat(3, minmax(300px, 1fr));">
+                    <div class="project-card" data-href="https://mp.weixin.qq.com/s?__biz=Mzg2MzU1ODIxNw==&mid=2247485172&idx=1&sn=8ea7ca300b9f15cbc4a7d8fa20775248&chksm=ce7789d2f90000c4d8240facb507ac5811f1df98abfe2d4aeaa389f0f574f69ac87bd27043a6&scene=178&cur_album_id=4000647027351535636&search_click_id=#rd">
+                        <div class="project-header">
+                            <div class="project-icon">🧠</div>
+                            <div>
+                                <h3 class="project-title">Andrej Karpathy到底讲了什么引发震惊</h3>
+                                <p class="project-subtitle">YC演讲深度解析</p>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            深入剖析Andrej Karpathy在YC AI Startup School演讲中的核心观点，解析为何引发AI领域广泛讨论。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Andrej Karpathy</span>
+                            <span class="tag">YC</span>
+                            <span class="tag">AI演讲</span>
+                            <a href="https://mp.weixin.qq.com/s?__biz=Mzg2MzU1ODIxNw==&mid=2247485172&idx=1&sn=8ea7ca300b9f15cbc4a7d8fa20775248&chksm=ce7789d2f90000c4d8240facb507ac5811f1df98abfe2d4aeaa389f0f574f69ac87bd27043a6&scene=178&cur_album_id=4000647027351535636&search_click_id=#rd" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-href="https://mp.weixin.qq.com/s/VfeKWFWfHuyPP4SDBOQDBQ">
+                        <div class="project-header">
+                            <div class="project-icon">🎙️</div>
+                            <div>
+                                <h3 class="project-title">OpenAI的现状及未来 | AI脱口秀《Hard Fork》嘉宾Sam Altman</h3>
+                                <p class="project-subtitle">Sam Altman分享AI发展、就业影响与监管思考</p>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            AI已过"事件视界"，迈向超级智能；探讨AI对就业的影响、监管框架构建、用户心理影响及与孩子的关系等话题。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">OpenAI</span>
+                            <span class="tag">Sam Altman</span>
+                            <span class="tag">AI发展</span>
+                            <a href="https://mp.weixin.qq.com/s/VfeKWFWfHuyPP4SDBOQDBQ" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-href="https://mp.weixin.qq.com/s?__biz=Mzg2MzU1ODIxNw==&mid=2247485183&idx=1&sn=690819dbbfcf2bd2d2d9e79664b22369&chksm=ce7789d9f90000cfbd04478c1dbf1677b88ab8602d824111ce82d5dbae54ef76d252ffa5423f&scene=178&cur_album_id=4000647027351535636&search_click_id=#rd">
+                        <div class="project-header">
+                            <div class="project-icon">🌌</div>
+                            <div>
+                                <h3 class="project-title">AI界 & 天体物理学界的奇点｜Sam Altman《温和的奇点》</h3>
+                                <p class="project-subtitle">多学科视角下的AI发展</p>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            对比Sam Altman提出的AI温和奇点理论与天体物理学中的奇点概念，探讨AI技术发展的潜在路径。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Sam Altman</span>
+                            <span class="tag">奇点理论</span>
+                            <span class="tag">AI发展</span>
+                            <a href="https://mp.weixin.qq.com/s?__biz=Mzg2MzU1ODIxNw==&mid=2247485183&idx=1&sn=690819dbbfcf2bd2d2d9e79664b22369&chksm=ce7789d9f90000cfbd04478c1dbf1677b88ab8602d824111ce82d5dbae54ef76d252ffa5423f&scene=178&cur_album_id=4000647027351535636&search_click_id=#rd" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+                    
+
+
+                </div>
+            </section>
+        </div>
+        
+        <section class="header" style="padding: 20px 0; height: 120px; display: flex; flex-direction: column; justify-content: center; margin-top: 40px;">
+            <h1 style="margin-bottom: 5px;">AI资源库</h1>
+            <p style="margin-top: 0;">免费、非技术人员友好、实用</p>
+        </section>
+        
+        <div class="container" style="margin-top: 40px;">
+            
+            <!-- 精选视频 -->
+            <section style="margin-bottom: 40px;">
+                <h2 style="font-size: 2rem; color: var(--primary-color); margin-bottom: 15px; text-align: left; font-weight: 700; line-height: 1.2;">精选视频资源</h2>
+
+                
+                <div class="projects-grid">
+                    <div class="project-card" data-href="https://www.youtube.com/playlist?list=PLuMcoKK9mKgHtW_o9h5sGO2vXrffKHwJL">
+                        <div class="project-header">
+                            <div class="project-icon">
+                                <img src="https://i.ytimg.com/pl_c/PLuMcoKK9mKgHtW_o9h5sGO2vXrffKHwJL/studio_square_thumbnail.jpg?sqp=CNTVuMkG-oaymwEICNAFENAFSFqi85f_AwYIs97csgY=&rs=AOn4CLAmGTRKLSchmYmIDWzWR6aCBEtdbw" alt="AI & I">
+                            </div>
+                            <div>
+                                <h3 class="project-title">AI & I</h3>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            世界上最聪明的人如何运用AI。每周，我都会采访创始人、电影制作人、作家、投资者等各界人士，探讨他们如何在工作和生活中使用诸如ChatGPT、Claude和Midjourney等AI工具。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">YouTube</span>
+                            <span class="tag">访谈</span>
+                            <span class="tag">AI应用</span>
+                            <a href="https://www.youtube.com/playlist?list=PLuMcoKK9mKgHtW_o9h5sGO2vXrffKHwJL" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-href="https://www.lennysnewsletter.com/">
+                        <div class="project-header">
+                            <div class="project-icon">
+                                <img src="https://substackcdn.com/image/fetch/$s_!8MSN!,w_80,h_80,c_fill,f_auto,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F441213db-4824-4e48-9d28-a3a18952cbfc_592x592.png" alt="Lenny's Podcast">
+                            </div>
+                            <div>
+                                <h3 class="project-title">Lenny's Podcast</h3>
+                                <p class="project-subtitle">产品与增长的深度对话</p>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            与顶尖产品经理和创始人的深度对话，探讨产品策略、用户增长、AI应用等话题，获取前沿行业洞察。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">产品</span>
+                            <span class="tag">增长</span>
+                            <span class="tag">访谈</span>
+                            <a href="https://www.lennysnewsletter.com/" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-href="https://excalidraw.com/">
+                        <div class="project-header">
+                            <div class="project-icon">
+                                <img src="https://www.google.com/s2/favicons?domain=excalidraw.com&sz=32" alt="Excalidraw">
+                            </div>
+                            <div>
+                                <h3 class="project-title">Excalidraw</h3>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            手绘风格的在线白板工具，支持协作绘图，非常适合概念设计、流程图绘制和头脑风暴。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">在线白板</span>
+                            <span class="tag">手绘风格</span>
+                            <span class="tag">协作工具</span>
+                            <a href="https://excalidraw.com/" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+                    
+
+                    
+
+                </div>
+            </section>
+            
+            <!-- 值得关注的人 -->
+            <section style="margin-bottom: 40px;">
+                <h2 style="font-size: 2rem; color: var(--primary-color); margin-bottom: 15px; text-align: left; font-weight: 700; line-height: 1.2;">值得关注的AI专家</h2>
+
+                
+                <div class="projects-grid">
+                    <div class="project-card" data-href="https://zara.faces.site/ai">
+                        <div class="project-header">
+                            <div class="project-icon">
+                                <img src="https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo31fl1gsq2g40049mmbftcr46vum9nk9o?imageView2/2/w/540/format/webp|imageMogr2/strip2" alt="Zara's AI learning library">
+                            </div>
+                            <div>
+                                <h3 class="project-title">Zara's AI learning library</h3>
+                                <p class="project-subtitle">AI学习资源库</p>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            提供丰富的AI学习资源，从入门到高级的全面学习路径和实践教程。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">学习</span>
+                            <span class="tag">资源</span>
+                            <span class="tag">教程</span>
+                            <a href="https://zara.faces.site/ai" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+                    
+
+                </div>
+            </section>
+            
+
+            
+            <!-- 推荐AI产品 -->
+            <section style="margin-bottom: 40px;">
+                <h2 style="font-size: 2rem; color: var(--primary-color); margin-bottom: 15px; text-align: left; font-weight: 700; line-height: 1.2;">我喜欢的AI产品</h2>
+                
+                <div class="projects-grid">
+                    <div class="project-card" data-href="https://aistudio.google.com/apps/drive/1AV68dA7BV0W-j6GKLxTR-1DxR2u9nv20?showPreview=true&showAssistant=true">
+                        <div class="project-header">
+                            <div class="project-icon">
+                                <img src="https://gd-hbimg.huaban.com/0e2795e51794193e2378246b4a17c9cb346c6b074bbb-k1rTmV_fw658" alt="Google AI Studio">
+                            </div>
+                            <div>
+                                <h3 class="project-title">Google AI Studio</h3>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            Google的AI设计与创作平台，提供强大的AI辅助设计工具，帮助用户快速创建和编辑设计作品。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Google</span>
+                            <span class="tag">AI设计</span>
+                            <span class="tag">创作工具</span>
+                            <a href="https://aistudio.google.com/apps/drive/1AV68dA7BV0W-j6GKLxTR-1DxR2u9nv20?showPreview=true&showAssistant=true" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-href="https://notebooklm.google/">
+                        <div class="project-header">
+                            <div class="project-icon">
+                                <img src="https://gd-hbimg.huaban.com/0e2795e51794193e2378246b4a17c9cb346c6b074bbb-k1rTmV_fw658" alt="NotebookLM">
+                            </div>
+                            <div>
+                                <h3 class="project-title">NotebookLM</h3>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            Google的AI笔记本工具，帮助用户组织和分析笔记、文档内容，提供智能摘要和见解生成。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">AI助手</span>
+                            <span class="tag">知识管理</span>
+                            <span class="tag">Google</span>
+                            <a href="https://notebooklm.google/" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-href="https://www.granola.ai">
+                        <div class="project-header">
+                            <div class="project-icon">
+                                <img src="https://www.google.com/s2/favicons?domain=granola.ai&sz=32" alt="Granola">
+                            </div>
+                            <div>
+                                <h3 class="project-title">Granola</h3>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            强大的会议笔记AI助手，帮助用户将原始会议记录转化为结构化、易于理解的笔记，支持多平台使用，无需会议机器人加入通话。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">AI助手</span>
+                            <span class="tag">会议笔记</span>
+                            <span class="tag">实时转录</span>
+                            <a href="https://www.granola.ai" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-href="https://youmind.com/boards/019aa684-4993-7c92-87e1-c3e218aaf21b?craft-id=019aa695-c2a1-732d-b3f0-e97b40d3aa90">
+                        <div class="project-header">
+                            <div class="project-icon">
+                                <img src="https://www.google.com/s2/favicons?domain=youmind.com&sz=32" alt="YouMind">
+                            </div>
+                            <div>
+                                <h3 class="project-title">YouMind</h3>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            强大的AI创作智能平台，提供智能创作助手功能，帮助用户高效进行内容创作和思维整理。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">AI创作</span>
+                            <span class="tag">智能助手</span>
+                            <span class="tag">内容生成</span>
+                            <a href="https://youmind.com/boards/019aa684-4993-7c92-87e1-c3e218aaf21b?craft-id=019aa695-c2a1-732d-b3f0-e97b40d3aa90" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-href="https://tldw.us/">
+                        <div class="project-header">
+                            <div class="project-icon">
+                                <img src="https://www.google.com/s2/favicons?domain=tldw.us&sz=32" alt="TLDW">
+                            </div>
+                            <div>
+                                <h3 class="project-title">TLDW</h3>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            Too Long; Didn't Watch - 快速生成视频高亮片段，让你在5分钟内消费1小时的视频内容，高效学习。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">视频总结</span>
+                            <span class="tag">AI助手</span>
+                            <span class="tag">效率工具</span>
+                            <a href="https://tldw.us/" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <footer class="footer">
+            <p>&copy; 2024 Hoho的实验室. 探索创意，创造价值.</p>
+        </footer>
+    </div>
+    <script>
+        // 为所有带有data-href属性的卡片的图标添加点击事件
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.project-card[data-href]');
+            cards.forEach(card => {
+                // 移除卡片的指针样式
+                card.style.cursor = 'default';
+                
+                // 为项目图标添加点击事件
+                const icon = card.querySelector('.project-icon');
+                if (icon) {
+                    icon.style.cursor = 'pointer';
+                    icon.addEventListener('click', function() {
+                        const href = card.getAttribute('data-href');
+                        if (href) {
+                            window.open(href, '_blank');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
