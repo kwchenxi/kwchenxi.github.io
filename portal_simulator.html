@@ -8,10 +8,25 @@
   <style>
     /* ===== 设计令牌 （现代化样式更新）==== */
     :root {
-      /* 颜色 - 更现代的调色板 */
-      --blue-primary: #4598F0;
-      --blue-light: #e6f2ff;
-      --blue-dark: #3477b3;
+      /* 颜色 - 统一的调色板 */
+      --primary-color: #4598F0;
+      --primary-light: #e6f2ff;
+      --primary-dark: #3477b3;
+      --secondary-color: #6B7280;
+      --secondary-light: #F3F4F6;
+      --secondary-dark: #374151;
+      
+      --background-color: #FFFFFF;
+      --surface-color: #F9FAFB;
+      --text-color: #111827;
+      --text-secondary: #6B7280;
+      --border-color: #E5E7EB;
+      
+      --success-color: #10B981;
+      --warning-color: #F97316;
+      --error-color: #EF4444;
+      --info-color: #3B82F6;
+      
       --gray-100: #f3f4f6;
       --gray-200: #e5e7eb;
       --gray-300: #d1d5db;
@@ -21,17 +36,14 @@
       --gray-700: #374151;
       --gray-900: #111827;
       --white: #ffffff;
-      --red-500: #ef4444;
-      --orange-500: #f97316;
-      --green-500: #10b981;
       
-      /* 阴影 - 更现代的分层阴影 */
+      /* 阴影 - 统一的分层阴影 */
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
       --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
       
-      /* 圆角 - 更一致的圆角规范 */
+      /* 圆角 - 统一的圆角规范 */
       --radius-sm: 0.25rem;
       --radius-md: 0.5rem;
       --radius-lg: 0.75rem;
@@ -53,8 +65,8 @@
     
     body {
       font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--gray-100);
-      color: var(--gray-900);
+      background: var(--surface-color);
+      color: var(--text-color);
       line-height: 1.6;
     }
     
@@ -130,19 +142,19 @@
       left: 50%;
       width: 0;
       height: 2px;
-      background: var(--blue-primary);
+      background: var(--primary-color);
       transition: all var(--transition-normal);
       transform: translateX(-50%);
     }
     
     .nav-tabs a:hover {
       background: var(--gray-100);
-      color: var(--blue-primary);
+      color: var(--primary-color);
     }
     
     .nav-tabs a.active {
       background: var(--white);
-      color: var(--blue-primary);
+      color: var(--primary-color);
       box-shadow: var(--shadow-sm);
     }
     
@@ -162,8 +174,8 @@
     }
     
     .search-input:focus {
-      border-color: var(--blue-primary);
-      box-shadow: 0 0 0 3px var(--blue-light);
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px var(--primary-light);
     }
     
     /* 主区域等高布局 - 支持滚动 */
@@ -215,7 +227,7 @@
       left: 0;
       right: 0;
       height: 4px;
-      background: linear-gradient(90deg, var(--blue-primary), var(--blue-dark));
+      background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
       transform: translateX(-100%);
       transition: transform var(--transition-normal);
     }
@@ -304,7 +316,7 @@
     
     .tag-important {
       background: rgba(59, 130, 246, 0.15);
-      color: var(--blue-primary) !important;
+      color: var(--primary-color) !important;
       border: 1px solid rgba(59, 130, 246, 0.3);
     }
     
@@ -344,7 +356,7 @@
     
     .step-card:hover {
       background: var(--white);
-      border-color: var(--blue-primary);
+      border-color: var(--primary-color);
       box-shadow: var(--shadow-md);
       transform: translateY(-2px);
     }
@@ -547,7 +559,7 @@
     
     .bar-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--blue-primary), var(--blue-dark));
+      background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
       border-radius: var(--radius-full);
       transition: width var(--transition-fast);
       position: relative;
@@ -646,16 +658,16 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: var(--blue-primary);
+      background: var(--primary-color);
       transform: translateX(-100%);
       transition: transform var(--transition-normal);
     }
     
     .app-item:hover {
       transform: translateY(-4px);
-      border-color: var(--blue-primary);
+      border-color: var(--primary-color);
       box-shadow: var(--shadow-md);
-      color: var(--blue-primary);
+      color: var(--primary-color);
     }
     
     .app-item:hover::before {

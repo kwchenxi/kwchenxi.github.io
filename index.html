@@ -5,6 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hoho的实验室</title>
     <style>
+        /* 页面加载动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 页面元素加载动画 */
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* 脉动动画用于强调元素 */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* 页面加载效果 */
+        body {
+            animation: fadeIn 0.8s ease-in;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,19 +42,276 @@
         }
 
         :root {
-            --primary-color: #6366f1;
-            --primary-dark: #4f46e5;
+            /* 主色调使用蓝色系，与用户偏好的#4598F0保持一致 */
+            --primary-color: #4598F0;
+            --primary-dark: #3477b3;
+            --primary-light: #6eb6ff;
+            /* 辅助色使用紫色系，增加视觉层次感 */
             --secondary-color: #8b5cf6;
+            --secondary-dark: #7c3aed;
+            --secondary-light: #a78bfa;
+            /* 强调色使用青色系，用于交互元素 */
             --accent-color: #06b6d4;
+            --accent-dark: #0891b2;
+            --accent-light: #22d3ee;
+            /* 中性色系统，提供清晰的视觉层次 */
             --background: #f8fafc;
             --surface: #ffffff;
             --text-primary: #1e293b;
             --text-secondary: #64748b;
+            --text-muted: #94a3b8;
             --border: #e2e8f0;
+            --border-light: #f1f5f9;
+            --border-dark: #cbd5e1;
+            /* 阴影系统，提供深度感 */
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
             --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+            /* 间距系统，确保一致的留白 */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+            --spacing-3xl: 64px;
+            /* 过渡效果，提供流畅的交互体验 */
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        /* Neo Brutalism风格变量 */
+        :root.neo-brutalism {
+            --primary-color: #ff3e00;
+            --primary-dark: #e03600;
+            --primary-light: #ff6a33;
+            --secondary-color: #00d4ff;
+            --secondary-dark: #00b8e6;
+            --secondary-light: #33e0ff;
+            --accent-color: #ffdd00;
+            --accent-dark: #e6c500;
+            --accent-light: #ffe633;
+            --background: #ffffff;
+            --surface: #ffffff;
+            --text-primary: #000000;
+            --text-secondary: #333333;
+            --text-muted: #666666;
+            --border: #000000;
+            --border-light: #333333;
+            --border-dark: #000000;
+            --shadow-sm: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+            --shadow-md: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+            --shadow-lg: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+            --shadow-xl: 10px 10px 0px 0px rgba(0, 0, 0, 1);
+            --shadow-2xl: 12px 12px 0px 0px rgba(0, 0, 0, 1);
+        }
+
+        /* Neo Brutalism全局样式 */
+        :root.neo-brutalism body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+        }
+
+        /* Neo Brutalism头部样式 */
+        :root.neo-brutalism .header {
+            background: var(--primary-color);
+            color: white;
+            border: 4px solid var(--border);
+            border-radius: 0;
+            box-shadow: var(--shadow-lg);
+            padding: 32px 0;
+            height: auto;
+        }
+
+        :root.neo-brutalism .header h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            text-shadow: none;
+            animation: none;
+        }
+
+        :root.neo-brutalism .header p {
+            font-size: 1.4rem;
+            font-weight: 600;
+            opacity: 1;
+        }
+
+        /* Neo Brutalism项目卡片样式 */
+        :root.neo-brutalism .project-card {
+            background: var(--surface);
+            border: 4px solid var(--border);
+            border-radius: 0;
+            box-shadow: var(--shadow-md);
+            padding: 24px;
+            transition: all 0.2s ease;
+            background: var(--surface);
+        }
+
+        :root.neo-brutalism .project-card:hover {
+            transform: translate(4px, 4px);
+            box-shadow: var(--shadow-sm);
+            border-color: var(--primary-color);
+        }
+
+        :root.neo-brutalism .project-header {
+            margin-bottom: 16px;
+        }
+
+        :root.neo-brutalism .project-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 0;
+            border: 3px solid var(--border);
+            background: var(--accent-color);
+            color: var(--text-primary);
+            font-size: 2rem;
+        }
+
+        :root.neo-brutalism .project-title {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        :root.neo-brutalism .project-subtitle {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        :root.neo-brutalism .project-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        /* Neo Brutalism标签样式 */
+        :root.neo-brutalism .tag {
+            background: var(--secondary-color);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 0;
+            font-size: 0.85rem;
+            font-weight: 800;
+            border: 3px solid var(--border);
+            box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 1);
+            transition: all 0.2s ease;
+        }
+
+        :root.neo-brutalism .tag:hover {
+            background: var(--accent-color);
+            color: var(--text-primary);
+            border-color: var(--border);
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px 0px rgba(0, 0, 0, 1);
+        }
+
+        /* Neo Brutalism详情链接样式 */
+        :root.neo-brutalism .project-detail-link {
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 0;
+            font-size: 0.9rem;
+            font-weight: 800;
+            border: 3px solid var(--border);
+            box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 1);
+            transition: all 0.2s ease;
+            margin-left: 8px;
+        }
+
+        :root.neo-brutalism .project-detail-link:hover {
+            background: var(--primary-dark);
+            color: white;
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px 0px rgba(0, 0, 0, 1);
+        }
+
+        :root.neo-brutalism .project-detail-link::after {
+            content: "→";
+            margin-left: 4px;
+        }
+
+        /* Neo Brutalism按钮样式 */
+        :root.neo-brutalism .project-link {
+            background: var(--primary-color);
+            color: white;
+            border: 4px solid var(--border);
+            border-radius: 0;
+            box-shadow: var(--shadow-md);
+            padding: 12px 24px;
+            font-weight: 800;
+            transition: all 0.2s ease;
+        }
+
+        :root.neo-brutalism .project-link:hover {
+            transform: translate(3px, 3px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Neo Brutalism页脚样式 */
+        :root.neo-brutalism .footer {
+            background: var(--secondary-color);
+            color: var(--text-primary);
+            border-top: 4px solid var(--border);
+            padding: 32px 0;
+            margin-top: 40px;
+        }
+
+        :root.neo-brutalism .footer p {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        /* Neo Brutalism响应式设计 */
+        @media (max-width: 768px) {
+            :root.neo-brutalism .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            :root.neo-brutalism .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+        }
+
+        /* 版本切换按钮样式 */
+        .version-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 8px;
+        }
+
+        .version-btn {
+            padding: 10px 20px;
+            border: 3px solid var(--border);
+            border-radius: 0;
+            background: var(--surface);
+            color: var(--text-primary);
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        }
+
+        .version-btn:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+        }
+
+        .version-btn.active {
+            background: var(--primary-color);
+            color: white;
         }
 
         /* 确保网格布局中的卡片高度一致 */
@@ -89,12 +376,12 @@
         }
 
         .project-card {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            transition: all 0.2s ease;
-            border: 1px solid #f0f0f0;
+            background: var(--surface);
+            border-radius: 16px;
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+            border: 1px solid var(--border-light);
             text-decoration: none;
             color: inherit;
             display: flex;
@@ -104,6 +391,8 @@
             contain: layout style paint;
             position: relative;
             overflow: hidden;
+            /* 添加轻微的背景渐变，增加视觉深度 */
+            background: linear-gradient(135deg, var(--surface) 0%, #fafbfc 100%);
         }
         
         /* 确保文本选择正常工作 */
@@ -135,22 +424,40 @@
         }
         
         .project-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-light);
         }
         
         /* 详情链接样式 */
         .project-detail-link {
-            color: #6366f1; /* 紫色文字 */
+            color: var(--primary-color);
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 500;
             margin-left: auto;
             white-space: nowrap;
             margin-top: 4px;
+            padding: 4px 12px;
+            border-radius: 16px;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
         .project-detail-link:hover {
-            text-decoration: underline;
+            background: var(--primary-color);
+            color: var(--surface);
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+        .project-detail-link::after {
+            content: "→";
+            font-size: 0.8rem;
+            transition: transform var(--transition-fast);
+        }
+        .project-detail-link:hover::after {
+            transform: translateX(2px);
         }
 
         /* 移除渐变条装饰 */
@@ -210,18 +517,34 @@
         }
 
         .tag {
-            background: #f0f0f0;
-            color: #666;
-            padding: 3px 8px;
-            border-radius: 12px;
+            background: var(--border-light);
+            color: var(--text-secondary);
+            padding: 4px 12px;
+            border-radius: 16px;
             font-size: 0.75rem;
             font-weight: 500;
-            border: none;
+            border: 1px solid var(--border);
+            transition: all var(--transition-fast);
         }
         
         .tag:hover {
-            background: #e0e0e0;
-            color: #333;
+            background: var(--primary-light);
+            color: var(--surface);
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
+        }
+        
+        /* 第一个标签在hover时不变色，因为它是不可点击的 */
+        .project-tags .tag:first-of-type {
+            cursor: default;
+            pointer-events: none;
+        }
+        
+        .project-tags .tag:first-of-type:hover {
+            background: var(--border-light);
+            color: var(--text-secondary);
+            border-color: var(--border);
+            transform: none;
         }
 
         .project-link {
@@ -260,17 +583,91 @@
         }
 
         @media (max-width: 768px) {
+            .container {
+                padding: 0 12px;
+            }
+            
+            .header {
+                padding: 16px 0;
+                height: auto;
+            }
+            
             .header h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
+                margin-bottom: 8px;
             }
             
             .header p {
-                font-size: 1rem;
+                font-size: 0.9rem;
+                padding: 0 16px;
             }
             
             .projects-grid {
                 grid-template-columns: 1fr;
-                gap: 16px;
+                gap: 20px;
+                margin-bottom: 32px;
+            }
+            
+            .project-card {
+                padding: 20px;
+                border-radius: 12px;
+            }
+            
+            .project-header {
+                margin-bottom: 16px;
+            }
+            
+            .project-icon {
+                width: 44px;
+                height: 44px;
+            }
+            
+            .project-title {
+                font-size: 1.2rem;
+                margin-bottom: 6px;
+            }
+            
+            .project-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .project-description {
+                font-size: 0.95rem;
+                margin-bottom: 16px;
+            }
+            
+            /* 移动端标签样式优化 */
+            .tag {
+                padding: 6px 12px;
+                font-size: 0.75rem;
+                border-radius: 16px;
+            }
+            
+            .project-tags {
+                gap: 8px;
+            }
+            
+            /* 优化详情链接的触摸目标 */
+            .project-detail-link {
+                padding: 6px 16px;
+                font-size: 0.85rem;
+            }
+            
+            /* 优化标题区域 */
+            section.header {
+                padding: 16px 0;
+                height: auto;
+            }
+            
+            section.header h1 {
+                font-size: 1.6rem;
+            }
+        }
+        
+        /* 针对小屏手机的额外优化 */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.6rem;
             }
             
             .project-card {
@@ -284,23 +681,13 @@
             .project-description {
                 font-size: 0.9rem;
             }
-            
-            /* 移动端标签样式优化 */
-            .tag {
-                padding: 1px 5px;
-                font-size: 0.6rem;
-                border-radius: 3px;
-            }
-            
-            .project-tags {
-                gap: 3px;
-            }
         }
 
+        /* 滚动触发的动画效果 */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -308,30 +695,81 @@
             }
         }
 
+        /* 初始状态 */
         .project-card {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* 可见状态 */
+        .project-card.visible {
             animation: fadeInUp 0.6s ease forwards;
         }
 
-        .project-card:nth-child(1) { animation-delay: 0.1s; }
-        .project-card:nth-child(2) { animation-delay: 0.2s; }
-        .project-card:nth-child(3) { animation-delay: 0.3s; }
-        .project-card:nth-child(4) { animation-delay: 0.4s; }
-        .project-card:nth-child(5) { animation-delay: 0.5s; }
-        .project-card:nth-child(6) { animation-delay: 0.6s; }
+        /* 为可见的卡片设置不同的延迟 */
+        .project-card:nth-child(1).visible { animation-delay: 0.1s; }
+        .project-card:nth-child(2).visible { animation-delay: 0.2s; }
+        .project-card:nth-child(3).visible { animation-delay: 0.3s; }
+        .project-card:nth-child(4).visible { animation-delay: 0.4s; }
+        .project-card:nth-child(5).visible { animation-delay: 0.5s; }
+        .project-card:nth-child(6).visible { animation-delay: 0.6s; }
+        .project-card:nth-child(7).visible { animation-delay: 0.7s; }
+        .project-card:nth-child(8).visible { animation-delay: 0.8s; }
+        .project-card:nth-child(9).visible { animation-delay: 0.9s; }
         
-        /* Granola卡片标签链接样式 */
+        /* 平滑滚动效果 */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 头部区域动画效果 */
+        .header {
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        /* 增强的项目卡片悬停效果 */
+        .project-card:hover .project-title {
+            color: var(--primary-color);
+            transition: color var(--transition-fast);
+        }
+
+        .project-card:hover .project-icon {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+        }
+
+        /* 增强的图标点击效果 */
+        .project-icon:active {
+            transform: scale(0.95);
+            transition: transform var(--transition-fast);
+        }
+
+        /* 头部标题脉动效果 */
+        .header h1 {
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        /* 增强的链接悬停效果 */
+        a {
+            position: relative;
+            transition: color var(--transition-fast);
+        }
+
+        /* 移除之前的链接样式，使用统一的样式 */
         .project-card a {
             text-decoration: none;
             display: block;
         }
-        
-        .project-card a:hover .project-tags {
-            opacity: 0.9;
-            transition: opacity 0.3s ease;
-        }
     </style>
 </head>
 <body>
+    <!-- 版本切换按钮 -->
+    <div class="version-switch">
+        <button class="version-btn active" id="old-version">旧版</button>
+        <button class="version-btn" id="new-version">新版</button>
+    </div>
+
     <div class="container">
         <header class="header" style="padding: 20px 0; height: 120px; display: flex; flex-direction: column; justify-content: center;">
             <h1 style="margin-bottom: 0px;">Hoho的AI实验室</h1>
@@ -469,7 +907,7 @@
             <section style="margin-bottom: 40px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <h2 style="font-size: 2rem; color: var(--primary-color); margin: 0; text-align: left; font-weight: 700; line-height: 1.2;">How I AI</h2>
-                <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=Mzg2MzU1ODIxNw==&action=getalbum&album_id=4000647027351535636#wechat_redirect" style="color: var(--secondary-color); text-decoration: none; font-size: 1rem;" target="_blank">更多 &gt;</a>
+                <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=Mzg2MzU1ODIxNw==&action=getalbum&album_id=2833843896706449413#wechat_redirect" style="color: var(--secondary-color); text-decoration: none; font-size: 1rem;" target="_blank">更多 &gt;</a>
                 </div>
 
                 
@@ -553,7 +991,7 @@
                     
                     <div class="project-card" data-href="https://mp.weixin.qq.com/s?__biz=Mzg2MzU1ODIxNw==&mid=2247485154&idx=1&sn=8c8d6555a77726c847b10239c7d5dc11&chksm=ce7789c4f90000d2cfe06f8cdd16f8fc77cbc5ccf5f42579820f4a7a9f9cdb82053a10da4e81&scene=178&cur_album_id=4000647027351535636&search_click_id=#rd">
                         <div class="project-header">
-                            <div class="project-icon">�️</div>
+                            <div class="project-icon">💻</div>
                             <div>
                                 <h3 class="project-title">Cursor试用2h后，我听懂了Andrej Karpathy在YC的演讲</h3>
                                 <p class="project-subtitle">体验AI编程工具的实战感受</p>
@@ -591,7 +1029,7 @@
                     
                     <div class="project-card" data-href="https://mp.weixin.qq.com/s/b5fvc9a16Zh42lfUWVRz4w">
                         <div class="project-header">
-                            <div class="project-icon">�</div>
+                            <div class="project-icon">📊</div>
                             <div>
                                 <h3 class="project-title">工作中如何用AI辅助做埋点</h3>
                                 <p class="project-subtitle">设计师的数据驱动实践</p>
@@ -610,7 +1048,7 @@
                     
                     <div class="project-card" data-href="https://mp.weixin.qq.com/s?__biz=Mzg2MzU1ODIxNw==&mid=2247485376&idx=1&sn=e67618d80f186513ae4f346b7ce22582&chksm=ce7788e6f90001f0c129cab3c332247f9231b8232bbfe30e7362f37c23a5af9e3637766936f5&scene=178&cur_album_id=4000647027351535636&search_click_id=#rd">
                         <div class="project-header">
-                            <div class="project-icon">�️</div>
+                            <div class="project-icon">💻</div>
                             <div>
                                 <h3 class="project-title">设计师用AI生成：样式代码</h3>
                                 <p class="project-subtitle">从需求到代码的AI辅助流程</p>
@@ -935,6 +1373,8 @@
                             <a href="https://tldw.us/" class="project-detail-link" target="_blank">详情</a>
                         </div>
                     </div>
+                    
+
 
                 </div>
             </section>
@@ -963,6 +1403,84 @@
                         }
                     });
                 }
+            });
+
+            // 滚动触发的动画效果
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // 观察所有项目卡片
+            const projectCards = document.querySelectorAll('.project-card');
+            projectCards.forEach(card => {
+                observer.observe(card);
+            });
+
+            // 添加滚动进度指示器
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.pageYOffset;
+                const docHeight = document.documentElement.scrollHeight;
+                const winHeight = window.innerHeight;
+                const scrollPercent = (scrollTop / (docHeight - winHeight)) * 100;
+                
+                // 可以在这里添加滚动进度条
+            });
+
+            // 移动端触摸优化
+            if ('ontouchstart' in window) {
+                // 添加触摸反馈
+                const interactiveElements = document.querySelectorAll('.project-icon, .project-detail-link, a, .version-btn');
+                interactiveElements.forEach(element => {
+                    element.addEventListener('touchstart', function() {
+                        this.style.transform = 'scale(0.95)';
+                    });
+                    
+                    element.addEventListener('touchend', function() {
+                        this.style.transform = 'scale(1)';
+                    });
+                });
+            }
+
+            // 版本切换功能
+            const oldVersionBtn = document.getElementById('old-version');
+            const newVersionBtn = document.getElementById('new-version');
+
+            // 初始化版本状态
+            const savedVersion = localStorage.getItem('version');
+            if (savedVersion === 'neo-brutalism') {
+                document.documentElement.classList.add('neo-brutalism');
+                newVersionBtn.classList.add('active');
+                oldVersionBtn.classList.remove('active');
+            } else {
+                document.documentElement.classList.remove('neo-brutalism');
+                oldVersionBtn.classList.add('active');
+                newVersionBtn.classList.remove('active');
+            }
+
+            // 新版按钮点击事件
+            newVersionBtn.addEventListener('click', function() {
+                document.documentElement.classList.add('neo-brutalism');
+                newVersionBtn.classList.add('active');
+                oldVersionBtn.classList.remove('active');
+                localStorage.setItem('version', 'neo-brutalism');
+            });
+
+            // 旧版按钮点击事件
+            oldVersionBtn.addEventListener('click', function() {
+                document.documentElement.classList.remove('neo-brutalism');
+                oldVersionBtn.classList.add('active');
+                newVersionBtn.classList.remove('active');
+                localStorage.setItem('version', 'old');
             });
         });
     </script>
