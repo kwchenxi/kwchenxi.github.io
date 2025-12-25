@@ -27,6 +27,8 @@
       --error-color: #EF4444;
       --info-color: #3B82F6;
       
+      --gray-800: #1F2937; /* 添加缺失的灰色变量 */
+      
       --gray-100: #f3f4f6;
       --gray-200: #e5e7eb;
       --gray-300: #d1d5db;
@@ -36,6 +38,12 @@
       --gray-700: #374151;
       --gray-900: #111827;
       --white: #ffffff;
+      
+      /* 主题颜色变量 */
+      --red-primary: #ef4444;
+      --red-dark: #dc2626;
+      --blue-primary: #4598F0;
+      --blue-dark: #3477b3;
       
       /* 阴影 - 统一的分层阴影 */
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -322,13 +330,13 @@
     
     .tag-secret {
       background: rgba(239, 68, 68, 0.15);
-      color: var(--red-500) !important;
+      color: var(--red-primary) !important;
       border: 1px solid rgba(239, 68, 68, 0.3);
     }
     
     .tag-special {
       background: rgba(249, 115, 22, 0.15);
-      color: var(--orange-500) !important;
+      color: var(--warning-color) !important;
       border: 1px solid rgba(249, 115, 22, 0.3);
     }
     
@@ -449,10 +457,48 @@
       transition: all var(--transition-normal);
     }
     
-    :root {
-      --red-primary: #ef4444;
-      --red-dark: #dc2626;
+    /* 年龄选项样式 */
+    .age-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 8px;
     }
+    
+    .age-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    
+    .age-btn {
+      padding: 10px 16px;
+      background: var(--gray-100);
+      color: var(--gray-700);
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+    }
+    
+    .age-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .age-btn.active {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+      box-shadow: var(--shadow-md);
+    }
+    
+
     
     .sim-panel:hover {
       box-shadow: var(--shadow-hover);
@@ -989,7 +1035,7 @@
     </section>
     <section class="col-center" style="display:flex; flex-direction:column;">
       <div class="flow-card" style="flex:1; display:flex; align-items:center; justify-content:center; padding:0; overflow:auto; background:var(--white); border-radius:var(--radius-xl); box-shadow:var(--shadow-md); transition:all var(--transition-normal);">
-        <img src="公文.png" alt="公文" style="width:80%; height:auto; display:block;">
+        <img id="main-document-img" src="公文.png" alt="公文" style="width:80%; height:auto; display:block;">
       </div>
     </section>
   </main>
@@ -1009,6 +1055,17 @@
   <aside class="sim-panel">
     <h2>模拟设置</h2>
     <button id="reset-all" class="reset-all-btn">重置所有设置</button>
+    
+    <!-- 年龄模拟选项 -->
+    <div class="age-options">
+      <span class="sim-title">年龄模拟</span>
+      <div class="age-buttons">
+        <button class="age-btn" data-age="young">年轻</button>
+        <button class="age-btn" data-age="55">55岁</button>
+        <button class="age-btn" data-age="60">60岁</button>
+        <button class="age-btn" data-age="65">65岁</button>
+      </div>
+    </div>
 
     <!-- 视力 -->
     <div class="sim-group" data-bind="blur">
@@ -1118,6 +1175,15 @@
     const MIN_PX = 12, MAX_PX = 32;
     let distractionOn = false;
     let bubbleTimers = [];
+    
+    // 添加图片错误处理
+    const mainDocumentImg = document.getElementById('main-document-img');
+    if (mainDocumentImg) {
+      mainDocumentImg.onerror = function() {
+        // 如果图片加载失败，使用默认文本或备用图片
+        this.src = 'data:image/svg+xml;utf8,<svg width="600" height="800" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="%23f9fafb"/><text x="50%" y="50%" font-size="24" font-family="SimSun, serif" fill="%236b7280" text-anchor="middle" dominant-baseline="middle">公文图片加载中...</text></svg>';
+      };
+    }
 
     function updateLabels() {
       tremorValue.textContent = `${tremor}%`;
@@ -1275,7 +1341,7 @@
       document.querySelectorAll('.todo-item').forEach(item => {
         const tag = item.querySelector('.important-tag');
         if (tag) {
-          tag.style.display = show ? '' : 'none';
+          tag.style.display = show ? 'inline-block' : 'none';
         }
         // 有标签时 flex-start+gap，无标签时恢复默认
         if (tag) {
@@ -1283,9 +1349,13 @@
             item.style.justifyContent = 'flex-start';
             item.style.gap = '8px';
           } else {
-            item.style.justifyContent = '';
+            item.style.justifyContent = 'space-between';
             item.style.gap = '';
           }
+        } else {
+          // 没有标签的项始终使用默认布局
+          item.style.justifyContent = 'space-between';
+          item.style.gap = '';
         }
       });
     }
@@ -1357,7 +1427,46 @@
     // 全局重置按钮事件
     document.getElementById('reset-all').addEventListener('click', resetAllSettings);
 
-    // 初始化
+    // 年龄模拟参数配置
+    const ageSettings = {
+      young: { blur: 0, delay: 0, tremor: 0, busy: 0 },
+      55: { blur: 25, delay: 20, tremor: 15, busy: 40 },
+      60: { blur: 50, delay: 40, tremor: 30, busy: 60 },
+      65: { blur: 75, delay: 60, tremor: 50, busy: 80 }
+    };
+    
+    // 年龄按钮点击事件
+    document.querySelectorAll('.age-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // 移除所有按钮的active类
+        document.querySelectorAll('.age-btn').forEach(b => b.classList.remove('active'));
+        // 为当前点击的按钮添加active类
+        btn.classList.add('active');
+        
+        // 获取对应的年龄设置
+        const age = btn.dataset.age;
+        const settings = ageSettings[age];
+        
+        // 更新各项参数
+        blur = settings.blur;
+        delay = settings.delay;
+        tremor = settings.tremor;
+        busy = settings.busy;
+        
+        // 更新滑块值
+        visionBlur.value = blur;
+        cognitiveDelay.value = delay;
+        handTremor.value = tremor;
+        busyLevel.value = busy;
+        
+        // 更新UI
+        updateLabels();
+        checkBusy();
+      });
+    });
+    
+    // 初始化 - 设置默认年龄为年轻
+    document.querySelector('.age-btn[data-age="young"]').click();
     authority = 0;
     authoritySwitch.checked = false;
     updateAuthorityTags();
