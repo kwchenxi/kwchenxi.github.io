@@ -44,7 +44,7 @@ const basicSchema = {
     length: { type: Type.STRING, description: "Total distance in Chinese (e.g., '15 公里')." },
     elevationGain: { type: Type.STRING, description: "Cumulative elevation gain in Chinese (e.g., '800 米')." },
   },
-  required: ["name", "location", "highlight", "difficulty", "duration", "length", "elevationGain"]
+  required: ["name", "location", "centerCoordinates", "highlight", "difficulty", "duration", "length", "elevationGain"]
 };
 
 // 2. Misc Schema (Fast Detail - Stage 2a)
