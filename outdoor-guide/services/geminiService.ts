@@ -23,6 +23,31 @@ const safeParseJSON = (text: string | undefined) => {
     }
 };
 
+// 计算字符串相似度的简单函数
+const calculateSimilarity = (query: string, trailName: string): number => {
+    const q = query.toLowerCase().trim();
+    const t = trailName.toLowerCase().trim();
+    
+    // 完全匹配
+    if (q === t) return 1.0;
+    
+    // 包含关系
+    if (q.includes(t) || t.includes(q)) return 0.8;
+    
+    // 计算字符相似度
+    let matches = 0;
+    const shorter = q.length < t.length ? q : t;
+    const longer = q.length >= t.length ? q : t;
+    
+    for (let i = 0; i < shorter.length; i++) {
+        if (longer.includes(shorter[i])) {
+            matches++;
+        }
+    }
+    
+    return matches / longer.length;
+};
+
 // 1. Basic Schema (Fast Load - Stage 1)
 const basicSchema = {
   type: Type.OBJECT,
@@ -135,6 +160,89 @@ const routesSchema = {
 
 // Stage 1: Fast Basic Info
 export const generateBasicTrailInfo = async (query: string): Promise<Partial<TrailData>> => {
+    // 预定义一些常见路线的基本信息，作为后备方案
+    const knownTrails: Record<string, Partial<TrailData>> = {
+        "深圳塘朗山": {
+            name: "深圳塘朗山",
+            location: "中国广东省深圳市南山区",
+            highlight: "城市中的绿色氧吧，深圳十峰之一。",
+            difficulty: 2,
+            duration: "3-4小时",
+            length: "8公里",
+            elevationGain: "450米",
+            centerCoordinates: { latitude: 22.6173, longitude: 113.9427 }
+        },
+        "深圳梧桐山": {
+            name: "深圳梧桐山",
+            location: "中国广东省深圳市",
+            highlight: "鹏城第一峰，深圳市民喜爱的登山胜地。",
+            difficulty: 3,
+            duration: "4-6小时",
+            length: "11公里",
+            elevationGain: "943米",
+            centerCoordinates: { latitude: 22.5715, longitude: 114.1083 }
+        },
+        "深圳莲花山": {
+            name: "深圳莲花山",
+            location: "中国广东省深圳市福田区",
+            highlight: "城市中心区内的天然氧吧，登山观景两相宜。",
+            difficulty: 2,
+            duration: "2-3小时",
+            length: "6公里",
+            elevationGain: "350米",
+            centerCoordinates: { latitude: 22.5589, longitude: 114.0602 }
+        },
+        "香港麦理浩径第二段": {
+            name: "香港麦理浩径第二段",
+            location: "中国香港特别行政区",
+            highlight: "香港著名远足径，世界最美徒步路线之一。",
+            difficulty: 3,
+            duration: "5-6小时",
+            length: "13公里",
+            elevationGain: "800米",
+            centerCoordinates: { latitude: 22.2470, longitude: 114.1680 }
+        },
+        "武功山": {
+            name: "武功山",
+            location: "中国江西省萍乡市",
+            highlight: "云中草原，户外天堂，华东朝圣之路。",
+            difficulty: 3,
+            duration: "2-3天",
+            length: "25-30公里",
+            elevationGain: "1600米",
+            centerCoordinates: { latitude: 27.4618, longitude: 114.1385 }
+        },
+        "珠峰东坡": {
+            name: "珠峰东坡",
+            location: "中国西藏自治区",
+            highlight: "世界之巅，登山者终极梦想。",
+            difficulty: 5,
+            duration: "7-9天",
+            length: "22公里",
+            elevationGain: "3500米",
+            centerCoordinates: { latitude: 28.0050, longitude: 86.8633 }
+        },
+        "贡嘎转山": {
+            name: "贡嘎转山",
+            location: "中国四川省",
+            highlight: "蜀山之王，雪山朝圣之地。",
+            difficulty: 5,
+            duration: "7-10天",
+            length: "60公里",
+            elevationGain: "4000米",
+            centerCoordinates: { latitude: 29.5833, longitude: 101.8833 }
+        }
+    };
+
+    // 首先检查是否是预定义的路线
+    const normalizedQuery = query.trim().toLowerCase();
+    for (const [trailName, trailData] of Object.entries(knownTrails)) {
+        if (normalizedQuery.includes(trailName.toLowerCase()) || trailName.toLowerCase().includes(normalizedQuery)) {
+            console.log(`找到预定义路线: ${trailName}`);
+            return trailData;
+        }
+    }
+
     try {
         console.log('开始获取基础信息:', query);
         
@@ -144,9 +252,6 @@ export const generateBasicTrailInfo = async (query: string): Promise<Partial<Tra
         contents: `你是一个专业的户外向导。请返回关于徒步路线 "${query}" 的基本信息。
         
 请确保所有输出都使用简体中文。
-如果这不是一个已知的徒步路线，请尝试提供附近的徒步区域或相似路线的信息。
-例如，如果查询过于宽泛，如"深圳登山"，请建议深圳的一条热门具体路线，如"深圳梧桐山"。
-        
 请提供有效的JSON格式数据，符合以下模式。`,
         config: {
             responseMimeType: 'application/json',
@@ -157,10 +262,18 @@ export const generateBasicTrailInfo = async (query: string): Promise<Partial<Tra
     console.log('API响应成功:', response.text);
     const result = safeParseJSON(response.text) as Partial<TrailData>;
     
-    // 验证返回的数据是否有效
-    if (!result || !result.name || !result.location) {
+    // 放宽验证条件，只需要基本字段
+    if (!result || !result.name) {
         throw new Error("返回的路线信息不完整");
     }
+    
+    // 如果缺少一些字段，尝试用默认值填充
+    if (!result.location) result.location = "中国";
+    if (!result.difficulty) result.difficulty = 3;
+    if (!result.duration) result.duration = "4-6小时";
+    if (!result.length) result.length = "10公里";
+    if (!result.elevationGain) result.elevationGain = "500米";
+    if (!result.highlight) result.highlight = "美丽的徒步路线，值得一游。";
     
     console.log('解析后的数据:', result);
     return result;
@@ -174,14 +287,6 @@ export const generateBasicTrailInfo = async (query: string): Promise<Partial<Tra
                 model: 'gemini-1.5-flash',
                 contents: `你是一个专业的户外向导。用户正在寻找关于 "${query}" 的徒步信息。
                 
-如果这不是一个特定的徒步路线，请根据用户意图推荐一条热门或附近的徒步路线。
-例如：
-- "深圳登山" -> 推荐 "深圳梧桐山"
-- "香港爬山" -> 推荐 "香港龙脊"
-- "广州徒步" -> 推荐 "广州白云山"
-- "塘朗山" -> 推荐 "深圳塘朗山"
-- "麦理浩径" -> 推荐 "香港麦理浩径第二段"
-
 请用简体中文提供推荐路线的基本信息。
 请提供有效的JSON格式数据，符合以下模式。`,
                 config: {
@@ -193,9 +298,18 @@ export const generateBasicTrailInfo = async (query: string): Promise<Partial<Tra
             console.log('灵活搜索API响应成功:', fallbackResponse.text);
             const fallbackResult = safeParseJSON(fallbackResponse.text) as Partial<TrailData>;
             
-            if (!fallbackResult || !fallbackResult.name || !fallbackResult.location) {
+            // 放宽验证条件
+            if (!fallbackResult || !fallbackResult.name) {
                 throw new Error("无法找到相关路线信息");
             }
+            
+            // 如果缺少一些字段，尝试用默认值填充
+            if (!fallbackResult.location) fallbackResult.location = "中国";
+            if (!fallbackResult.difficulty) fallbackResult.difficulty = 3;
+            if (!fallbackResult.duration) fallbackResult.duration = "4-6小时";
+            if (!fallbackResult.length) fallbackResult.length = "10公里";
+            if (!fallbackResult.elevationGain) fallbackResult.elevationGain = "500米";
+            if (!fallbackResult.highlight) fallbackResult.highlight = "美丽的徒步路线，值得一游。";
             
             return {
                 ...fallbackResult,
@@ -204,6 +318,28 @@ export const generateBasicTrailInfo = async (query: string): Promise<Partial<Tra
             };
         } catch (fallbackError) {
             console.error('灵活搜索也失败:', fallbackError);
+            
+            // 最后的后备方案：尝试从预定义路线中找一个最相似的
+            let bestMatch: Partial<TrailData> | null = null;
+            let bestScore = 0;
+            
+            for (const [trailName, trailData] of Object.entries(knownTrails)) {
+                const score = calculateSimilarity(query, trailName);
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMatch = trailData;
+                }
+            }
+            
+            if (bestMatch && bestScore > 0.3) {
+                console.log(`使用最相似的预定义路线: ${bestMatch.name} (相似度: ${bestScore})`);
+                return {
+                    ...bestMatch,
+                    isRecommended: true,
+                    originalQuery: query
+                };
+            }
+            
             throw new Error(`无法找到关于"${query}"的路线信息，请尝试输入更具体的路线名称。`);
         }
     }
