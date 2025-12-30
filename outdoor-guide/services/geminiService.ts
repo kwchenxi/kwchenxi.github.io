@@ -44,7 +44,7 @@ const basicSchema = {
     length: { type: Type.STRING, description: "Total distance in Chinese (e.g., '15 公里')." },
     elevationGain: { type: Type.STRING, description: "Cumulative elevation gain in Chinese (e.g., '800 米')." },
   },
-  required: ["name", "location", "centerCoordinates", "highlight", "difficulty", "duration", "length", "elevationGain"]
+  required: ["name", "location", "highlight", "difficulty", "duration", "length", "elevationGain"]
 };
 
 // 2. Misc Schema (Fast Detail - Stage 2a)
@@ -138,14 +138,16 @@ export const generateBasicTrailInfo = async (query: string): Promise<Partial<Tra
     try {
         console.log('开始获取基础信息:', query);
         
-        // 尝试直接搜索路线信息
+        // 尝试直接搜索路线信息 - 使用更强大的模型
         const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: `You are an expert outdoor guide. Return the basic stats for the hiking trail: "${query}".
-        Ensure all output is in Simplified Chinese (简体中文).
-        If this is not a known hiking trail, try to provide information about nearby hiking areas or similar trails.
-        For example, if the query is too general like "深圳登山", suggest a specific popular trail in Shenzhen like "深圳梧桐山".
-        Return valid JSON only.`,
+        model: 'gemini-2.0-flash-exp',
+        contents: `你是一个专业的户外向导。请返回关于徒步路线 "${query}" 的基本信息。
+        
+请确保所有输出都使用简体中文。
+如果这不是一个已知的徒步路线，请尝试提供附近的徒步区域或相似路线的信息。
+例如，如果查询过于宽泛，如"深圳登山"，请建议深圳的一条热门具体路线，如"深圳梧桐山"。
+        
+请提供有效的JSON格式数据，符合以下模式。`,
         config: {
             responseMimeType: 'application/json',
             responseSchema: basicSchema,
@@ -169,16 +171,19 @@ export const generateBasicTrailInfo = async (query: string): Promise<Partial<Tra
         try {
             console.log('尝试灵活搜索:', query);
             const fallbackResponse = await ai.models.generateContent({
-                model: 'gemini-2.5-flash',
-                contents: `You are an expert outdoor guide. The user is looking for hiking information about "${query}".
-                If this is not a specific hiking trail, please suggest a popular or nearby hiking trail that matches the user's intent.
-                For example:
-                - If "深圳登山" -> suggest "深圳梧桐山"
-                - If "香港爬山" -> suggest "香港龙脊"
-                - If "广州徒步" -> suggest "广州白云山"
+                model: 'gemini-2.0-flash-exp',
+                contents: `你是一个专业的户外向导。用户正在寻找关于 "${query}" 的徒步信息。
                 
-                Provide basic information about the suggested trail in Simplified Chinese (简体中文).
-                Return valid JSON only.`,
+如果这不是一个特定的徒步路线，请根据用户意图推荐一条热门或附近的徒步路线。
+例如：
+- "深圳登山" -> 推荐 "深圳梧桐山"
+- "香港爬山" -> 推荐 "香港龙脊"
+- "广州徒步" -> 推荐 "广州白云山"
+- "塘朗山" -> 推荐 "深圳塘朗山"
+- "麦理浩径" -> 推荐 "香港麦理浩径第二段"
+
+请用简体中文提供推荐路线的基本信息。
+请提供有效的JSON格式数据，符合以下模式。`,
                 config: {
                     responseMimeType: 'application/json',
                     responseSchema: basicSchema,
@@ -208,13 +213,13 @@ export const generateBasicTrailInfo = async (query: string): Promise<Partial<Tra
 export const generateTrailMisc = async (query: string, basicInfo: Partial<TrailData>): Promise<Partial<TrailData>> => {
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: `You are an outdoor storyteller.
-        Context: Providing narrative details for "${basicInfo.name}" in "${basicInfo.location}".
-        Generate the story, gear list, safety tips, and best season.
-        Keep the tone inspiring and helpful.
-        IMPORTANT: All output must be in Simplified Chinese (简体中文).
-        Return JSON only.`,
+            model: 'gemini-2.0-flash-exp',
+            contents: `你是一个户外故事讲述者。
+        背景：为 "${basicInfo.name}"（位于 "${basicInfo.location}"）提供叙述性细节。
+        请生成故事、装备清单、安全提示和最佳季节。
+        保持鼓舞人心和有帮助的语调。
+        重要提示：所有输出必须使用简体中文。
+        请提供有效的JSON格式数据，符合以下模式。`,
             config: {
                 responseMimeType: 'application/json',
                 responseSchema: miscSchema,
@@ -233,20 +238,20 @@ export const generateTrailMisc = async (query: string, basicInfo: Partial<TrailD
 // Stage 2b: Routes (Slow/Thinking Parallel) - Updated Prompt
 export const generateTrailRoutes = async (query: string, basicInfo: Partial<TrailData>): Promise<Partial<TrailData>> => {
     const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: `You are a GIS (Geographic Information System) expert and Senior Hiking Guide.
-        Context: Detailed route planning for "${basicInfo.name}" in "${basicInfo.location}".
-        Center Coordinates: ${basicInfo.centerCoordinates?.latitude}, ${basicInfo.centerCoordinates?.longitude}.
+        model: 'gemini-2.0-flash-exp',
+        contents: `你是一个地理信息系统(GIS)专家和高级徒步向导。
+        背景：为 "${basicInfo.name}"（位于 "${basicInfo.location}"）进行详细路线规划。
+        中心坐标：${basicInfo.centerCoordinates?.latitude}, ${basicInfo.centerCoordinates?.longitude}。
         
-        CRITICAL INSTRUCTIONS FOR ACCURACY:
-        1. **NO HALLUCINATIONS**: You must provide REAL, ACCURATE GPS coordinates [Latitude, Longitude] for every checkpoint in the 'timeline'.
-        2. **VERIFICATION**: If you do not know the exact coordinate of a rock/tree, use the coordinate of the nearest major landmark (peak, village, pass, campsite, hut).
-        3. **STRUCTURE**: The 'timeline' is the source of truth. The map line will be drawn by connecting these coordinate points.
-        4. **PRECISION**: Use at least 4-5 decimal places for coordinates to ensure accuracy on the map.
-        5. Provide 2 distinct route options (e.g., Tourist vs Trekking).
-        6. LANGUAGE: All output must be in Simplified Chinese (简体中文).
+        准确性关键指示：
+        1. **禁止编造**：你必须为'timeline'中的每个检查点提供真实、准确的GPS坐标[纬度，经度]。
+        2. **验证**：如果你不知道某块岩石/树木的确切坐标，请使用最近的主要地标（山峰、村庄、垭口、营地、小屋）的坐标。
+        3. **结构**：'timeline'是真实来源。地图线将通过连接这些坐标点来绘制。
+        4. **精度**：坐标使用至少4-5位小数，以确保地图上的准确性。
+        5. 提供2个不同的路线选择（例如：观光路线与徒步路线）。
+        6. 语言：所有输出必须使用简体中文。
         
-        Return JSON only.`,
+        请提供有效的JSON格式数据，符合以下模式。`,
         config: {
             responseMimeType: 'application/json',
             responseSchema: routesSchema,
