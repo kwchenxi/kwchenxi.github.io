@@ -135,7 +135,9 @@ const routesSchema = {
 
 // Stage 1: Fast Basic Info
 export const generateBasicTrailInfo = async (query: string): Promise<Partial<TrailData>> => {
-    const response = await ai.models.generateContent({
+    try {
+        console.log('开始获取基础信息:', query);
+        const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
         contents: `You are an expert outdoor guide. Return the basic stats for the hiking trail: "${query}".
         Ensure all output is in Simplified Chinese (简体中文).
@@ -145,25 +147,40 @@ export const generateBasicTrailInfo = async (query: string): Promise<Partial<Tra
             responseSchema: basicSchema,
         }
     });
-    return safeParseJSON(response.text) as Partial<TrailData>;
+    console.log('API响应成功:', response.text);
+    const result = safeParseJSON(response.text) as Partial<TrailData>;
+    console.log('解析后的数据:', result);
+    return result;
+    } catch (error) {
+        console.error('获取基础信息时出错:', error);
+        throw error;
+    }
 }
 
 // Stage 2a: Narrative & Misc (Fast Parallel)
 export const generateTrailMisc = async (query: string, basicInfo: Partial<TrailData>): Promise<Partial<TrailData>> => {
-    const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: `You are an outdoor storyteller.
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: `You are an outdoor storyteller.
         Context: Providing narrative details for "${basicInfo.name}" in "${basicInfo.location}".
         Generate the story, gear list, safety tips, and best season.
         Keep the tone inspiring and helpful.
         IMPORTANT: All output must be in Simplified Chinese (简体中文).
         Return JSON only.`,
-        config: {
-            responseMimeType: 'application/json',
-            responseSchema: miscSchema,
-        }
-    });
-    return safeParseJSON(response.text) as Partial<TrailData>;
+            config: {
+                responseMimeType: 'application/json',
+                responseSchema: miscSchema,
+            }
+        });
+        console.log('API响应成功:', response.text);
+        const result = safeParseJSON(response.text) as Partial<TrailData>;
+        console.log('解析后的数据:', result);
+        return result;
+    } catch (error) {
+        console.error('获取基础信息时出错:', error);
+        throw error;
+    }
 }
 
 // Stage 2b: Routes (Slow/Thinking Parallel) - Updated Prompt

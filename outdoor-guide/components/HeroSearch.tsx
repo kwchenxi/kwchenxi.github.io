@@ -20,9 +20,9 @@ const HeroSearch: React.FC<HeroSearchProps> = ({ onSearch, isLoading, savedTrail
   };
 
   const suggestions = [
-    "虎跳峡高路徒步",
-    "稻城亚丁",
-    "雨崩神瀑",
+    "深圳塘朗山",
+    "深圳梧桐山",
+    "香港麦理浩径第二段",
     "武功山",
     "珠峰东坡",
     "贡嘎转山"
