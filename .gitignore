@@ -9,7 +9,7 @@ Thumbs.db
 *.swo
 
 # Build files
-dist/
+# dist/ - 注释掉这行，以便将dist文件夹提交到GitHub
 build/
 
 # Environment files
