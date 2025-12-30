@@ -2,6 +2,10 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { TrailData } from '../types';
 
 const apiKey = process.env.API_KEY || '';
+console.log('API Key loaded:', apiKey ? 'Yes' : 'No');
+if (!apiKey) {
+  console.error('API Key is not defined!');
+}
 
 // Initialize client
 const ai = new GoogleGenAI({ apiKey });
