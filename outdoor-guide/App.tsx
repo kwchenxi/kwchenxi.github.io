@@ -106,23 +106,32 @@ const App: React.FC = () => {
       // 2. STAGE 1: Fast Fetch (Basic Info)
       const basicInfo = await generateBasicTrailInfo(query);
       
+      // 检查是否是推荐路线
+      const isRecommended = (basicInfo as any).isRecommended;
+      
       const partialTrail: TrailData = {
           name: basicInfo.name!,
           location: basicInfo.location!,
-          highlight: basicInfo.highlight!,
+          highlight: isRecommended 
+            ? `根据"${query}"为您推荐的路线` 
+            : basicInfo.highlight!,
           difficulty: basicInfo.difficulty!,
           duration: basicInfo.duration!,
           length: basicInfo.length!,
           elevationGain: basicInfo.elevationGain!,
           centerCoordinates: basicInfo.centerCoordinates,
           // Placeholders
-          description: undefined,
+          description: isRecommended 
+            ? `这是根据您搜索的"${query}"推荐的相似热门路线。` 
+            : undefined,
           story: undefined,
           routeSegments: undefined,
           gear: undefined,
           safetyTips: undefined,
           bestSeason: undefined,
-          communityTips: undefined
+          communityTips: isRecommended 
+            ? [`您可以尝试更具体的搜索，如"${basicInfo.name}详细信息"`] 
+            : undefined
       };
 
       setCurrentTrail(partialTrail);
@@ -166,8 +175,10 @@ const App: React.FC = () => {
           localStorage.setItem(storageKey, JSON.stringify(finalTrail));
       });
 
-    } catch (error) {
-      alert("哎呀！向导似乎找不到这条路。请尝试输入更清晰的名称。");
+    } catch (error: any) {
+      // 提供更具体的错误信息
+      const errorMessage = error?.message || "哎呀！向导似乎找不到这条路。请尝试输入更清晰的名称。";
+      alert(errorMessage);
       setIsLoading(false);
     }
   };

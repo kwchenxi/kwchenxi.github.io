@@ -137,23 +137,70 @@ const routesSchema = {
 export const generateBasicTrailInfo = async (query: string): Promise<Partial<TrailData>> => {
     try {
         console.log('开始获取基础信息:', query);
+        
+        // 尝试直接搜索路线信息
         const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
         contents: `You are an expert outdoor guide. Return the basic stats for the hiking trail: "${query}".
         Ensure all output is in Simplified Chinese (简体中文).
+        If this is not a known hiking trail, try to provide information about nearby hiking areas or similar trails.
+        For example, if the query is too general like "深圳登山", suggest a specific popular trail in Shenzhen like "深圳梧桐山".
         Return valid JSON only.`,
         config: {
             responseMimeType: 'application/json',
             responseSchema: basicSchema,
         }
     });
+    
     console.log('API响应成功:', response.text);
     const result = safeParseJSON(response.text) as Partial<TrailData>;
+    
+    // 验证返回的数据是否有效
+    if (!result || !result.name || !result.location) {
+        throw new Error("返回的路线信息不完整");
+    }
+    
     console.log('解析后的数据:', result);
     return result;
     } catch (error) {
         console.error('获取基础信息时出错:', error);
-        throw error;
+        
+        // 如果第一次尝试失败，尝试更灵活的搜索方式
+        try {
+            console.log('尝试灵活搜索:', query);
+            const fallbackResponse = await ai.models.generateContent({
+                model: 'gemini-2.5-flash',
+                contents: `You are an expert outdoor guide. The user is looking for hiking information about "${query}".
+                If this is not a specific hiking trail, please suggest a popular or nearby hiking trail that matches the user's intent.
+                For example:
+                - If "深圳登山" -> suggest "深圳梧桐山"
+                - If "香港爬山" -> suggest "香港龙脊"
+                - If "广州徒步" -> suggest "广州白云山"
+                
+                Provide basic information about the suggested trail in Simplified Chinese (简体中文).
+                Return valid JSON only.`,
+                config: {
+                    responseMimeType: 'application/json',
+                    responseSchema: basicSchema,
+                }
+            });
+            
+            console.log('灵活搜索API响应成功:', fallbackResponse.text);
+            const fallbackResult = safeParseJSON(fallbackResponse.text) as Partial<TrailData>;
+            
+            if (!fallbackResult || !fallbackResult.name || !fallbackResult.location) {
+                throw new Error("无法找到相关路线信息");
+            }
+            
+            return {
+                ...fallbackResult,
+                // 添加一个标记，表示这是一个推荐路线
+                isRecommended: true
+            };
+        } catch (fallbackError) {
+            console.error('灵活搜索也失败:', fallbackError);
+            throw new Error(`无法找到关于"${query}"的路线信息，请尝试输入更具体的路线名称。`);
+        }
     }
 }
 
