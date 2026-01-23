@@ -1,10 +1,10 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { TrailData } from '../types';
 
-const apiKey = process.env.API_KEY || '';
+const apiKey = import.meta.env.VITE_API_KEY || '';
 console.log('API Key loaded:', apiKey ? 'Yes' : 'No');
 if (!apiKey) {
-  console.error('API Key is not defined!');
+  console.error('API Key is not defined! Please check your .env.local file.');
 }
 
 // Initialize client
@@ -248,11 +248,11 @@ export const generateBasicTrailInfo = async (query: string): Promise<Partial<Tra
         
         // 尝试直接搜索路线信息 - 使用更强大的模型
         const response = await ai.models.generateContent({
-        model: 'gemini-1.5-flash',
-        contents: `你是一个专业的户外向导。请返回关于徒步路线 "${query}" 的基本信息。
-        
+        model: 'gemini-2.0-flash',
+        contents: [{ role: "user", parts: [{ text: `你是一个专业的户外向导。请返回关于徒步路线 "${query}" 的基本信息。
+
 请确保所有输出都使用简体中文。
-请提供有效的JSON格式数据，符合以下模式。`,
+请提供有效的JSON格式数据，符合以下模式。` }] }],
         config: {
             responseMimeType: 'application/json',
             responseSchema: basicSchema,
@@ -284,11 +284,11 @@ export const generateBasicTrailInfo = async (query: string): Promise<Partial<Tra
         try {
             console.log('尝试灵活搜索:', query);
             const fallbackResponse = await ai.models.generateContent({
-                model: 'gemini-1.5-flash',
-                contents: `你是一个专业的户外向导。用户正在寻找关于 "${query}" 的徒步信息。
-                
+                model: 'gemini-2.0-flash',
+                contents: [{ role: "user", parts: [{ text: `你是一个专业的户外向导。用户正在寻找关于 "${query}" 的徒步信息。
+
 请用简体中文提供推荐路线的基本信息。
-请提供有效的JSON格式数据，符合以下模式。`,
+请提供有效的JSON格式数据，符合以下模式。` }] }],
                 config: {
                     responseMimeType: 'application/json',
                     responseSchema: basicSchema,
@@ -349,13 +349,13 @@ export const generateBasicTrailInfo = async (query: string): Promise<Partial<Tra
 export const generateTrailMisc = async (query: string, basicInfo: Partial<TrailData>): Promise<Partial<TrailData>> => {
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-1.5-flash',
-            contents: `你是一个户外故事讲述者。
+            model: 'gemini-2.0-flash',
+            contents: [{ role: "user", parts: [{ text: `你是一个户外故事讲述者。
         背景：为 "${basicInfo.name}"（位于 "${basicInfo.location}"）提供叙述性细节。
         请生成故事、装备清单、安全提示和最佳季节。
         保持鼓舞人心和有帮助的语调。
         重要提示：所有输出必须使用简体中文。
-        请提供有效的JSON格式数据，符合以下模式。`,
+        请提供有效的JSON格式数据，符合以下模式。` }] }],
             config: {
                 responseMimeType: 'application/json',
                 responseSchema: miscSchema,
@@ -374,11 +374,11 @@ export const generateTrailMisc = async (query: string, basicInfo: Partial<TrailD
 // Stage 2b: Routes (Slow/Thinking Parallel) - Updated Prompt
 export const generateTrailRoutes = async (query: string, basicInfo: Partial<TrailData>): Promise<Partial<TrailData>> => {
     const response = await ai.models.generateContent({
-        model: 'gemini-1.5-flash',
-        contents: `你是一个地理信息系统(GIS)专家和高级徒步向导。
+        model: 'gemini-2.0-flash',
+        contents: [{ role: "user", parts: [{ text: `你是一个地理信息系统(GIS)专家和高级徒步向导。
         背景：为 "${basicInfo.name}"（位于 "${basicInfo.location}"）进行详细路线规划。
         中心坐标：${basicInfo.centerCoordinates?.latitude}, ${basicInfo.centerCoordinates?.longitude}。
-        
+
         准确性关键指示：
         1. **禁止编造**：你必须为'timeline'中的每个检查点提供真实、准确的GPS坐标[纬度，经度]。
         2. **验证**：如果你不知道某块岩石/树木的确切坐标，请使用最近的主要地标（山峰、村庄、垭口、营地、小屋）的坐标。
@@ -386,8 +386,8 @@ export const generateTrailRoutes = async (query: string, basicInfo: Partial<Trai
         4. **精度**：坐标使用至少4-5位小数，以确保地图上的准确性。
         5. 提供2个不同的路线选择（例如：观光路线与徒步路线）。
         6. 语言：所有输出必须使用简体中文。
-        
-        请提供有效的JSON格式数据，符合以下模式。`,
+
+        请提供有效的JSON格式数据，符合以下模式。` }] }],
         config: {
             responseMimeType: 'application/json',
             responseSchema: routesSchema,

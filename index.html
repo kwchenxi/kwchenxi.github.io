@@ -812,9 +812,9 @@
 </head>
 <body>
     <!-- 版本切换按钮 -->
-    <div class="version-switch">
-        <button class="version-btn active" id="old-version">旧版</button>
-        <button class="version-btn" id="new-version">新版</button>
+    <div class="version-toggle">
+        <button class="version-btn active" id="current-version-btn">当前版本</button>
+        <button class="version-btn" id="old-version-btn">旧版本</button>
     </div>
 
     <div class="container">
@@ -1502,35 +1502,40 @@
             }
 
             // 版本切换功能
-            const oldVersionBtn = document.getElementById('old-version');
-            const newVersionBtn = document.getElementById('new-version');
-
-            // 初始化版本状态
-            const savedVersion = localStorage.getItem('version');
-            if (savedVersion === 'neo-brutalism') {
-                document.documentElement.classList.add('neo-brutalism');
-                newVersionBtn.classList.add('active');
-                oldVersionBtn.classList.remove('active');
-            } else {
-                document.documentElement.classList.remove('neo-brutalism');
-                oldVersionBtn.classList.add('active');
-                newVersionBtn.classList.remove('active');
+            const currentVersionBtn = document.getElementById('current-version-btn');
+            const oldVersionBtn = document.getElementById('old-version-btn');
+            
+            // 获取当前页面URL
+            const currentUrl = window.location.pathname;
+            
+            // 检查是否在旧版本页面
+            const isOldVersion = currentUrl.includes('index_backup.html') || currentUrl.includes('old_version');
+            
+            // 更新按钮状态
+            function updateButtonState() {
+                if (isOldVersion) {
+                    oldVersionBtn.classList.add('active');
+                    currentVersionBtn.classList.remove('active');
+                } else {
+                    currentVersionBtn.classList.add('active');
+                    oldVersionBtn.classList.remove('active');
+                }
             }
-
-            // 新版按钮点击事件
-            newVersionBtn.addEventListener('click', function() {
-                document.documentElement.classList.add('neo-brutalism');
-                newVersionBtn.classList.add('active');
-                oldVersionBtn.classList.remove('active');
-                localStorage.setItem('version', 'neo-brutalism');
+            
+            // 初始化按钮状态
+            updateButtonState();
+            
+            // 添加点击事件
+            currentVersionBtn.addEventListener('click', function() {
+                if (isOldVersion) {
+                    window.location.href = './index.html';
+                }
             });
-
-            // 旧版按钮点击事件
+            
             oldVersionBtn.addEventListener('click', function() {
-                document.documentElement.classList.remove('neo-brutalism');
-                oldVersionBtn.classList.add('active');
-                newVersionBtn.classList.remove('active');
-                localStorage.setItem('version', 'old');
+                if (!isOldVersion) {
+                    window.location.href = './index_backup.html';
+                }
             });
         });
     </script>
