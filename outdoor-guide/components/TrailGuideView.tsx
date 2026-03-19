@@ -15,8 +15,11 @@ interface TrailGuideViewProps {
   onBack: () => void;
   onSave: (trail: TrailData) => void;
   onUpdate: (trail: TrailData) => void;
+  onPublish?: (trail: TrailData) => void;
   onSearch: (query: string) => void;
   isSaved: boolean;
+  onToggleFavorite?: (trail: TrailData) => void;
+  onSubmitCorrection?: (trailId: string, field: string, oldValue: string, newValue: string) => void;
 }
 
 // Editable Component Helper (For simple strings)
@@ -85,9 +88,10 @@ const MapPickerModal: React.FC<MapPickerProps> = ({ initialCenter, initialMarker
 
         const map = L.map(mapContainerRef.current).setView([initialCenter.lat, initialCenter.lng], 13);
         
-        L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-            maxZoom: 17,
-            attribution: 'Map data: &copy; OSM contributors'
+        // Use OpenStreetMap for more reliable tile loading
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: 'Map data: &copy; OpenStreetMap contributors'
         }).addTo(map);
 
         mapRef.current = map;
@@ -240,7 +244,7 @@ const MapPickerModal: React.FC<MapPickerProps> = ({ initialCenter, initialMarker
 };
 
 
-export const TrailGuideView: React.FC<TrailGuideViewProps> = ({ data, onBack, onSave, onUpdate, onSearch, isSaved }) => {
+export const TrailGuideView: React.FC<TrailGuideViewProps> = ({ data, onBack, onSave, onUpdate, onPublish, onSearch, isSaved, onToggleFavorite, onSubmitCorrection }) => {
   const [activeTab, setActiveTab] = useState<'story' | 'map' | 'gear' | 'safety'>('story');
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isCorrectionMode, setIsCorrectionMode] = useState(false);
@@ -319,6 +323,9 @@ export const TrailGuideView: React.FC<TrailGuideViewProps> = ({ data, onBack, on
         const defaultLat = data.centerCoordinates?.latitude || 30.0;
         const defaultLng = data.centerCoordinates?.longitude || 102.0;
 
+        console.log(`[Map Init] Initializing map for ${data.name} at [${defaultLat}, ${defaultLng}]`);
+        console.log(`[Map Init] centerCoordinates:`, data.centerCoordinates);
+
         try {
             // Access global L
             if (typeof L === 'undefined') {
@@ -328,9 +335,10 @@ export const TrailGuideView: React.FC<TrailGuideViewProps> = ({ data, onBack, on
 
             const map = L.map(mapContainerRef.current).setView([defaultLat, defaultLng], 12);
             
-            L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-                maxZoom: 17,
-                attribution: 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap (CC-BY-SA)'
+            // Use OpenStreetMap for more reliable tile loading
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: 'Map data: &copy; OpenStreetMap contributors'
             }).addTo(map);
 
             mapInstanceRef.current = map;
@@ -354,7 +362,30 @@ export const TrailGuideView: React.FC<TrailGuideViewProps> = ({ data, onBack, on
             markersRef.current = [];
         }
     };
-  }, [activeTab]); 
+  }, [activeTab, data.name, data.centerCoordinates]); 
+
+  // Update map view when data changes (if map is already initialized)
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (map && data.centerCoordinates) {
+      const { latitude, longitude } = data.centerCoordinates;
+      console.log(`[Map Update] Updating map view for ${data.name} to [${latitude}, ${longitude}]`);
+      map.setView([latitude, longitude], 12);
+    }
+  }, [data.name, data.centerCoordinates]);
+
+  // Force map update when switching routes
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (map && activeTab === 'map' && data.centerCoordinates) {
+      const { latitude, longitude } = data.centerCoordinates;
+      console.log(`[Map Force] Forcing map update for ${data.name} to [${latitude}, ${longitude}]`);
+      setTimeout(() => {
+        map.setView([latitude, longitude], 12);
+        map.invalidateSize();
+      }, 100);
+    }
+  }, [activeTab]);
 
   // Handle drawing the route on the map based on Timeline Nodes
   useEffect(() => {
@@ -521,7 +552,12 @@ export const TrailGuideView: React.FC<TrailGuideViewProps> = ({ data, onBack, on
     if (editingItem) {
       editingItem.onSave(editingItem.value);
       setEditingItem(null);
-      showToast("感谢！纠错已同步至社区数据库(模拟)。");
+      
+      if (onSubmitCorrection && data.id) {
+        onSubmitCorrection(data.id, editingItem.label, String(data[editingItem.label as keyof TrailData] || ''), editingItem.value);
+      }
+      
+      showToast("感谢！纠错已提交至社区数据库。");
     }
   };
 
@@ -654,7 +690,7 @@ export const TrailGuideView: React.FC<TrailGuideViewProps> = ({ data, onBack, on
     if (level === 3) return 'bg-yellow-100 text-yellow-700';
     return 'bg-red-100 text-red-700';
   };
-  
+
   const difficultyLabel = (level: number) => {
      if (level <= 2) return '轻松/入门';
      if (level === 3) return '中等';
@@ -663,7 +699,7 @@ export const TrailGuideView: React.FC<TrailGuideViewProps> = ({ data, onBack, on
   };
 
   const isMiscLoaded = !!data.story;
-  const isRoutesLoaded = !!data.routeSegments;
+  const isRoutesLoaded = !!data.routeSegments && data.routeSegments.length > 0;
 
   return (
     <div className="min-h-screen bg-earth-50 pb-20 relative">
@@ -729,6 +765,24 @@ export const TrailGuideView: React.FC<TrailGuideViewProps> = ({ data, onBack, on
                 >
                     <PenLine size={24} />
                 </button>
+                {onToggleFavorite && (
+                    <button 
+                        onClick={() => onToggleFavorite(data)}
+                        className={`p-2 backdrop-blur-md rounded-full transition-all shadow-sm ${isSaved ? 'bg-red-500 text-white' : 'bg-white/20 text-white hover:bg-white/30'}`}
+                        title={isSaved ? "取消收藏" : "收藏路线"}
+                    >
+                        <Save size={24} />
+                    </button>
+                )}
+                {onPublish && !data.id && (
+                    <button 
+                        onClick={() => onPublish(data)}
+                        className="p-2 bg-gradient-to-r from-forest-500 to-forest-600 text-white rounded-full transition-all shadow-sm hover:shadow-lg"
+                        title="发布到社区"
+                    >
+                        <CheckCircle2 size={24} />
+                    </button>
+                )}
                 <button className="p-2 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-white/30 transition-all shadow-sm">
                     <Share2 size={24} />
                 </button>
@@ -897,7 +951,7 @@ export const TrailGuideView: React.FC<TrailGuideViewProps> = ({ data, onBack, on
                     )}
 
                     {/* Gear Tab */}
-                    {activeTab === 'gear' && data.gear && (
+                    {activeTab === 'gear' && (
                         <div className="animate-fade-in grid md:grid-cols-2 gap-8">
                             <div>
                                 <h3 className="font-bold text-earth-800 mb-4 flex items-center gap-2">
@@ -905,7 +959,7 @@ export const TrailGuideView: React.FC<TrailGuideViewProps> = ({ data, onBack, on
                                     必备装备
                                 </h3>
                                 <ul className="space-y-3">
-                                    {data.gear.essential.map((g, i) => (
+                                    {data.gear?.essential?.map((g, i) => (
                                         <li key={i} className="flex items-start gap-3 bg-earth-50 p-3 rounded-lg border border-transparent hover:border-orange-100 transition-colors">
                                             <div className="mt-1 text-forest-600"><CheckCircle2 size={16} /></div>
                                             <div>
@@ -913,7 +967,7 @@ export const TrailGuideView: React.FC<TrailGuideViewProps> = ({ data, onBack, on
                                                 {g.reason && <div className="text-xs text-earth-500 mt-1">{g.reason}</div>}
                                             </div>
                                         </li>
-                                    ))}
+                                    )) || <li className="text-earth-400 text-sm">暂无装备信息</li>}
                                 </ul>
                             </div>
                             <div>
@@ -922,7 +976,7 @@ export const TrailGuideView: React.FC<TrailGuideViewProps> = ({ data, onBack, on
                                     推荐装备
                                 </h3>
                                 <ul className="space-y-3">
-                                    {data.gear.recommended.map((g, i) => (
+                                    {data.gear?.recommended?.map((g, i) => (
                                         <li key={i} className="flex items-start gap-3 bg-earth-50 p-3 rounded-lg border border-transparent hover:border-sky-100 transition-colors">
                                             <div className="mt-1 text-sky-600"><Check size={16} /></div>
                                             <div>
@@ -930,7 +984,7 @@ export const TrailGuideView: React.FC<TrailGuideViewProps> = ({ data, onBack, on
                                                 {g.reason && <div className="text-xs text-earth-500 mt-1">{g.reason}</div>}
                                             </div>
                                         </li>
-                                    ))}
+                                    )) || <li className="text-earth-400 text-sm">暂无装备信息</li>}
                                 </ul>
                             </div>
                         </div>

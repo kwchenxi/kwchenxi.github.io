@@ -6,10 +6,12 @@ interface HeroSearchProps {
   onSearch: (query: string) => void;
   isLoading: boolean;
   savedTrails: TrailData[];
+  communityTrails: TrailData[];
   onSelectTrail: (trail: TrailData) => void;
+  onCommunityClick: () => void;
 }
 
-const HeroSearch: React.FC<HeroSearchProps> = ({ onSearch, isLoading, savedTrails, onSelectTrail }) => {
+const HeroSearch: React.FC<HeroSearchProps> = ({ onSearch, isLoading, savedTrails, communityTrails, onSelectTrail, onCommunityClick }) => {
   const [input, setInput] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -82,11 +84,11 @@ const HeroSearch: React.FC<HeroSearchProps> = ({ onSearch, isLoading, savedTrail
         {/* Saved / Contributed Trails Section */}
         {savedTrails.length > 0 && (
            <div className="mb-8 animate-fade-in-up">
-              <h3 className="text-xs font-bold text-earth-400 uppercase tracking-widest mb-3">继续你的探索 / 我的贡献</h3>
+              <h3 className="text-xs font-bold text-earth-400 uppercase tracking-widest mb-3">继续你的探索 / 我的收藏</h3>
               <div className="flex flex-wrap justify-center gap-3">
                  {savedTrails.slice(0, 4).map((trail, idx) => (
                     <button
-                        key={idx}
+                        key={trail.id || idx}
                         onClick={() => onSelectTrail(trail)}
                         className="bg-white/80 backdrop-blur border border-forest-100 hover:border-forest-300 hover:bg-white text-earth-700 px-4 py-2 rounded-full shadow-sm hover:shadow-md transition-all flex items-center gap-2 group"
                     >
@@ -98,6 +100,19 @@ const HeroSearch: React.FC<HeroSearchProps> = ({ onSearch, isLoading, savedTrail
                     <span className="text-xs text-earth-400 self-center flex items-center">+{savedTrails.length - 4} 更多</span>
                  )}
               </div>
+           </div>
+        )}
+
+        {/* Community Trails Button */}
+        {communityTrails.length > 0 && (
+           <div className="mb-6 animate-fade-in-up">
+              <button
+                  onClick={onCommunityClick}
+                  className="bg-gradient-to-r from-forest-500 to-forest-600 hover:from-forest-600 hover:to-forest-700 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all flex items-center gap-2 font-medium"
+              >
+                  <MapPin size={18} />
+                  <span>浏览社区路线 ({communityTrails.length})</span>
+              </button>
            </div>
         )}
 

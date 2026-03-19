@@ -30,9 +30,9 @@
             100% { transform: scale(1); }
         }
 
-        /* 页面加载效果 */
+        /* 页面加载效果 - 优化加载速度 */
         body {
-            animation: fadeIn 0.8s ease-in;
+            animation: fadeIn 0.3s ease-in;
         }
 
         * {
@@ -337,28 +337,6 @@
             z-index: 1000;
             display: flex;
             gap: 8px;
-        }
-
-        .version-btn {
-            padding: 10px 20px;
-            border: 3px solid var(--border);
-            border-radius: 0;
-            background: var(--surface);
-            color: var(--text-primary);
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
-        }
-
-        .version-btn:hover {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
-        }
-
-        .version-btn.active {
-            background: var(--primary-color);
-            color: white;
         }
 
         /* 确保网格布局中的卡片高度一致 */
@@ -811,11 +789,6 @@
     </style>
 </head>
 <body>
-    <!-- 版本切换按钮 -->
-    <div class="version-toggle">
-        <button class="version-btn active" id="current-version-btn">当前版本</button>
-        <button class="version-btn" id="old-version-btn">旧版本</button>
-    </div>
 
     <div class="container">
         <header class="header" style="padding: 20px 0; height: 120px; display: flex; flex-direction: column; justify-content: center;">
@@ -824,7 +797,26 @@
         </header>
 
         <div class="projects-grid">
-            <div class="project-card" data-href="/outdoor-guide/">
+            <div class="project-card" data-href="http://127.0.0.1:3005/">
+                <div class="project-header">
+                    <div class="project-icon">🚀</div>
+                    <div>
+                        <h3 class="project-title">我的作品集</h3>
+                        <p class="project-subtitle">AI创新与用户体验设计</p>
+                    </div>
+                </div>
+                <p class="project-description">
+                    展示多个AI驱动的创新项目，包括智能日历、AIGC智能助手、OA办公平台等，体现AI工具链与产品设计的深度融合。
+                </p>
+                <div class="project-tags">
+                    <span class="tag">AI创新</span>
+                    <span class="tag">产品设计</span>
+                    <span class="tag">用户体验</span>
+                    <a href="http://127.0.0.1:3005/" class="project-detail-link" target="_blank">详情</a>
+                </div>
+            </div>
+            
+            <div class="project-card" data-href="http://localhost:3000/">
                 <div class="project-header">
                     <div class="project-icon">⛰️</div>
                     <div>
@@ -839,7 +831,7 @@
                     <span class="tag">户外导航</span>
                     <span class="tag">地理信息</span>
                     <span class="tag">探索工具</span>
-                    <a href="/outdoor-guide/" class="project-detail-link" target="_blank">详情</a>
+                    <a href="http://localhost:3000/" class="project-detail-link" target="_blank">详情</a>
                 </div>
             </div>
             
@@ -919,22 +911,22 @@
                 </div>
             </div>
             
-            <div class="project-card" data-href="hand-drawn-portfolio.html">
+            <div class="project-card" data-href="http://127.0.0.1:3005/">
                 <div class="project-header">
-                    <div class="project-icon">🎨</div>
+                    <div class="project-icon">🚀</div>
                     <div>
-                        <h3 class="project-title">手绘风格作品集</h3>
-                        <p class="project-subtitle">创意设计展示</p>
+                        <h3 class="project-title">我的项目作品集</h3>
+                        <p class="project-subtitle">AI创新与用户体验设计</p>
                     </div>
                 </div>
                 <p class="project-description">
-                    采用手绘风格设计的作品集封面，展现独特的艺术创意和设计理念。
+                    展示多个AI驱动的创新项目，包括智能日历、AIGC智能助手、OA办公平台等，体现AI工具链与产品设计的深度融合。
                 </p>
                 <div class="project-tags">
-                    <span class="tag">作品集</span>
-                    <span class="tag">手绘风格</span>
-                    <span class="tag">创意设计</span>
-                    <a href="hand-drawn-portfolio.html" class="project-detail-link" target="_blank">详情</a>
+                    <span class="tag">AI创新</span>
+                    <span class="tag">产品设计</span>
+                    <span class="tag">用户体验</span>
+                    <a href="http://127.0.0.1:3005/" class="project-detail-link" target="_blank">详情</a>
                 </div>
             </div>
 
@@ -1435,24 +1427,22 @@
         </footer>
     </div>
     <script>
-        // 为所有带有data-href属性的卡片的图标添加点击事件
+        // 为所有带有data-href属性的卡片添加点击事件
         document.addEventListener('DOMContentLoaded', function() {
             const cards = document.querySelectorAll('.project-card[data-href]');
             cards.forEach(card => {
-                // 移除卡片的指针样式
-                card.style.cursor = 'default';
-                
-                // 为项目图标添加点击事件
-                const icon = card.querySelector('.project-icon');
-                if (icon) {
-                    icon.style.cursor = 'pointer';
-                    icon.addEventListener('click', function() {
-                        const href = card.getAttribute('data-href');
-                        if (href) {
-                            window.open(href, '_blank');
+                // 为整个卡片添加点击事件
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', function(e) {
+                    const href = card.getAttribute('data-href');
+                    if (href) {
+                        // 如果点击的不是详情链接，则导航到项目页面
+                        if (!e.target.classList.contains('project-detail-link')) {
+                            e.preventDefault();
+                            window.location.href = href;
                         }
-                    });
-                }
+                    }
+                });
             });
 
             // 滚动触发的动画效果
@@ -1499,44 +1489,6 @@
                         this.style.transform = 'scale(1)';
                     });
                 });
-            }
-
-            // 版本切换功能
-            const currentVersionBtn = document.getElementById('current-version-btn');
-            const oldVersionBtn = document.getElementById('old-version-btn');
-            
-            // 获取当前页面URL
-            const currentUrl = window.location.pathname;
-            
-            // 检查是否在旧版本页面
-            const isOldVersion = currentUrl.includes('index_backup.html') || currentUrl.includes('old_version');
-            
-            // 更新按钮状态
-            function updateButtonState() {
-                if (isOldVersion) {
-                    oldVersionBtn.classList.add('active');
-                    currentVersionBtn.classList.remove('active');
-                } else {
-                    currentVersionBtn.classList.add('active');
-                    oldVersionBtn.classList.remove('active');
-                }
-            }
-            
-            // 初始化按钮状态
-            updateButtonState();
-            
-            // 添加点击事件
-            currentVersionBtn.addEventListener('click', function() {
-                if (isOldVersion) {
-                    window.location.href = './index.html';
-                }
-            });
-            
-            oldVersionBtn.addEventListener('click', function() {
-                if (!isOldVersion) {
-                    window.location.href = './index_backup.html';
-                }
-            });
         });
     </script>
 </body>

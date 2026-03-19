@@ -26,6 +26,7 @@ export interface GearItem {
 }
 
 export interface TrailData {
+  id?: string;
   name: string;
   location: string;
   // Geo-coordinates for the general location center
