@@ -1428,25 +1428,10 @@
                 });
             });
 
-            // 滚动触发的动画效果
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver(function(entries, observer) {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, observerOptions);
-
-            // 观察所有项目卡片
+            // 禁用滚动动画，直接显示所有卡片
             const projectCards = document.querySelectorAll('.project-card');
             projectCards.forEach(card => {
-                observer.observe(card);
+                card.classList.add('visible');
             });
 
             // 添加滚动进度指示器
