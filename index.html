@@ -1422,12 +1422,13 @@
             cards.forEach(card => {
                 // 为整个卡片添加点击事件
                 card.style.cursor = 'pointer';
-                card.addEventListener('click', function(e) {
+                card.addEventListener('click', function(event) {
                     const href = card.getAttribute('data-href');
                     if (href) {
                         // 如果点击的不是详情链接，则导航到项目页面
-                        if (!e.target.classList.contains('project-detail-link')) {
-                            e.preventDefault();
+                        const target = event.target;
+                        if (!target.classList.contains('project-detail-link')) {
+                            event.preventDefault();
                             window.location.href = href;
                         }
                     }
