@@ -1422,7 +1422,6 @@
                         // 如果点击的不是详情链接，则导航到项目页面
                         const target = event.target;
                         if (!target.classList.contains('project-detail-link')) {
-                            event.preventDefault();
                             window.location.href = href;
                         }
                     }
