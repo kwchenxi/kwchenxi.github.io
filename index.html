@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Hoho的实验室</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body>
 
@@ -17,7 +17,7 @@
             <p style="margin-top: 0;">探索创意与AI的无限可能，这里是我各种有趣AI项目的集合</p>
         </header>
 
-        <div class="projects-grid">
+        <div class="projects-grid lab-grid collapsed">
             <div class="project-card" data-href="https://design-review-roan.vercel.app/">
                 <div class="project-header">
                     <div class="project-icon">✅</div>
@@ -37,22 +37,22 @@
                 </div>
             </div>
 
-            <div class="project-card" data-href="https://hoho-portfolio.vercel.app">
+            <div class="project-card" data-href="https://github.com/kwchenxi/excel-to-dmp">
                 <div class="project-header">
-                    <div class="project-icon">🚀</div>
+                    <div class="project-icon">🐛</div>
                     <div>
-                        <h3 class="project-title">我的作品集</h3>
-                        <p class="project-subtitle">AI创新与用户体验设计</p>
+                        <h3 class="project-title">BUG批量提单工具</h3>
+                        <p class="project-subtitle">Excel BUG自动录入研发系统</p>
                     </div>
                 </div>
                 <p class="project-description">
-                    展示多个AI驱动的创新项目，包括智能日历、AIGC智能助手、OA办公平台等，体现AI工具链与产品设计的深度融合。
+                    将Excel中记录的BUG列表自动批量提单到研发管理系统，省去逐条手动录入的繁琐操作，大幅提升缺陷管理效率。
                 </p>
                 <div class="project-tags">
-                    <span class="tag">AI创新</span>
-                    <span class="tag">产品设计</span>
-                    <span class="tag">用户体验</span>
-                    <a href="https://hoho-portfolio.vercel.app" class="project-detail-link" target="_blank">详情</a>
+                    <span class="tag">自动化</span>
+                    <span class="tag">效率工具</span>
+                    <span class="tag">缺陷管理</span>
+                    <a href="https://github.com/kwchenxi/excel-to-dmp" class="project-detail-link" target="_blank">详情</a>
                 </div>
             </div>
 
@@ -151,9 +151,30 @@
                 </div>
             </div>
 
-
+            <div class="project-card" data-href="https://hoho-portfolio.vercel.app">
+                <div class="project-header">
+                    <div class="project-icon">🚀</div>
+                    <div>
+                        <h3 class="project-title">我的作品集</h3>
+                        <p class="project-subtitle">AI创新与用户体验设计</p>
+                    </div>
+                </div>
+                <p class="project-description">
+                    展示多个AI驱动的创新项目，包括智能日历、AIGC智能助手、OA办公平台等，体现AI工具链与产品设计的深度融合。
+                </p>
+                <div class="project-tags">
+                    <span class="tag">AI创新</span>
+                    <span class="tag">产品设计</span>
+                    <span class="tag">用户体验</span>
+                    <a href="https://hoho-portfolio.vercel.app" class="project-detail-link" target="_blank">详情</a>
+                </div>
+            </div>
 
         </div>
+
+        <button class="toggle-more-btn" id="toggleLabBtn" onclick="toggleLabGrid()">
+            展开更多 <span class="arrow">↓</span>
+        </button>
 
         <section class="header" style="padding: 20px 0; height: 120px; display: flex; flex-direction: column; justify-content: center; margin-top: 40px;">
             <h1 style="margin-bottom: 5px; line-height: 1.2;">沉淀与实践</h1>
@@ -344,6 +365,25 @@
                             <span class="tag">AI工具</span>
                             <span class="tag">播客生成</span>
                             <a href="https://mp.weixin.qq.com/s/XA6Yl1EZ6JMTEteqKEe-pA" class="project-detail-link" target="_blank">详情</a>
+                        </div>
+                    </div>
+
+                    <div class="project-card" data-href="hoho-lab/lingji-walkthrough.html">
+                        <div class="project-header">
+                            <div class="project-icon">🔎</div>
+                            <div>
+                                <h3 class="project-title">用 AI 做 UI 走查是什么体验</h3>
+                                <p class="project-subtitle">AI 驱动的产品设计自动化走查实践</p>
+                            </div>
+                        </div>
+                        <p class="project-description">
+                            让 AI 操控桌面、自动截图、对照设计规范，完整走查金蝶灵基会议室预订与对话功能，输出图文并茂的走查报告。探索 AI Agent 在 UX 质检场景的实际能力边界。
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">AI走查</span>
+                            <span class="tag">UX质检</span>
+                            <span class="tag">Computer Use</span>
+                            <a href="hoho-lab/lingji-walkthrough.html" class="project-detail-link" target="_blank">详情</a>
                         </div>
                     </div>
 
@@ -639,6 +679,6 @@
 
 
     </div>
-    <script src="script.js?v=2"></script>
+    <script src="script.js?v=3"></script>
 </body>
 </html>
