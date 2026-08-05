@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>金蝶灵基 - 对话页面走查报告</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif; background: #f5f6fa; color: #1a1a2e; line-height: 1.7; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+  header { text-align: center; margin-bottom: 48px; }
+  header h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+  header .meta { color: #666; font-size: 14px; }
+  header .meta a { color: #6c5ce7; }
+  .summary-bar { display: flex; gap: 16px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap; }
+  .summary-card { background: #fff; border-radius: 12px; padding: 20px 28px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); min-width: 140px; }
+  .summary-card .num { font-size: 36px; font-weight: 700; }
+  .summary-card .label { font-size: 13px; color: #888; margin-top: 4px; }
+  .severity-critical .num { color: #e74c3c; }
+  .severity-medium .num { color: #f39c12; }
+  .severity-low .num { color: #3498db; }
+  .severity-spec .num { color: #9b59b6; }
+  .section-title { font-size: 22px; font-weight: 700; margin: 40px 0 20px; padding-left: 14px; border-left: 4px solid #e74c3c; }
+  .section-title.medium { border-left-color: #f39c12; }
+  .section-title.low { border-left-color: #3498db; }
+  .section-title.spec { border-left-color: #9b59b6; }
+  .section-title.baseline { border-left-color: #2ecc71; }
+  .issue { background: #fff; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow: hidden; }
+  .issue-header { display: flex; align-items: center; gap: 12px; padding: 18px 24px; cursor: pointer; user-select: none; }
+  .issue-header:hover { background: #fafbfd; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; color: #fff; flex-shrink: 0; }
+  .badge-critical { background: #e74c3c; }
+  .badge-medium { background: #f39c12; }
+  .badge-low { background: #3498db; }
+  .badge-ok { background: #2ecc71; }
+  .issue-header h3 { font-size: 16px; font-weight: 600; flex: 1; }
+  .issue-header .toggle { font-size: 20px; color: #aaa; transition: transform 0.3s; }
+  .issue-header .toggle.open { transform: rotate(180deg); }
+  .issue-body { padding: 0 24px 24px; display: none; }
+  .issue-body.show { display: block; }
+  .issue-body p { margin-bottom: 10px; font-size: 14px; }
+  .field { display: flex; gap: 8px; margin-bottom: 8px; }
+  .field-label { font-weight: 600; min-width: 70px; color: #555; font-size: 14px; }
+  .field-value { font-size: 14px; }
+  .screenshot-wrap { margin-top: 16px; border-radius: 8px; overflow: hidden; border: 1px solid #e8e8e8; }
+  .screenshot-wrap img { width: 100%; display: block; }
+  .suggestion { background: #f0fdf4; border-left: 3px solid #22c55e; padding: 10px 14px; margin-top: 12px; border-radius: 0 8px 8px 0; font-size: 14px; }
+  .suggestion strong { color: #16a34a; }
+  .spec-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .spec-table th { background: #f8f9fc; text-align: left; padding: 12px 16px; border-bottom: 2px solid #e8e8e8; }
+  .spec-table td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; }
+  .spec-table tr:hover { background: #fafbfd; }
+  .tag-pass { color: #22c55e; font-weight: 600; }
+  .tag-fail { color: #e74c3c; font-weight: 600; }
+  .tag-na { color: #999; }
+  footer { text-align: center; margin-top: 60px; padding: 24px; color: #aaa; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>金蝶灵基 — 对话页面走查报告</h1>
+    <div class="meta">走查时间：2026-08-04 ｜ 范围：对话功能（对话列表、消息区、输入框、空状态） ｜ 参考规范：<a href="https://kingdee.github.io/lingee-ui/#/quick-start" target="_blank">Lingee UI</a></div>
+  </header>
+
+  <div class="summary-bar">
+    <div class="summary-card severity-medium"><div class="num">3</div><div class="label">中等问题</div></div>
+    <div class="summary-card severity-low"><div class="num">4</div><div class="label">轻微问题</div></div>
+    <div class="summary-card severity-spec"><div class="num">3</div><div class="label">规范偏差</div></div>
+    <div class="summary-card"><div class="num" style="color:#2ecc71">2</div><div class="label">表现正常项</div></div>
+  </div>
+
+  <!-- ============ 基准状态 ============ -->
+  <h2 class="section-title baseline">基准状态</h2>
+
+  <div class="issue">
+    <div class="issue-header" onclick="toggleIssue(this)">
+      <span class="badge badge-ok">基准</span>
+      <h3>对话页面默认窗口状态</h3>
+      <span class="toggle open">▼</span>
+    </div>
+    <div class="issue-body show">
+      <div class="field"><span class="field-label">说明</span><span class="field-value">对话页面默认窗口大小，左侧为对话列表，右侧为对话内容区（含 AI 欢迎页），底部为输入框。</span></div>
+      <div class="screenshot-wrap"><img src="lingji-report-images/chat/chat-01-baseline.png" alt="对话页面基准"></div>
+    </div>
+  </div>
+
+  <!-- ============ 中等问题 ============ -->
+  <h2 class="section-title medium">中等问题</h2>
+
+  <div class="issue">
+    <div class="issue-header" onclick="toggleIssue(this)">
+      <span class="badge badge-medium">中等</span>
+      <h3>#1 窗口最小宽度限制过大（~960px），无法覆盖窄屏场景</h3>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="issue-body">
+      <div class="field"><span class="field-label">位置</span><span class="field-value">应用主窗口整体</span></div>
+      <div class="field"><span class="field-label">表现</span><span class="field-value">尝试将窗口缩小到更小尺寸时，窗口保持约 960×640 无法继续缩小。尝试设置为 760px 宽度后，窗口仍返回 960px。无法测试分屏、窄窗口下的响应式布局。</span></div>
+      <div class="field"><span class="field-label">影响</span><span class="field-value">如果产品预期支持 700-800px 宽度，则当前窗口最小宽度限制偏大。用户在小屏幕或分屏场景下可能遇到布局问题但无法被验证。</span></div>
+      <div class="screenshot-wrap"><img src="lingji-report-images/chat/chat-02-minwindow.png" alt="最小窗口"></div>
+      <div class="suggestion"><strong>建议：</strong>如产品要求支持窄窗口，需调整最小窗口宽度并增加响应式断点；如不支持，需在设计规范中明确桌面端最小尺寸要求。</div>
+    </div>
+  </div>
+
+  <div class="issue">
+    <div class="issue-header" onclick="toggleIssue(this)">
+      <span class="badge badge-medium">中等</span>
+      <h3>#2 输入框聚焦态主色描边不明显</h3>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="issue-body">
+      <div class="field"><span class="field-label">位置</span><span class="field-value">首页输入框 / 对话页底部输入框</span></div>
+      <div class="field"><span class="field-label">表现</span><span class="field-value">点击输入框后，边框仍为浅灰色，未观察到明显的主色（蓝紫色）描边或高对比 focus ring。</span></div>
+      <div class="field"><span class="field-label">影响</span><span class="field-value">键盘用户或低视力用户不易判断当前输入焦点，不利于无障碍体验。</span></div>
+      <div class="screenshot-wrap"><img src="lingji-report-images/chat/chat-04-input-focus.png" alt="输入框聚焦"></div>
+      <div class="screenshot-wrap"><img src="lingji-report-images/chat/chat-05-input-text.png" alt="输入文字"></div>
+      <div class="suggestion"><strong>建议：</strong>聚焦态使用 Lingee 主色描边，增加 focus ring 阴影或边框对比度，对齐 Input 组件聚焦态规范。</div>
+    </div>
+  </div>
+
+  <div class="issue">
+    <div class="issue-header" onclick="toggleIssue(this)">
+      <span class="badge badge-medium">中等</span>
+      <h3>#3 空状态 placeholder 可访问性文本被拆成单字</h3>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="issue-body">
+      <div class="field"><span class="field-label">位置</span><span class="field-value">新建对话空状态的输入框</span></div>
+      <div class="field"><span class="field-label">表现</span><span class="field-value">视觉上空状态清晰，但可访问性树中 placeholder 文案被拆成多个单字节点（如"问/我/问/题/进/行……"），影响屏幕阅读器朗读和自动化测试定位。</span></div>
+      <div class="field"><span class="field-label">影响</span><span class="field-value">屏幕阅读器用户听到逐字朗读而非完整语句；自动化测试工具难以通过文本定位元素。</span></div>
+      <div class="screenshot-wrap"><img src="lingji-report-images/chat/chat-06-empty.png" alt="空状态"></div>
+      <div class="suggestion"><strong>建议：</strong>优化 DOM/ARIA 结构，使 placeholder 或引导语作为完整文本节点暴露，确保 <code>aria-label</code> 或 <code>placeholder</code> 为完整字符串。</div>
+    </div>
+  </div>
+
+  <!-- ============ 轻微问题 ============ -->
+  <h2 class="section-title low">轻微问题</h2>
+
+  <div class="issue">
+    <div class="issue-header" onclick="toggleIssue(this)">
+      <span class="badge badge-low">轻微</span>
+      <h3>#4 最大化/全屏状态下内容区域空白过多</h3>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="issue-body">
+      <div class="field"><span class="field-label">位置</span><span class="field-value">对话首页 / 空状态主内容区</span></div>
+      <div class="field"><span class="field-label">表现</span><span class="field-value">最大化后，主输入区域仍保持较窄宽度并居中，左右两侧出现大量空白，信息密度偏低。</span></div>
+      <div class="screenshot-wrap"><img src="lingji-report-images/chat/chat-03-maxwindow.png" alt="最大化空白"></div>
+      <div class="suggestion"><strong>建议：</strong>设定合理 <code>max-width</code>，超宽屏下可展示更多推荐内容或侧边信息面板，提高空间利用率。</div>
+    </div>
+  </div>
+
+  <div class="issue">
+    <div class="issue-header" onclick="toggleIssue(this)">
+      <span class="badge badge-low">轻微</span>
+      <h3>#5 对话列表项信息维度不足，缺少时间和消息预览</h3>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="issue-body">
+      <div class="field"><span class="field-label">位置</span><span class="field-value">左侧对话列表</span></div>
+      <div class="field"><span class="field-label">表现</span><span class="field-value">会话列表项只显示标题（如"测试消息"），未看到时间、最后一条消息预览。多会话场景下用户较难快速判断会话内容和更新时间。</span></div>
+      <div class="screenshot-wrap"><img src="lingji-report-images/chat/chat-07-list.png" alt="对话列表"></div>
+      <div class="suggestion"><strong>建议：</strong>列表项补充时间戳和最后一条消息预览（单行截断），提升信息密度和可识别性。</div>
+    </div>
+  </div>
+
+  <div class="issue">
+    <div class="issue-header" onclick="toggleIssue(this)">
+      <span class="badge badge-low">轻微</span>
+      <h3>#6 桌面端右键上下文菜单不明显</h3>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="issue-body">
+      <div class="field"><span class="field-label">位置</span><span class="field-value">左侧会话列表项</span></div>
+      <div class="field"><span class="field-label">表现</span><span class="field-value">点击"更多操作"按钮可弹出菜单（含置顶、重命名、分享、归档、移动到文件夹、删除），但右键会话项未能唤起同样的上下文菜单。桌面端用户预期右键可直接操作。</span></div>
+      <div class="screenshot-wrap"><img src="lingji-report-images/chat/chat-08-context-menu.png" alt="更多操作菜单"></div>
+      <div class="suggestion"><strong>建议：</strong>桌面端增加右键上下文菜单支持，与"更多操作"按钮菜单内容保持一致。</div>
+    </div>
+  </div>
+
+  <div class="issue">
+    <div class="issue-header" onclick="toggleIssue(this)">
+      <span class="badge badge-low">轻微</span>
+      <h3>#7 AI 回复 loading 状态反馈较弱</h3>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="issue-body">
+      <div class="field"><span class="field-label">位置</span><span class="field-value">对话内容区 AI 回复区域</span></div>
+      <div class="field"><span class="field-label">表现</span><span class="field-value">发送消息后显示"理解你的意图…"文案，但没有明显 spinner 动画或进度反馈。如果等待时间较长，用户可能不确定是否仍在生成。</span></div>
+      <div class="screenshot-wrap"><img src="lingji-report-images/chat/chat-09-loading.png" alt="loading状态"></div>
+      <div class="suggestion"><strong>建议：</strong>增加加载动画（如呼吸灯、打字指示器），或显示生成进度，提升等待反馈感。</div>
+    </div>
+  </div>
+
+  <!-- ============ 表现正常项 ============ -->
+  <h2 class="section-title baseline">表现正常项</h2>
+
+  <div class="issue">
+    <div class="issue-header" onclick="toggleIssue(this)">
+      <span class="badge badge-ok">正常</span>
+      <h3>输入框底部固定（sticky）表现正常，滚动无重叠</h3>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="issue-body">
+      <div class="field"><span class="field-label">表现</span><span class="field-value">输入框固定在底部，滚动过程中没有内容与输入框重叠，右侧滚动条显示正常。</span></div>
+      <div class="screenshot-wrap"><img src="lingji-report-images/chat/chat-10-scroll.png" alt="滚动正常"></div>
+    </div>
+  </div>
+
+  <div class="issue">
+    <div class="issue-header" onclick="toggleIssue(this)">
+      <span class="badge badge-ok">正常</span>
+      <h3>消息气泡用户/AI区分清晰，短文本渲染正常</h3>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="issue-body">
+      <div class="field"><span class="field-label">表现</span><span class="field-value">用户消息位于右侧、AI 消息位于左侧，区分清晰。AI 回复包含列表、时间戳、操作按钮均渲染正常，间距基本符合 4px 网格。</span></div>
+      <div class="screenshot-wrap"><img src="lingji-report-images/chat/chat-11-bubble.png" alt="消息气泡"></div>
+    </div>
+  </div>
+
+  <!-- ============ 规范对照 ============ -->
+  <h2 class="section-title spec">对照 Lingee UI 设计规范</h2>
+
+  <div class="issue" style="overflow:visible">
+    <div class="issue-body show" style="display:block; padding: 24px;">
+      <table class="spec-table">
+        <thead>
+          <tr><th>规范项</th><th>规范要求</th><th>当前表现</th><th>判定</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Button</strong></td>
+            <td>md 规格 = 28px 高度</td>
+            <td>导航按钮、新对话按钮明显高于 28px，可能属于 Navigation/Chip 组件</td>
+            <td><span class="tag-na">待确认</span></td>
+          </tr>
+          <tr>
+            <td><strong>Dialog</strong></td>
+            <td>460 / 640 / 720px</td>
+            <td>本轮未出现 Dialog 类弹窗</td>
+            <td><span class="tag-na">未覆盖</span></td>
+          </tr>
+          <tr>
+            <td><strong>Spacing</strong></td>
+            <td>基于 4px 网格</td>
+            <td>整体间距较规整，菜单和消息区基本一致</td>
+            <td><span class="tag-pass">✓ 符合</span></td>
+          </tr>
+          <tr>
+            <td><strong>Input 聚焦态</strong></td>
+            <td>主色描边</td>
+            <td>聚焦后仍为浅灰描边，主色不明显</td>
+            <td><span class="tag-fail">✗ 偏差</span></td>
+          </tr>
+          <tr>
+            <td><strong>Tag</strong></td>
+            <td>sm / md / lg 三种尺寸</td>
+            <td>本轮未观察到典型 Tag 组件</td>
+            <td><span class="tag-na">未覆盖</span></td>
+          </tr>
+          <tr>
+            <td><strong>响应式窗口</strong></td>
+            <td>各尺寸下可用</td>
+            <td>最小宽度约 960px，无法测试 700-800px</td>
+            <td><span class="tag-fail">✗ 有限制</span></td>
+          </tr>
+          <tr>
+            <td><strong>消息气泡</strong></td>
+            <td>清晰区分发送方/接收方</td>
+            <td>用户/AI 区分清晰，短文本正常</td>
+            <td><span class="tag-pass">✓ 符合</span></td>
+          </tr>
+          <tr>
+            <td><strong>滚动 sticky</strong></td>
+            <td>输入区固定底部</td>
+            <td>输入框固定底部，无重叠</td>
+            <td><span class="tag-pass">✓ 符合</span></td>
+          </tr>
+          <tr>
+            <td><strong>空状态</strong></td>
+            <td>视觉清晰 + 可访问性</td>
+            <td>视觉清晰，但可访问性文本拆分为单字</td>
+            <td><span class="tag-fail">✗ a11y偏差</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    金蝶灵基 · 对话页面走查报告 · 生成于 2026-08-04
+  </footer>
+</div>
+
+<script>
+function toggleIssue(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('.toggle');
+  body.classList.toggle('show');
+  arrow.classList.toggle('open');
+}
+// 默认展开中等问题
+document.querySelectorAll('.badge-medium').forEach(badge => {
+  const header = badge.closest('.issue-header');
+  toggleIssue(header);
+});
+</script>
+</body>
+</html>
