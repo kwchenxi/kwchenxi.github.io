@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>用 AI 做 UI 走查是什么体验</title>
+<style>
+  :root {
+    --primary: #4598F0;
+    --primary-dark: #3477b3;
+    --secondary: #8b5cf6;
+    --accent: #06b6d4;
+    --bg: #f5f6f8;
+    --surface: #ffffff;
+    --text: rgba(0,0,0,0.85);
+    --text-secondary: rgba(0,0,0,0.65);
+    --text-muted: rgba(0,0,0,0.28);
+    --border: rgba(0,0,0,0.08);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 780px; margin: 0 auto; padding: 60px 24px 80px; }
+  .back { display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary); text-decoration: none; font-size: 14px; margin-bottom: 40px; transition: color 0.2s; }
+  .back:hover { color: var(--primary); }
+  .hero { margin-bottom: 56px; }
+  .hero h1 { font-size: 2.4rem; font-weight: 800; line-height: 1.3; margin-bottom: 12px; }
+  .hero .meta { color: var(--text-muted); font-size: 14px; }
+  .section { margin-bottom: 56px; }
+  .section-label { display: inline-block; font-size: 12px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+  .section h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 20px; line-height: 1.35; }
+  .section p { font-size: 16px; color: var(--text-secondary); margin-bottom: 16px; }
+  .section p:last-child { margin-bottom: 0; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 24px; }
+  .card { background: var(--surface); border-radius: var(--radius); padding: 24px; border: 1px solid var(--border); transition: box-shadow 0.2s, transform 0.2s; }
+  .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-2px); }
+  .card-icon { font-size: 28px; margin-bottom: 12px; }
+  .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .card p { font-size: 14px; color: var(--text-secondary); margin-bottom: 0; }
+  .timeline { position: relative; padding-left: 32px; margin-top: 24px; }
+  .timeline::before { content: ''; position: absolute; left: 7px; top: 8px; bottom: 8px; width: 2px; background: var(--border); }
+  .timeline-item { position: relative; margin-bottom: 28px; }
+  .timeline-item:last-child { margin-bottom: 0; }
+  .timeline-dot { position: absolute; left: -32px; top: 6px; width: 16px; height: 16px; border-radius: 50%; background: var(--primary); border: 3px solid var(--bg); }
+  .timeline-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .timeline-item p { font-size: 14px; color: var(--text-secondary); margin-bottom: 0; }
+  .case-links { display: flex; gap: 16px; margin-top: 24px; flex-wrap: wrap; }
+  .case-link { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 20px; text-decoration: none; color: var(--text); transition: border-color 0.2s, box-shadow 0.2s; flex: 1; min-width: 200px; }
+  .case-link:hover { border-color: var(--primary); box-shadow: 0 2px 12px rgba(69,152,240,0.12); }
+  .case-link-icon { font-size: 24px; flex-shrink: 0; }
+  .case-link-text h4 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+  .case-link-text span { font-size: 13px; color: var(--text-muted); }
+  .insight-list { display: grid; gap: 16px; margin-top: 20px; }
+  .insight { display: flex; gap: 14px; align-items: flex-start; }
+  .insight-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .insight-icon.pro { background: #e8f5e9; color: #2e7d32; }
+  .insight-icon.con { background: #fff3e0; color: #e65100; }
+  .insight p { font-size: 15px; color: var(--text-secondary); margin: 0; }
+  .divider { height: 1px; background: var(--border); margin: 48px 0; }
+  footer { text-align: center; padding: 40px 0 0; color: var(--text-muted); font-size: 13px; }
+  code { background: rgba(0,0,0,0.04); padding: 2px 6px; border-radius: 4px; font-size: 14px; font-family: "SF Mono", "Fira Code", monospace; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <a href="https://kwchenxi.github.io" class="back">&larr; 返回 Hoho 的 AI 实验室</a>
+
+  <div class="hero">
+    <h1>用 AI 做 UI 走查是什么体验</h1>
+    <div class="meta">Hoho &middot; 2026-08-04 &middot; 阅读约 5 分钟</div>
+  </div>
+
+  <div class="section">
+    <span class="section-label">01 / 起因</span>
+    <h2>传统走查，太费人了</h2>
+    <p>做过设计走查的人都知道，这是一个高度重复且主观的工作。你需要手动打开每一个页面，逐像素对比设计稿，手动截图、标注、记录问题，再整理成文档发给开发。</p>
+    <p>一轮完整走查下来，动辄 30-50 个问题，光是截图+标注就要花半天。而且走查质量高度依赖个人经验和当时的注意力 &mdash; 你今天状态好就多发现几个，状态差就漏掉几个。</p>
+    <p>那能不能让 AI 来做这件事？不是让它直接&ldquo;看&rdquo;一张图说好不好，而是像真人一样 &mdash; <strong>打开应用、操作界面、截取不同状态、对照设计规范、输出结构化报告</strong>。</p>
+    <p>于是我做了一个实验：让 AI Agent 完整走查金蝶灵基的会议室预订和对话功能，看看它能发现什么。</p>
+  </div>
+
+  <div class="section">
+    <span class="section-label">02 / 技术手段</span>
+    <h2>三个能力支柱</h2>
+    <p>这次走查不是让 AI &ldquo;看一眼截图打分&rdquo;，而是让 AI Agent 像真人测试员一样操作桌面应用。它背后依赖三个关键技术：</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">&#x1F5A5;&#xFE0F;</div>
+        <h3>Computer Use</h3>
+        <p>AI 直接操控桌面：拖拽窗口测试响应式、点击按钮、在输入框打字、截图取证。相当于一个能看屏幕的远程测试员。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F310;</div>
+        <h3>Browser Agent</h3>
+        <p>用浏览器代理访问设计规范站（SPA 应用），提取间距、字号、按钮高度等具体数值，作为走查的评判基准。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F4CB;</div>
+        <h3>对照评审</h3>
+        <p>Heuristic Evaluation &mdash; 将截图中的实际表现与规范数值逐项比对，自动归纳严重/中等/轻微问题并生成报告。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <span class="section-label">03 / 走查流程</span>
+    <h2>从打开应用到输出报告</h2>
+    <p>整个过程不需要写任何测试脚本，也不需要设计稿。AI 就像一个刚入职的测试同学，但它的操作速度比人快 3-5 倍，而且不会遗漏检查项。</p>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <h4>打开应用 &amp; 截取基准</h4>
+        <p>AI 操控桌面打开灵基应用，截取默认窗口状态作为基准截图。</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <h4>窗口缩放极限测试</h4>
+        <p>拖拽窗口到最小尺寸（测试响应式）、窄宽度、全屏最大化，每个状态截图记录布局问题。</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <h4>交互操作测试</h4>
+        <p>点击筛选器、下拉框、搜索、按钮，快速连续操作，测试加载态、面板残留、焦点状态等交互细节。</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <h4>规范对照</h4>
+        <p>Browser Agent 访问 Lingee UI 规范站，提取 Button md=28px、Dialog=460/640/720px、Spacing 4px 网格等数值。</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <h4>输出 HTML 报告</h4>
+        <p>将所有发现按严重/中等/轻微分级，嵌入截图，生成可交互的 HTML 走查报告。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <span class="section-label">04 / 实际案例</span>
+    <h2>金蝶灵基 &middot; 走查报告</h2>
+    <p>以下是对金蝶灵基桌面端两个功能模块的完整走查报告。每份报告包含问题描述、截图证据和修复建议。</p>
+    <div class="case-links">
+      <a href="lingji-walkthrough.html" class="case-link">
+        <div class="case-link-icon">&#x1F3E2;</div>
+        <div class="case-link-text">
+          <h4>会议室预订</h4>
+          <span>3 严重 &middot; 7 中等 &middot; 8 轻微</span>
+        </div>
+      </a>
+      <a href="lingji-walkthrough-chat.html" class="case-link">
+        <div class="case-link-icon">&#x1F4AC;</div>
+        <div class="case-link-text">
+          <h4>对话功能</h4>
+          <span>3 中等 &middot; 4 轻微</span>
+        </div>
+      </a>
+    </div>
+    <p style="margin-top: 20px; font-size: 14px; color: var(--text-muted);">提示：报告为独立 HTML 页面，包含可展开/收起的问题详情和完整截图。</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <span class="section-label">05 / 思考</span>
+    <h2>AI 走查的边界在哪里</h2>
+    <p>实验下来，有几个比较明确的结论：</p>
+    <div class="insight-list">
+      <div class="insight">
+        <div class="insight-icon pro">&check;</div>
+        <p><strong>响应式 &amp; 布局问题发现率很高。</strong>AI 可以系统地测试多种窗口尺寸，不遗漏截断、溢出、列数不降等问题。这类问题人工走查经常漏。</p>
+      </div>
+      <div class="insight">
+        <div class="insight-icon pro">&check;</div>
+        <p><strong>规范偏差检查很稳定。</strong>只要规范数值明确（如按钮高度 28px），AI 就能准确判断实际实现是否偏离，不受主观影响。</p>
+      </div>
+      <div class="insight">
+        <div class="insight-icon con">&triangle;</div>
+        <p><strong>视觉美感判断还做不了。</strong>颜色搭配是否和谐、留白是否舒适、视觉层次是否清晰 &mdash; 这些需要设计直觉的问题，AI 目前只能给出&ldquo;符合/不符合规范&rdquo;的二元判断。</p>
+      </div>
+      <div class="insight">
+        <div class="insight-icon con">&triangle;</div>
+        <p><strong>交互逻辑深度不足。</strong>对于需要多步骤、多状态联动的复杂业务逻辑（如审批流程），AI 只能测试表层 UI，无法理解业务流程是否正确。</p>
+      </div>
+      <div class="insight">
+        <div class="insight-icon pro">&check;</div>
+        <p><strong>未来方向：AI 走查 + 人工审核。</strong>AI 负责批量扫描布局和规范性问题，人工聚焦在设计意图和业务逻辑的验证上，效率可以提升 3-5 倍。</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Hoho &middot; 用 AI 做 UI 走查 &middot; 2026
+  </footer>
+
+</div>
+</body>
+</html>
