@@ -38,3 +38,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+function toggleLabGrid() {
+    const grid = document.querySelector('.lab-grid');
+    const btn = document.getElementById('toggleLabBtn');
+    if (!grid || !btn) return;
+    const isCollapsed = grid.classList.contains('collapsed');
+    if (isCollapsed) {
+        grid.classList.remove('collapsed');
+        btn.innerHTML = '收起 <span class="arrow" style="transform:rotate(180deg)">↓</span>';
+    } else {
+        grid.classList.add('collapsed');
+        btn.innerHTML = '展开更多 <span class="arrow">↓</span>';
+    }
+}
