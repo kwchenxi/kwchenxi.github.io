@@ -1,0 +1,478 @@
+{
+  "version": "1.0.0",
+  "source": {
+    "online_docs": "https://kingdee.github.io/lingee-ui/",
+    "figma_spec": "Lingee-unified-page-generation-spec.md v2.5.0",
+    "figma_file_key": "HXHbn9VT1RgPuJ70JI4tQ5",
+    "extracted_at": "2026-08-06"
+  },
+
+  "design_tokens": {
+    "color": {
+      "primary": "#495DFF",
+      "primary_hover": "#6D80FF",
+      "primary_pressed": "#3B47F2",
+      "primary_disabled": "#B7C1FF",
+      "foreground": {
+        "black_strong": "rgba(0,0,0,0.94)",
+        "black_default": "rgba(0,0,0,0.82)",
+        "black_muted": "rgba(0,0,0,0.65)",
+        "black_subtle": "rgba(0,0,0,0.45)",
+        "black_disabled": "rgba(0,0,0,0.28)"
+      },
+      "border": {
+        "default": "rgba(0,0,0,0.08)",
+        "light": "rgba(0,0,0,0.08)",
+        "medium": "rgba(0,0,0,0.12)",
+        "strong": "rgba(0,0,0,0.18)"
+      },
+      "background": {
+        "surface": "#FFFFFF",
+        "subtle": "rgba(0,0,0,0.03)",
+        "muted": "rgba(0,0,0,0.06)"
+      },
+      "semantic": {
+        "danger": "#F12234",
+        "danger_text": "#DA0B20",
+        "warning": "#FF8B00",
+        "success": "#00B578",
+        "info": "#495DFF"
+      }
+    },
+    "typography": {
+      "font_family": "PingFang SC",
+      "heading": {
+        "h1": { "weight": 600, "size": 36, "usage": "页面最顶端全局标题" },
+        "h2": { "weight": 600, "size": 24, "usage": "页面二级模块标题" },
+        "h3": { "weight": 600, "size": 20, "usage": "三级小标题" },
+        "h4": { "weight": 600, "size": 18, "usage": "四级小标题" },
+        "h5": { "weight": 500, "size": 16, "usage": "次级栏目标题" },
+        "h6": { "weight": 500, "size": 14, "usage": "基础小标题" }
+      },
+      "paragraph": {
+        "p1": { "weight": 400, "size": 16, "line_height": 24, "usage": "常规正文长文本" },
+        "p2": { "weight": 400, "size": 14, "line_height": 22, "usage": "通用正文" },
+        "p3": { "weight": 400, "size": 12, "line_height": 18, "usage": "辅助说明文字" },
+        "p4": { "weight": 400, "size": 10, "line_height": 16, "usage": "极小号标注" }
+      }
+    },
+    "spacing": {
+      "unit": "4px grid",
+      "tokens": {
+        "3x-small": 2,
+        "2x-small": 4,
+        "1.5x-small": 6,
+        "x-small": 8,
+        "0.5x-small": 10,
+        "small": 12,
+        "medium": 16,
+        "large": 20,
+        "0.5x-large": 24,
+        "x-large": 28,
+        "2x-large": 36,
+        "3x-large": 48,
+        "4x-large": 72
+      },
+      "common_usage": {
+        "组件内间距": "x-small (8px)",
+        "标准模块间距": "medium (16px)",
+        "区域间距": "large (20px)"
+      }
+    },
+    "radius": {
+      "tokens": {
+        "small": { "px": 4, "usage": "微调圆角" },
+        "medium": { "px": 6, "usage": "默认组件圆角" },
+        "x-medium": { "px": 8, "usage": "H≤32 组件" },
+        "large": { "px": 12, "usage": "三级嵌套卡片" },
+        "x-large": { "px": 16, "usage": "二级嵌套卡片" },
+        "2x-large": { "px": 20, "usage": "下拉框边框" },
+        "3x-large": { "px": 24, "usage": "一级卡片背景、弹窗" },
+        "4x-large": { "px": 28, "usage": "弹窗、模态面板" },
+        "5x-large": { "px": 32, "usage": "界面边框" },
+        "circle": { "px": 999, "usage": "正圆形场景", "figma_note": "Figma 为 50%H" },
+        "pill": { "px": 999, "usage": "胶囊形按钮" }
+      }
+    },
+    "shadow": {
+      "colors": {
+        "subtle": "rgba(0,0,0,0.04)",
+        "muted": "rgba(0,0,0,0.08)",
+        "moderate": "rgba(0,0,0,0.18)"
+      },
+      "levels": {
+        "small": { "value": "0 1px 2px rgba(0,0,0,0.04), 0 1px 4px rgba(0,0,0,0.04)", "usage": "按钮hover、小卡片" },
+        "medium": { "value": "0 4px 12px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04)", "usage": "卡片默认、下拉面板" },
+        "large": { "value": "0 8px 24px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04)", "usage": "弹窗、模态框" }
+      }
+    }
+  },
+
+  "components": {
+    "button": {
+      "figma_node": "16375:18601",
+      "variants": {
+        "type": ["primary", "filled", "default", "text", "link-plain", "link"],
+        "size": ["sm", "md", "std", "lg"],
+        "state": ["default", "hover", "focused", "pressed", "disabled"],
+        "content": ["basic", "icon-only"],
+        "ghost": [true, false],
+        "danger": [true, false],
+        "shape": ["default", "round"]
+      },
+      "size_spec": {
+        "sm": { "height": 24, "label": "Small" },
+        "md": { "height": 28, "label": "Default/Medium" },
+        "std": { "height": 32, "label": "Medium in online docs" },
+        "lg": { "height": 36, "label": "Large" }
+      },
+      "shape_spec": {
+        "default": { "radius": 8 },
+        "round": { "radius": 999 }
+      },
+      "padding": { "horizontal": [8, 12] }
+    },
+    "input": {
+      "figma_node": "9640:63861",
+      "variants": {
+        "size": ["sm", "md", "lg"],
+        "shape": ["default", "round"],
+        "state": ["default", "focus", "error", "disabled"]
+      },
+      "focus_spec": "主色描边 (#495DFF)",
+      "default_border": "rgba(0,0,0,0.08) 1px"
+    },
+    "dialog": {
+      "figma_node": "9640:64241",
+      "variants": {
+        "width": ["small", "medium", "large"]
+      },
+      "width_spec": {
+        "small": 460,
+        "medium": 640,
+        "large": 720
+      }
+    },
+    "tag": {
+      "figma_node": "9640:63706",
+      "variants": {
+        "color": ["info", "primary", "success", "warning", "danger", "custom"],
+        "size": ["sm", "md", "lg"],
+        "shape": ["pill", "rounded"]
+      }
+    },
+    "select": {
+      "figma_node": "13940:4020",
+      "variants": {
+        "size": ["sm", "md", "lg"],
+        "state": ["default", "focus", "error", "disabled", "loading"],
+        "mode": ["single", "multiple"]
+      },
+      "features": {
+        "showSearch": "可搜索下拉",
+        "allowClear": "可清空",
+        "maxTagCount": "多选标签溢出控制"
+      }
+    },
+    "divider": {
+      "figma_node": "14654:142",
+      "variants": {
+        "style": ["lightest", "light", "default", "dark-bold", "primary"]
+      },
+      "color_spec": {
+        "lightest": "rgba(0,0,0,0.03)",
+        "light": "rgba(0,0,0,0.08)",
+        "default": "rgba(0,0,0,0.18)",
+        "dark-bold": "rgba(0,0,0,0.94)",
+        "primary": "#495DFF"
+      }
+    },
+    "checkbox": {
+      "figma_node": "22031:12715",
+      "variants": {
+        "element": ["unselected", "selected", "intermediate"],
+        "state": ["default", "hover", "pressed", "disabled"]
+      },
+      "icon_size": 16,
+      "checked_color": "#495DFF",
+      "hover_color": "#6D80FF",
+      "pressed_color": "#3B47F2",
+      "disabled_color": "#B7C1FF",
+      "text_style": "PingFang SC Regular 400, 14px/22px",
+      "text_color": "rgba(0,0,0,0.82)",
+      "disabled_text": "rgba(0,0,0,0.28)"
+    },
+    "drawer": {
+      "figma_node": "18848:9085",
+      "variants": {
+        "position": ["up", "down", "right", "left"]
+      },
+      "shell_spec": {
+        "up_down": { "fixed_height": 480 },
+        "left_right": { "fixed_width": 480 }
+      },
+      "header_title": "Noto Sans SC Medium 500, 18px/28px",
+      "padding": "12px 24px 0"
+    },
+    "tabs": {
+      "figma_node": "9640:64818",
+      "variants": {
+        "variant": ["segmented", "solid", "outline", "underline"],
+        "size": ["sm", "md"]
+      }
+    },
+    "table": {
+      "figma_node": "9640:65189",
+      "variants": {
+        "size": ["default", "large"]
+      },
+      "features": {
+        "bordered": "有边框",
+        "striped": "斑马纹",
+        "hoverable": "行悬停",
+        "rowSelection": "行选择"
+      }
+    },
+    "datepicker": {
+      "figma_node": "19818:6054",
+      "trigger_spec": {
+        "height": 40,
+        "padding": "8px 12px",
+        "radius": 12
+      },
+      "popup_spec": {
+        "radius": 20,
+        "shadow": "0 4px 12px rgba(0,0,0,0.08)",
+        "border": "rgba(0,0,0,0.06) 1px"
+      },
+      "cell_spec": {
+        "size": 32,
+        "radius": 8,
+        "selected_bg": "#495DFF",
+        "today_border": "#495DFF"
+      }
+    },
+    "colorpicker": {
+      "figma_node": "22035:1740",
+      "trigger_sizes": {
+        "small": "111×32",
+        "medium": "119×40",
+        "large": "127×48"
+      },
+      "panel_spec": {
+        "width": 288,
+        "radius": 20,
+        "shadow": "0 4px 12px rgba(0,0,0,0.08)"
+      }
+    },
+    "pagination": {
+      "figma_node": "12456:13325",
+      "variants": {
+        "variant": ["simple", "bordered", "borderless"]
+      }
+    },
+    "tooltip": {
+      "figma_node": "12299:14090",
+      "placements": ["top", "bottom", "left", "right", "top-left", "top-right", "bottom-left", "bottom-right"]
+    },
+    "toast": {
+      "figma_node": "14657:16548",
+      "types": ["success", "error", "warning", "info"]
+    },
+    "alert": {
+      "figma_node": "9640:63959",
+      "types": ["info", "success", "warning", "error", "default"]
+    }
+  },
+
+  "global_components": {
+    "topbar": {
+      "figma_canvas": "9659:23458",
+      "section": "22090:14341",
+      "direct_components": 5,
+      "boolean_definitions": 12
+    },
+    "sidebar": {
+      "figma_canvas": "9659:23457",
+      "new_set": "22109:985",
+      "variants": ["state=chat", "state=dev", "state=Management"],
+      "atomic_sets": 14,
+      "atomic_components": 50
+    },
+    "content_card": {
+      "figma_canvas": "9667:19011",
+      "section": "22125:5795",
+      "component_sets": 6,
+      "standalone_components": 2,
+      "total_variants": 13
+    },
+    "ai_input": {
+      "figma_canvas": "9667:17533",
+      "section": "22130:12743",
+      "component_sets": 17,
+      "standalone_components": 3,
+      "total_variants": 57
+    }
+  },
+
+  "walkthrough_dimensions": {
+    "L1_responsive": {
+      "level": 1,
+      "name": "响应式布局",
+      "description": "截断、溢出、列数不降、最小/最大窗口",
+      "check_items": [
+        "窗口最小尺寸下布局是否正常",
+        "窗口最大尺寸下是否有过度拉伸",
+        "卡片/列表列数是否随宽度调整",
+        "文本截断是否合理（有省略号、不异常换行）",
+        "筛选栏/导航栏是否自适应"
+      ]
+    },
+    "L1_spec_compliance": {
+      "level": 1,
+      "name": "设计规范对照",
+      "description": "组件尺寸、间距、字号、圆角、颜色值",
+      "check_items": [
+        "按钮高度是否匹配 sm=24/md=28/std=32/lg=36",
+        "弹窗宽度是否为 460/640/720 之一",
+        "间距是否基于 4px 网格",
+        "圆角是否匹配 Token（medium=6, x-medium=8, large=12...）",
+        "字号/字重是否匹配 Typography 规范"
+      ]
+    },
+    "L2_edge_cases": {
+      "level": 2,
+      "name": "极限边界",
+      "description": "超长文本、超大数字、特殊字符、0条数据",
+      "check_items": [
+        "标题/名称超过 20 字时截断表现",
+        "数字字段超过 6 位时显示",
+        "特殊字符（emoji、CJK 扩展）渲染",
+        "列表 0 条时的空状态",
+        "单条数据时的布局"
+      ]
+    },
+    "L2_dark_mode": {
+      "level": 2,
+      "name": "暗黑模式适配",
+      "description": "切换后未适配的元素、颜色对比度不足",
+      "check_items": [
+        "背景是否正确切换为深色",
+        "文字颜色是否有对应浅色",
+        "是否有硬编码颜色未跟随主题",
+        "图片/图标在深色背景上可见性",
+        "阴影是否适配（深色下通常不需要或更弱）"
+      ]
+    },
+    "L2_states": {
+      "level": 2,
+      "name": "空状态与错误状态",
+      "description": "空列表、空搜索、无网络、无权限",
+      "check_items": [
+        "列表空状态是否有引导操作",
+        "搜索无结果是否有提示",
+        "网络断开时的错误提示",
+        "加载中状态是否有明确反馈",
+        "权限不足时的提示"
+      ]
+    },
+    "L2_focus_keyboard": {
+      "level": 2,
+      "name": "焦点与键盘导航",
+      "description": "Tab 顺序、focus ring 可见性、快捷键",
+      "check_items": [
+        "输入框聚焦时是否有主色描边（#495DFF）",
+        "按钮聚焦时是否有可见 focus ring",
+        "Tab 键导航顺序是否合理",
+        "Enter 键是否触发主操作",
+        "Esc 键是否关闭弹窗/下拉"
+      ]
+    },
+    "L3_i18n": {
+      "level": 3,
+      "name": "国际化",
+      "description": "切换语言后文本截断、布局错乱、RTL 适配",
+      "check_items": [
+        "英文文本比中文长时布局是否溢出",
+        "日文/韩文渲染是否正常",
+        "RTL 语言（阿拉伯语）布局是否镜像",
+        "日期/数字格式是否本地化",
+        "字体 fallback 是否正确"
+      ]
+    },
+    "L3_a11y": {
+      "level": 3,
+      "name": "无障碍 (a11y)",
+      "description": "ARIA 标签、对比度、可访问性树完整性",
+      "check_items": [
+        "图标按钮是否有 aria-label",
+        "文字/背景对比度是否 ≥ 4.5:1（正文）/ 3:1（大字）",
+        "placeholder 文本是否完整（不被拆分为单字）",
+        "弹窗是否有 focus trap 和 Esc 关闭",
+        "图片是否有 alt 文本"
+      ]
+    },
+    "L3_token_binding": {
+      "level": 3,
+      "name": "Token 绑定正确性",
+      "description": "颜色、间距是否使用了正确的 CSS 变量而非硬编码",
+      "check_items": [
+        "主色元素是否使用 --lg-* 变量",
+        "文字颜色是否使用语义色板 Token",
+        "间距是否使用 spacing Token 而非硬编码 px",
+        "圆角是否使用 radius Token",
+        "阴影是否使用 shadow Token"
+      ]
+    },
+    "L3_variant_completeness": {
+      "level": 3,
+      "name": "Variant 完整性",
+      "description": "Figma 定义的 variant 是否全部实现",
+      "check_items": [
+        "组件的所有 size 变体是否都可用",
+        "所有 state（default/hover/focus/pressed/disabled）是否有对应样式",
+        "所有 type/variant 是否都有实现",
+        "danger/ghost 等布尔变体是否生效",
+        "shape 变体（default/round）是否正确"
+      ]
+    },
+    "L3_consistency": {
+      "level": 3,
+      "name": "跨页面一致性",
+      "description": "同类组件在不同页面的表现是否统一",
+      "check_items": [
+        "同类型按钮在不同页面高度是否一致",
+        "输入框聚焦态在所有页面是否都有描边",
+        "间距/留白在同类页面是否统一",
+        "同类卡片/列表样式是否一致",
+        "导航/操作反馈是否全局统一"
+      ]
+    }
+  },
+
+  "scoring": {
+    "severity": {
+      "critical": { "weight": 10, "label": "严重", "description": "功能不可用或严重影响使用" },
+      "major": { "weight": 5, "label": "中等", "description": "影响体验但有 workaround" },
+      "minor": { "weight": 2, "label": "轻微", "description": "不影响功能但影响品质感" },
+      "info": { "weight": 0, "label": "建议", "description": "优化建议，非问题" }
+    },
+    "dimension_score": {
+      "description": "每个维度满分 100，按发现问题数 × 权重扣分",
+      "formula": "score = max(0, 100 - sum(severity_weight × count))",
+      "grade": {
+        "A": { "min": 90, "label": "优秀" },
+        "B": { "min": 75, "label": "良好" },
+        "C": { "min": 60, "label": "合格" },
+        "D": { "min": 40, "label": "待改进" },
+        "F": { "min": 0, "label": "不合格" }
+      }
+    },
+    "overall_score": {
+      "description": "所有维度加权平均",
+      "L1_weight": 0.4,
+      "L2_weight": 0.35,
+      "L3_weight": 0.25
+    }
+  }
+}
