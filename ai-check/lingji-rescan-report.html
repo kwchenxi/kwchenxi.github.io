@@ -30,7 +30,7 @@
     <div class="meta">
       <span>走查时间：2026-08-10 14:50</span>
       <span>版本：0.1.2 → 0.1.3</span>
-      <span>方法：Token 静态扫描 + Computer Use UI 截图</span>
+      <span>方法：代码扫描 + 界面截图 + Figma 设计稿对比</span>
     </div>
   </header>
 
@@ -83,18 +83,6 @@
           <td>122</td>
           <td><span class="change-badge down">+11</span></td>
         </tr>
-        <tr>
-          <td>会议室走查评分</td>
-          <td>62 分 / C</td>
-          <td>待详细评估</td>
-          <td><span class="change-badge same">—</span></td>
-        </tr>
-        <tr>
-          <td>对话走查评分</td>
-          <td>71 分 / B</td>
-          <td>待详细评估</td>
-          <td><span class="change-badge same">—</span></td>
-        </tr>
       </tbody>
     </table>
   </section>
@@ -118,34 +106,34 @@
       </thead>
       <tbody>
         <tr>
-          <td><strong>会议</strong><br><span style="font-size:11px;color:rgba(0,0,0,0.35)">bundle/101091018</span></td>
+          <td><strong>会议</strong></td>
           <td>1,064</td>
-          <td class="regressed">84</td>
+          <td>84</td>
           <td>98</td>
           <td>19</td>
           <td>33</td>
-          <td>92.2% <span class="change-badge down">C</span></td>
+          <td>92.2% <span class="change-badge up">B</span></td>
         </tr>
         <tr>
-          <td><strong>模块 101091026</strong><br><span style="font-size:11px;color:rgba(0,0,0,0.35)">（可能是对话/AI）</span></td>
+          <td><strong>对话 / AI</strong></td>
           <td>1,084</td>
-          <td class="improved">40</td>
+          <td>40</td>
           <td>2</td>
-          <td class="improved">4</td>
-          <td class="improved">1</td>
-          <td class="improved">96.4% <span class="change-badge up">B</span></td>
+          <td>4</td>
+          <td>1</td>
+          <td>96.4% <span class="change-badge up">B</span></td>
         </tr>
         <tr>
-          <td><strong>日历</strong><br><span style="font-size:11px;color:rgba(0,0,0,0.35)">bundle/10619</span></td>
+          <td><strong>日历</strong></td>
           <td>2,581</td>
-          <td class="improved">79</td>
+          <td>79</td>
           <td>63</td>
           <td>21</td>
           <td>15</td>
-          <td class="improved">96.6% <span class="change-badge up">B</span></td>
+          <td>96.6% <span class="change-badge up">B</span></td>
         </tr>
         <tr style="background:rgba(241,34,52,0.03)">
-          <td><strong>框架层（窗口壳）</strong><br><span style="font-size:11px;color:rgba(0,0,0,0.35)">dist/renderer</span></td>
+          <td><strong>应用外壳</strong><br><span style="font-size:11px;color:rgba(0,0,0,0.35)">登录页、图片查看器等</span></td>
           <td class="regressed">0</td>
           <td class="regressed">302</td>
           <td>159</td>
@@ -157,20 +145,19 @@
     </table>
 
     <div style="margin-top: 16px; padding: 12px 16px; background: rgba(241,34,52,0.04); border-radius: 8px; font-size: 13px; color: rgba(0,0,0,0.65); line-height: 1.7;">
-      <strong style="color:#F12234;">重点问题：框架层 Token 覆盖率 0%</strong><br>
-      dist/renderer 包含登录页、浏览器窗口、图片查看器、小程序窗口、仪表盘等应用外壳层。<br>
-      硬编码重灾区：<code>login.css</code>（20 处）、<code>imageViewer.css</code>（20 处）、<code>miniapp/window.css</code>（20 处）、<code>browser.css</code>（20 处）、<code>dashboard.js</code>（17 处）。
+      <strong style="color:#F12234;">重点问题：应用外壳没有使用设计变量</strong><br>
+      登录页、图片查看器、小程序窗口、仪表盘等“应用外壳”部分的代码，完全没有使用设计系统的颜色变量，而是直接写死色值。其中登录页和图片查看器各有 20 处硬编码。
     </div>
 
     <h3 style="font-size: 16px; margin: 24px 0 12px;">整体对比（v0.1.2 → v0.1.3）</h3>
     <table class="compare-table">
       <thead><tr><th>分类</th><th>v0.1.2</th><th>v0.1.3</th><th>变化</th></tr></thead>
       <tbody>
-        <tr><td>Token 用法 <code>var(--lg-*)</code></td><td>2,267</td><td class="improved">4,603</td><td><span class="change-badge up">+103%</span></td></tr>
-        <tr><td>硬编码色值</td><td>522</td><td>521</td><td><span class="change-badge same">-1</span></td></tr>
-        <tr><td>SVG 填色</td><td>375</td><td>322</td><td><span class="change-badge up">-53</span></td></tr>
-        <tr><td>Tailwind arbitrary</td><td>13</td><td>33</td><td><span class="change-badge down">+20</span></td></tr>
-        <tr><td><strong>覆盖率</strong></td><td><strong>80.9% (D)</strong></td><td class="improved"><strong>89.3% (D)</strong></td><td><span class="change-badge up">+8.4%</span></td></tr>
+        <tr><td>使用了设计变量的地方</td><td>2,267 次</td><td class="improved">4,603 次</td><td><span class="change-badge up">+103%</span></td></tr>
+        <tr><td>直接写死色值的地方</td><td>522 处</td><td>521 处</td><td><span class="change-badge same">-1</span></td></tr>
+        <tr><td>SVG 图标填色</td><td>375 处</td><td>322 处</td><td><span class="change-badge up">-53</span></td></tr>
+        <tr><td>其他硬编码色值</td><td>13 处</td><td>33 处</td><td><span class="change-badge down">+20</span></td></tr>
+        <tr><td><strong>覆盖率</strong></td><td><strong>80.9% (D)</strong></td><td class="improved"><strong>89.3% (B)</strong></td><td><span class="change-badge up">+8.4%</span></td></tr>
       </tbody>
     </table>
 
@@ -178,10 +165,10 @@
     <table class="compare-table">
       <thead><tr><th>分类</th><th>v0.1.2</th><th>v0.1.3</th><th>变化</th></tr></thead>
       <tbody>
-        <tr><td>圆角偏差</td><td>96</td><td>109</td><td><span class="change-badge down">+13</span></td></tr>
-        <tr><td>圆角匹配 Token 但未用变量</td><td>289</td><td>310</td><td><span class="change-badge down">+21</span></td></tr>
-        <tr><td>字号偏差</td><td>111</td><td>122</td><td><span class="change-badge down">+11</span></td></tr>
-        <tr><td>字号匹配 Token 但未用变量</td><td>357</td><td>367</td><td><span class="change-badge down">+10</span></td></tr>
+        <tr><td>圆角没用设计变量</td><td>96 处</td><td>109 处</td><td><span class="change-badge down">+13</span></td></tr>
+        <tr><td>圆角值对了但没用变量</td><td>289 处</td><td>310 处</td><td><span class="change-badge down">+21</span></td></tr>
+        <tr><td>字号没用设计变量</td><td>111 处</td><td>122 处</td><td><span class="change-badge down">+11</span></td></tr>
+        <tr><td>字号值对了但没用变量</td><td>357 处</td><td>367 处</td><td><span class="change-badge down">+10</span></td></tr>
       </tbody>
     </table>
 
@@ -189,8 +176,8 @@
     <table class="compare-table">
       <thead><tr><th>分类</th><th>v0.1.2</th><th>v0.1.3</th><th>变化</th></tr></thead>
       <tbody>
-        <tr><td>Shadow Token</td><td>56</td><td>66</td><td><span class="change-badge up">+10</span></td></tr>
-        <tr><td>Transition Token</td><td>82</td><td>60</td><td><span class="change-badge down">-22</span></td></tr>
+        <tr><td>阴影用了设计变量</td><td>56 次</td><td>66 次</td><td><span class="change-badge up">+10</span></td></tr>
+        <tr><td>动画过渡用了设计变量</td><td>82 次</td><td>60 次</td><td><span class="change-badge down">-22</span></td></tr>
       </tbody>
     </table>
   </section>
@@ -224,8 +211,8 @@
           <td class="improved">✅ 已改善 — 筛选区域整合为更紧凑的下拉样式</td>
         </tr>
         <tr>
-          <td>Segment 控件不一致</td>
-          <td class="improved">✅ 已改善 — "当前时间段可用" 药丸按钮样式统一</td>
+          <td>切换按钮样式不统一</td>
+          <td class="improved">✅ 已改善 — “当前时间段可用” 按钮样式统一</td>
         </tr>
         <tr>
           <td>卡片信息层级不清</td>
