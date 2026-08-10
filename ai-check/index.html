@@ -124,9 +124,9 @@
       <div style="padding: 16px; background: rgba(73,93,255,0.04); border-radius: 8px;">
         <div style="font-size: 12px; font-weight: 600; color: #495DFF; margin-bottom: 8px;">输入</div>
         <ul style="font-size: 14px; color: rgba(0,0,0,0.65); padding-left: 18px; line-height: 1.8; margin: 0;">
-          <li>APP 访问权限</li>
-          <li>组件库地址</li>
-          <li>组件规范（必填，否则 AI 不知道正确样式）</li>
+          <li>APP 访问权限（桌面端或网页）</li>
+          <li>设计规范站地址（AI 读取规范数值作为基准）</li>
+          <li>Figma 设计稿链接（可选，用于设计还原对比）</li>
         </ul>
       </div>
       <div style="padding: 16px; background: rgba(0,181,120,0.04); border-radius: 8px;">
@@ -163,17 +163,12 @@
   <div class="section">
     <span class="section-label">03 / 走查流程</span>
     <h2>从打开应用到输出报告</h2>
-    <p>整个过程不需要写测试脚本。如果有 Figma 设计稿，还可以自动对比设计和实现的差异。AI 就像一个刚入职的测试同学，但速度比人快 3-5 倍，而且不会遗漏检查项。</p>
+    <p>整个过程不需要写测试脚本，AI 就像一个刚入职的测试同学，但速度比人快 3-5 倍，而且不会遗漏检查项。</p>
     <div class="timeline">
       <div class="timeline-item">
         <div class="timeline-dot"></div>
         <h4>打开应用 &amp; 截取基准</h4>
-        <p>AI 操控桌面打开灵基应用，截取默认窗口状态作为基准截图。</p>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-dot"></div>
-        <h4>窗口缩放极限测试</h4>
-        <p>拖拽窗口到最小尺寸（测试响应式）、窄宽度、全屏最大化，每个状态截图记录布局问题。</p>
+        <p>AI 操控桌面打开应用，截取默认窗口、窄窗口、全屏等多种状态作为基准截图。</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
@@ -182,13 +177,18 @@
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
-        <h4>规范对照</h4>
-        <p>访问设计规范站，提取按钮尺寸、间距规则等数值，作为判断基准。</p>
+        <h4>代码扫描</h4>
+        <p>解包应用代码，批量检查颜色、圆角、字号是否使用了设计变量，按模块拆分统计覆盖率。</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
-        <h4>输出 HTML 报告</h4>
-        <p>将所有发现按严重/中等/轻微分级，嵌入截图，生成可交互的 HTML 走查报告。</p>
+        <h4>Figma 设计稿对比（可选）</h4>
+        <p>如果提供了 Figma 链接，通过 API 拉取设计稿截图，与实际页面逐项对比差异。</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <h4>输出走查报告</h4>
+        <p>将所有发现按严重/中等/轻微分级，生成带 Tab 切换的 HTML 报告，包含文件级定位。</p>
       </div>
     </div>
   </div>
@@ -206,17 +206,17 @@
       <div class="card">
         <div class="card-icon">&#x1F50D;</div>
         <h3>代码扫描</h3>
-        <p>解包应用代码，用正则匹配检查：颜色、圆角、字号是否使用了设计系统的变量，而不是写死具体数值。</p>
+        <p>解包应用代码，批量检查颜色、圆角、字号是否使用了设计变量，按模块统计覆盖率，精确到文件和具体值。</p>
       </div>
       <div class="card">
         <div class="card-icon">&#x1F3A8;</div>
         <h3>Figma 对比</h3>
-        <p>通过 Figma API 拉取设计稿截图，与实际页面逐项对比，发现设计稿到实现的偏差。</p>
+        <p>通过 Figma API 拉取设计稿截图，与实际页面逐项对比，发现名称、状态、布局等还原差异。</p>
       </div>
       <div class="card">
         <div class="card-icon">&#x1F4CB;</div>
         <h3>规范对照</h3>
-        <p>访问设计规范站，提取按钮高度、间距网格、字号等具体数值，作为走查的评判基准。</p>
+        <p>读取设计规范站的数值（间距、字号、圆角等），作为判断实现是否合规的基准。</p>
       </div>
     </div>
   </div>
@@ -234,7 +234,7 @@
       </div>
       <div class="insight">
         <div class="insight-icon pro">&check;</div>
-        <p><strong>规范偏差检查很稳定。</strong>只要规范数值明确（如按钮高度 28px），AI 就能准确判断实际实现是否偏离，不受主观影响。</p>
+        <p><strong>规范偏差检查很稳定。</strong>只要规范数值明确，AI 就能准确判断实际实现是否偏离，不受主观影响。</p>
       </div>
       <div class="insight">
         <div class="insight-icon con">&triangle;</div>
