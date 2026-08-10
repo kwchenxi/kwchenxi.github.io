@@ -117,12 +117,27 @@
   </div>
 
   <div class="section">
-    <span class="section-label">01 / 起因</span>
-    <h2>为什么让 AI 做走查</h2>
-    <p>传统设计走查又慢又主观，而且很多产品是<strong>桌面客户端</strong>&mdash;它们不像网页那样容易自动化测试，常见的网页测试工具根本用不上。只有让 AI 真正&ldquo;坐到电脑前&rdquo;像人一样操作，才有解。</p>
-    <p>于是我们做了一个实验：让 AI 像测试工程师一样，<strong>打开真实应用、拖拽窗口、点击按钮、截取各种状态</strong>，自己判断页面有没有问题。后来又逐步加上了代码扫描、Figma 设计稿对比等能力，形成一套完整的走查方案。</p>
-    <p>AI 特别擅长几类活儿：系统地测试各种窗口尺寸、对照规范检查实现偏差、批量扫描代码里的硬编码。而像颜色是否和谐、留白是否舒适这种<strong>需要设计直觉</strong>的判断，仍然是人的主场。</p>
-    <p>以下是用这套方案走查金蝶灵基的完整报告 ↓</p>
+    <span class="section-label">01 / 解法</span>
+    <h2>让 AI 像人一样做设计走查</h2>
+    <p>桌面 APP 无法像网页一样自动化走查，我想到一个解法：让 AI 像人一样坐在电脑前操作&mdash;打开应用、拖拽窗口、点击，通过截图判断视觉问题。</p>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0;">
+      <div style="padding: 16px; background: rgba(73,93,255,0.04); border-radius: 8px;">
+        <div style="font-size: 12px; font-weight: 600; color: #495DFF; margin-bottom: 8px;">输入</div>
+        <ul style="font-size: 14px; color: rgba(0,0,0,0.65); padding-left: 18px; line-height: 1.8; margin: 0;">
+          <li>APP 访问权限</li>
+          <li>组件库地址</li>
+          <li>组件规范（必填，否则 AI 不知道正确样式）</li>
+        </ul>
+      </div>
+      <div style="padding: 16px; background: rgba(0,181,120,0.04); border-radius: 8px;">
+        <div style="font-size: 12px; font-weight: 600; color: #00B578; margin-bottom: 8px;">输出</div>
+        <ul style="font-size: 14px; color: rgba(0,0,0,0.65); padding-left: 18px; line-height: 1.8; margin: 0;">
+          <li>设计走查报告</li>
+          <li>按优先级排列的问题清单</li>
+          <li>文件级定位（哪个文件、哪个值要改）</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <div class="section">
