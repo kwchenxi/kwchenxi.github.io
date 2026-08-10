@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>用 AI 做 UI 走查（Computer Use 技术）</title>
+<title>用 AI 做 UI 走查</title>
 <style>
   /* ===== Lingee Design Tokens（来源：Lingee UI 规范 v2.5.0）===== */
   :root {
@@ -112,17 +112,17 @@
   <a href="https://kwchenxi.github.io" class="back">&larr; 返回 Hoho 的 AI 实验室</a>
 
   <div class="hero">
-    <h1>用 AI 做 UI 走查（Computer Use 技术）</h1>
+    <h1>用 AI 做 UI 走查</h1>
     <div class="meta">Hoho &middot; 2026-08-04 &middot; 阅读约 5 分钟</div>
   </div>
 
   <div class="section">
     <span class="section-label">01 / 起因</span>
-    <h2>为什么走查需要 Computer Use</h2>
-    <p>传统设计走查又慢又主观，更麻烦的是，很多待测产品是<strong>桌面客户端</strong>&mdash;它们不开 DOM、没有测试接口，Playwright、Selenium 这类自动化根本够不着。只有让 AI 真正&ldquo;坐到电脑前&rdquo;操作，才有解。</p>
-    <p>Computer Use 让 AI 直接操控桌面：<strong>打开真实应用、拖拽窗口、点击输入、读取本地文件、截取各种状态</strong>。它能&ldquo;看到&rdquo;屏幕并推理下一步做什么，所以能像真人测试员一样，自己判断这个布局是不是有问题。</p>
-    <p>这让它在走查里特别擅长几类活儿：把窗口拉到各种尺寸系统性测响应式、对照规范数值检查实现偏差、多步操作触发加载态和面板残留等交互细节。而像颜色是否和谐、留白是否舒适这种<strong>需要设计直觉</strong>的判断，AI 目前只能给&ldquo;符合/不符合规范&rdquo;的二元结论&mdash;那仍是人的主场。</p>
-    <p>于是一个实验：让 AI Agent 完整走查金蝶灵基的两个功能，看看它能发现什么 ↓</p>
+    <h2>为什么让 AI 做走查</h2>
+    <p>传统设计走查又慢又主观，而且很多产品是<strong>桌面客户端</strong>&mdash;它们不像网页那样容易自动化测试，常见的网页测试工具根本用不上。只有让 AI 真正&ldquo;坐到电脑前&rdquo;像人一样操作，才有解。</p>
+    <p>于是我们做了一个实验：让 AI 像测试工程师一样，<strong>打开真实应用、拖拽窗口、点击按钮、截取各种状态</strong>，自己判断页面有没有问题。后来又逐步加上了代码扫描、Figma 设计稿对比等能力，形成一套完整的走查方案。</p>
+    <p>AI 特别擅长几类活儿：系统地测试各种窗口尺寸、对照规范检查实现偏差、批量扫描代码里的硬编码。而像颜色是否和谐、留白是否舒适这种<strong>需要设计直觉</strong>的判断，仍然是人的主场。</p>
+    <p>以下是用这套方案走查金蝶灵基的完整报告 ↓</p>
   </div>
 
   <div class="section">
@@ -148,7 +148,7 @@
         <div class="case-link-icon">&#x1F3A8;</div>
         <div class="case-link-text">
           <h4>Token 绑定 · 扫描报告</h4>
-          <span>覆盖率 80.9% · 硬编码 522 · 圆角偏差 96 · 字号偏差 111</span>
+          <span>分析应用代码，检查颜色、圆角、字号是否使用了设计变量</span>
         </div>
       </a>
       <a href="lingji-rescan-report.html" class="case-link" style="border-color: #00B578; background: rgba(0,181,120,0.03);">
@@ -165,23 +165,28 @@
 
   <div class="section">
     <span class="section-label">03 / 技术手段</span>
-    <h2>三个能力支柱</h2>
-    <p>这次走查不是让 AI &ldquo;看一眼截图打分&rdquo;，而是让 AI Agent 像真人测试员一样操作桌面应用。它背后依赖三个关键技术：</p>
+    <h2>四个能力支柱</h2>
+    <p>不是让 AI &ldquo;看一眼截图打分&rdquo;，而是让它像真人测试员一样操作应用、扫描代码、对比设计稿。背后依赖四个关键技术：</p>
     <div class="cards">
       <div class="card">
         <div class="card-icon">&#x1F5A5;&#xFE0F;</div>
-        <h3>Computer Use</h3>
+        <h3>界面操作</h3>
         <p>AI 直接操控桌面：拖拽窗口测试响应式、点击按钮、在输入框打字、截图取证。相当于一个能看屏幕的远程测试员。</p>
       </div>
       <div class="card">
-        <div class="card-icon">&#x1F310;</div>
-        <h3>Browser Agent</h3>
-        <p>用浏览器代理访问设计规范站（SPA 应用），提取间距、字号、按钮高度等具体数值，作为走查的评判基准。</p>
+        <div class="card-icon">&#x1F50D;</div>
+        <h3>代码扫描</h3>
+        <p>解包应用代码，用正则匹配检查：颜色、圆角、字号是否使用了设计系统的变量，而不是写死具体数值。</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F3A8;</div>
+        <h3>Figma 对比</h3>
+        <p>通过 Figma API 拉取设计稿截图，与实际页面逐项对比，发现设计稿到实现的偏差。</p>
       </div>
       <div class="card">
         <div class="card-icon">&#x1F4CB;</div>
-        <h3>对照评审</h3>
-        <p>Heuristic Evaluation &mdash; 将截图中的实际表现与规范数值逐项比对，自动归纳严重/中等/轻微问题并生成报告。</p>
+        <h3>规范对照</h3>
+        <p>访问设计规范站，提取按钮高度、间距网格、字号等具体数值，作为走查的评判基准。</p>
       </div>
     </div>
   </div>
@@ -189,7 +194,7 @@
   <div class="section">
     <span class="section-label">04 / 走查流程</span>
     <h2>从打开应用到输出报告</h2>
-    <p>整个过程不需要写任何测试脚本，也不需要设计稿。AI 就像一个刚入职的测试同学，但它的操作速度比人快 3-5 倍，而且不会遗漏检查项。</p>
+    <p>整个过程不需要写测试脚本。如果有 Figma 设计稿，还可以自动对比设计和实现的差异。AI 就像一个刚入职的测试同学，但速度比人快 3-5 倍，而且不会遗漏检查项。</p>
     <div class="timeline">
       <div class="timeline-item">
         <div class="timeline-dot"></div>
@@ -209,7 +214,7 @@
       <div class="timeline-item">
         <div class="timeline-dot"></div>
         <h4>规范对照</h4>
-        <p>Browser Agent 访问 Lingee UI 规范站，提取 Button md=28px、Dialog=460/640/720px、Spacing 4px 网格等数值。</p>
+        <p>访问设计规范站，提取按钮尺寸、间距规则等数值，作为判断基准。</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
@@ -244,7 +249,19 @@
       </div>
       <div class="insight">
         <div class="insight-icon pro">&check;</div>
-        <p><strong>未来方向：AI 走查 + 人工审核。</strong>AI 负责批量扫描布局和规范性问题，人工聚焦在设计意图和业务逻辑的验证上，效率可以提升 3-5 倍。</p>
+        <p><strong>代码扫描能发现人眼看不到的问题。</strong>通过解包代码，可以批量找出所有没用设计变量的地方，按模块拆分，精准定位哪些业务需要改进。这类问题人工走查根本发现不了。</p>
+      </div>
+      <div class="insight">
+        <div class="insight-icon pro">&check;</div>
+        <p><strong>Figma 对比让设计还原可量化。</strong>直接拿设计稿和实现截图对比，自动发现名称格式、状态缺失、布局差异等问题，比人工逐像素对比高效得多。</p>
+      </div>
+      <div class="insight">
+        <div class="insight-icon pro">&check;</div>
+        <p><strong>回归验证很高效。</strong>代码修复后重新跑一遍，自动生成 v0.1.2→v0.1.3 的对比报告，哪些改了哪些没改一目了然。</p>
+      </div>
+      <div class="insight">
+        <div class="insight-icon pro">&check;</div>
+        <p><strong>未来方向：AI 走查 + 人工审核。</strong>AI 负责批量扫描布局、代码规范性问题和设计还原度，人工聚焦在设计意图和业务逻辑的验证上，效率可以提升 3-5 倍。</p>
       </div>
     </div>
   </div>
