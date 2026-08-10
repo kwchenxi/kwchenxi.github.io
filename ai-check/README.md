@@ -63,31 +63,37 @@
 - `_electron.launch()` 报错 "Process failed to launch!"
 - 加 `--no-sandbox` 也无效
 
-**替代方案：静态分析 app.asar**（已验证可行）：
+**替代方案：静态分析 app.asar**（已封装为工具）：
 
 ```bash
-# 解包
+# 1. 解包
 npx @electron/asar extract "/Applications/金蝶灵基.app/Contents/Resources/app.asar" ./lingee-extracted
 
-# 扫描 Token 使用情况
-grep -roh 'var(--lg-[a-zA-Z0-9_-]*)' ./lingee-extracted --include='*.css' --include='*.js' | sort | uniq -c | sort -rn
-grep -rih '#495dff' ./lingee-extracted --include='*.css' --include='*.js'
+# 2. 扫描（生成 JSON + HTML 报告）
+node scripts/token-scan.js ./lingee-extracted --html --json result.json
 ```
 
-**Token 绑定扫描结果**：
+**Token 扫描工具** (`scripts/token-scan.js`)：
+- 零外部依赖，纯 Node.js
+- 扫描 6 类 Token：color / spacing / radius / shadow / typography / transition
+- 硬编码分类：真硬编码 / Tailwind arbitrary / SVG 图标 / Token 定义 / CSS fallback
+- JS 文件上下文感知（过滤 SVG fill、hash ID、URL 等误报）
+- 输出 JSON + HTML 可视化报告
+
+**灵基扫描结果**：
 
 | 指标 | 数值 |
 |------|------|
-| `var(--lg-*)` 总使用 | 3,825 次（489 种不同 token） |
-| 硬编码 `#495DFF` | 11 个文件 |
-| Token 覆盖率 | ~99.7% |
-
-**硬编码分三类**：
-1. **Tailwind arbitrary value**（4 文件，低风险）— `.border-\[\#495DFF\]` 等工具类编译产物
-2. **Token 定义 / CSS fallback**（4 文件，无害）— `--lg-primary-600: #495DFF` 和 `var(..., #495dff)` 降级值
-3. **真正硬编码**（约 8 处，需关注）— 登录按钮、加载失败重试、Toast/Checkbox/Spinner 内联色值
+| Token 使用总计 | 2,405 次（color: 2267, shadow: 56, transition: 82） |
+| 硬编码颜色 | 522 处（含第三方 UI 库，每文件上限 20） |
+| SVG 图标色 | 375 处（单独分类，不计入主硬编码） |
+| Tailwind 色值 | 13 处 |
+| 非 Token 圆角 | 96 处（匹配 Token 值: 289） |
+| 非 Token 字号 | 111 处（匹配 Token 值: 357） |
+| 颜色 Token 覆盖率 | 80.9% |
 
 **脚本文件**：
+- `scripts/token-scan.js` — 静态扫描工具（主力）
 - `scripts/check-token-binding.js` — Playwright Electron 运行时扫描脚本（macOS 下因 hardened runtime 无法启动，备用）
 
 ---
@@ -120,7 +126,8 @@ AICheck/
 │   ├── chat/                           # 对话功能截图 (11 张)
 │   └── meeting/                        # 会议室预订截图 (9 张)
 ├── scripts/
-│   └── check-token-binding.js          # Token 绑定检测脚本
+│   ├── token-scan.js                   # Token 静态扫描工具（主力）
+│   └── check-token-binding.js          # Playwright Electron 运行时扫描（备用）
 └── README.md                           # 本文件
 ```
 
