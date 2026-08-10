@@ -22,10 +22,23 @@
   .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 16px 0; }
   .stat-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 8px; padding: 14px 16px; text-align: center; cursor: pointer; transition: box-shadow 0.2s, border-color 0.2s; }
   .stat-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: rgba(0,0,0,0.15); }
-  a.stat-link { text-decoration: none; color: inherit; }
   .stat-card .num { font-size: 24px; font-weight: 700; line-height: 1.2; }
   .stat-card .lbl { font-size: 12px; color: rgba(0,0,0,0.45); margin-top: 2px; }
   .stat-card .grade { font-size: 11px; font-weight: 600; margin-top: 4px; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; border-bottom: 2px solid rgba(0,0,0,0.06); margin: 24px 0 0; position: sticky; top: 0; background: var(--bg, #F7F7F8); z-index: 10; padding-top: 4px; }
+  .tab-btn { padding: 10px 20px; font-size: 14px; font-weight: 600; color: rgba(0,0,0,0.45); background: none; border: none; cursor: pointer; position: relative; transition: color 0.2s; }
+  .tab-btn:hover { color: rgba(0,0,0,0.65); }
+  .tab-btn.active { color: #495DFF; }
+  .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 2px; background: #495DFF; border-radius: 1px; }
+  .tab-btn .badge { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: 11px; font-weight: 700; margin-left: 4px; }
+  .tab-btn .badge.red { background: rgba(241,34,52,0.1); color: #F12234; }
+  .tab-btn .badge.orange { background: rgba(255,139,0,0.1); color: #FF8B00; }
+  .tab-btn .badge.blue { background: rgba(73,93,255,0.1); color: #495DFF; }
+  .tab-btn .badge.gray { background: rgba(0,0,0,0.06); color: rgba(0,0,0,0.45); }
+  .tab-panel { display: none; padding-top: 24px; }
+  .tab-panel.active { display: block; }
 </style>
 </head>
 <body>
@@ -40,50 +53,48 @@
     </div>
   </header>
 
-  <!-- 当前状态总览 -->
-  <section>
-    <h2>当前状态总览</h2>
-    <div class="stat-grid">
-      <div class="stat-card">
-        <div class="num" style="color:#00B578;">89.3%</div>
-        <div class="lbl">颜色变量覆盖率</div>
-        <div class="grade" style="color:#00B578;">B 级</div>
-      </div>
-      <a href="#detail-colors" class="stat-link">
-      <div class="stat-card">
-        <div class="num" style="color:#F12234;">521</div>
-        <div class="lbl">写死色值</div>
-      </div>
-      </a>
-      <a href="#detail-radius" class="stat-link">
-      <div class="stat-card">
-        <div class="num" style="color:#FF8B00;">109</div>
-        <div class="lbl">圆角没用变量</div>
-      </div>
-      </a>
-      <a href="#detail-fontsize" class="stat-link">
-      <div class="stat-card">
-        <div class="num" style="color:#FF8B00;">122</div>
-        <div class="lbl">字号没用变量</div>
-      </div>
-      </a>
-      <div class="stat-card">
-        <div class="num">322</div>
-        <div class="lbl">SVG 图标填色</div>
-      </div>
-      <div class="stat-card">
-        <div class="num" style="color:#F12234;">0%</div>
-        <div class="lbl">应用外壳覆盖率</div>
-        <div class="grade" style="color:#F12234;">F 级</div>
-      </div>
+  <!-- 状态卡片（始终可见） -->
+  <div class="stat-grid">
+    <div class="stat-card" onclick="switchTab('code','detail-colors')">
+      <div class="num" style="color:#00B578;">89.3%</div>
+      <div class="lbl">颜色变量覆盖率</div>
+      <div class="grade" style="color:#00B578;">B 级</div>
     </div>
-  </section>
+    <div class="stat-card" onclick="switchTab('code','detail-colors')">
+      <div class="num" style="color:#F12234;">521</div>
+      <div class="lbl">写死色值</div>
+    </div>
+    <div class="stat-card" onclick="switchTab('code','detail-radius')">
+      <div class="num" style="color:#FF8B00;">109</div>
+      <div class="lbl">圆角没用变量</div>
+    </div>
+    <div class="stat-card" onclick="switchTab('code','detail-fontsize')">
+      <div class="num" style="color:#FF8B00;">122</div>
+      <div class="lbl">字号没用变量</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">322</div>
+      <div class="lbl">SVG 图标填色</div>
+    </div>
+    <div class="stat-card" onclick="switchTab('code')">
+      <div class="num" style="color:#F12234;">0%</div>
+      <div class="lbl">应用外壳覆盖率</div>
+      <div class="grade" style="color:#F12234;">F 级</div>
+    </div>
+  </div>
 
-  <!-- 问题清单 -->
-  <section>
+  <!-- Tab 栏 -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('overview')">总览 <span class="badge red">11</span></button>
+    <button class="tab-btn" onclick="switchTab('code')">代码扫描 <span class="badge orange">752</span></button>
+    <button class="tab-btn" onclick="switchTab('design')">设计还原 <span class="badge blue">6</span></button>
+    <button class="tab-btn" onclick="switchTab('pending')">待验证 <span class="badge gray">8</span></button>
+  </div>
+
+  <!-- Tab 1: 总览 -->
+  <div id="tab-overview" class="tab-panel active">
     <h2>问题清单</h2>
-    <p style="font-size: 14px; color: rgba(0,0,0,0.45); margin-bottom: 16px;">按优先级排列，从上往下修。</p>
-
+    <p style="font-size: 14px; color: rgba(0,0,0,0.45); margin-bottom: 16px;">按优先级排列，从上往下修。共 11 个问题：2 严重 / 6 中等 / 3 轻微。</p>
     <table class="compare-table">
       <thead>
         <tr><th style="width:40px">#</th><th>问题</th><th>详情</th><th style="width:80px">优先级</th></tr>
@@ -157,61 +168,34 @@
         </tr>
       </tbody>
     </table>
-  </section>
+  </div>
 
-  <!-- 各模块代码扫描数据 -->
-  <section>
-    <h2>代码扫描：各模块详情</h2>
+  <!-- Tab 2: 代码扫描 -->
+  <div id="tab-code" class="tab-panel">
+    <h2>各模块详情</h2>
     <p style="font-size: 14px; color: rgba(0,0,0,0.65); margin-bottom: 8px;">
       通过解包应用代码，检查颜色、圆角、字号是否使用了设计系统的变量。覆盖率 = 用了变量的比例。
     </p>
     <table class="compare-table">
       <thead>
-        <tr>
-          <th>模块</th>
-          <th>用了变量</th>
-          <th>写死色值</th>
-          <th>SVG 填色</th>
-          <th>圆角没用变量</th>
-          <th>字号没用变量</th>
-          <th>覆盖率</th>
-        </tr>
+        <tr><th>模块</th><th>用了变量</th><th>写死色值</th><th>SVG 填色</th><th>圆角没用变量</th><th>字号没用变量</th><th>覆盖率</th></tr>
       </thead>
       <tbody>
         <tr>
-          <td><strong>会议</strong></td>
-          <td>1,064</td>
-          <td>84</td>
-          <td>98</td>
-          <td>19</td>
-          <td>33</td>
+          <td><strong>会议</strong></td><td>1,064</td><td>84</td><td>98</td><td>19</td><td>33</td>
           <td>92.2% <span class="change-badge ok">B</span></td>
         </tr>
         <tr>
-          <td><strong>对话 / AI</strong></td>
-          <td>1,084</td>
-          <td>40</td>
-          <td>2</td>
-          <td>4</td>
-          <td>1</td>
+          <td><strong>对话 / AI</strong></td><td>1,084</td><td>40</td><td>2</td><td>4</td><td>1</td>
           <td>96.4% <span class="change-badge ok">B</span></td>
         </tr>
         <tr>
-          <td><strong>日历</strong></td>
-          <td>2,581</td>
-          <td>79</td>
-          <td>63</td>
-          <td>21</td>
-          <td>15</td>
+          <td><strong>日历</strong></td><td>2,581</td><td>79</td><td>63</td><td>21</td><td>15</td>
           <td>96.6% <span class="change-badge ok">B</span></td>
         </tr>
         <tr style="background:rgba(241,34,52,0.03)">
           <td><strong>应用外壳</strong><br><span style="font-size:11px;color:rgba(0,0,0,0.35)">登录页、图片查看器等</span></td>
-          <td class="regressed">0</td>
-          <td class="regressed">302</td>
-          <td>159</td>
-          <td class="regressed">64</td>
-          <td class="regressed">73</td>
+          <td class="regressed">0</td><td class="regressed">302</td><td>159</td><td class="regressed">64</td><td class="regressed">73</td>
           <td class="regressed">0% <span class="change-badge critical">F</span></td>
         </tr>
       </tbody>
@@ -228,22 +212,7 @@
       </tbody>
     </table>
 
-    <h3 style="font-size: 16px; margin: 20px 0 12px;">其他变量</h3>
-    <table class="compare-table">
-      <thead><tr><th>分类</th><th>数量</th></tr></thead>
-      <tbody>
-        <tr><td>阴影用了设计变量</td><td>66 次</td></tr>
-        <tr><td>动画过渡用了设计变量</td><td>60 次</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- 文件级详情 -->
-  <section>
-    <h2>文件级详情：具体哪里有问题</h2>
-    <p style="font-size: 14px; color: rgba(0,0,0,0.45); margin-bottom: 8px;">每个表格列出问题最多的文件，括号内是出现次数。去这些文件里搜对应值就能定位到代码行。</p>
-
-    <h3 id="detail-colors" style="font-size: 16px; margin: 24px 0 12px;">写死色值 Top 文件（521 处）</h3>
+    <h2 style="margin-top: 40px;" id="detail-colors">写死色值 Top 文件（521 处）</h2>
     <table class="compare-table">
       <thead><tr><th>文件</th><th style="width:50px">数量</th><th>具体色值（括号=出现次数）</th></tr></thead>
       <tbody>
@@ -260,7 +229,7 @@
       </tbody>
     </table>
 
-    <h3 id="detail-radius" style="font-size: 16px; margin: 24px 0 12px;">圆角偏差 Top 文件（109 处）</h3>
+    <h2 style="margin-top: 40px;" id="detail-radius">圆角偏差 Top 文件（109 处）</h2>
     <table class="compare-table">
       <thead><tr><th>文件</th><th style="width:50px">数量</th><th>具体圆角值</th></tr></thead>
       <tbody>
@@ -276,7 +245,7 @@
       </tbody>
     </table>
 
-    <h3 id="detail-fontsize" style="font-size: 16px; margin: 24px 0 12px;">字号偏差 Top 文件（122 处）</h3>
+    <h2 style="margin-top: 40px;" id="detail-fontsize">字号偏差 Top 文件（122 处）</h2>
     <table class="compare-table">
       <thead><tr><th>文件</th><th style="width:50px">数量</th><th>具体字号值</th></tr></thead>
       <tbody>
@@ -295,13 +264,13 @@
 
     <div style="margin-top: 16px; padding: 12px 16px; background: rgba(73,93,255,0.04); border-radius: 8px; font-size: 13px; color: rgba(0,0,0,0.65); line-height: 1.7;">
       <strong style="color:#495DFF;">怎么用这个表</strong><br>
-      比如你想修“会议 / MeetingCard”的字号问题：打开这个 CSS 文件，搜索 <code>13px</code> 和 <code>11px</code>，找到对应位置，改成设计系统的字号变量。<br>
+      比如你想修"会议 / MeetingCard"的字号问题：打开这个 CSS 文件，搜索 <code>13px</code> 和 <code>11px</code>，找到对应位置，改成设计系统的字号变量。<br>
       <span style="color:rgba(0,0,0,0.35)">提示：<code>9999px</code> 通常是圆形按钮的全圆角写法，可统一改为 <code>var(--r-full)</code>；<code>9.96px</code> 是缩放产生的小数，需检查原始值。</span>
     </div>
-  </section>
+  </div>
 
-  <!-- 页面截图 -->
-  <section>
+  <!-- Tab 3: 设计还原 -->
+  <div id="tab-design" class="tab-panel">
     <h2>页面截图</h2>
 
     <h3 style="font-size: 16px; margin-bottom: 12px;">会议室预订</h3>
@@ -315,7 +284,6 @@
         <div class="label">会议室列表（窄窗口 — 文字截断）</div>
       </div>
     </div>
-
     <div class="screenshot-pair" style="grid-template-columns: 1fr;">
       <div>
         <img src="lingji-rescan-images/04-meeting-detail.png" alt="新建会议弹窗">
@@ -334,13 +302,9 @@
         <div class="label">对话详情</div>
       </div>
     </div>
-  </section>
 
-  <!-- Figma 设计稿对比 -->
-  <section>
-    <h2>设计稿还原对比</h2>
+    <h2 style="margin-top: 40px;">设计稿还原对比</h2>
     <p style="font-size: 14px; color: rgba(0,0,0,0.65); margin-bottom: 16px;">截图均为"当前时间段可用"视图，对比 Figma 设计稿与实际实现的差异。</p>
-
     <div class="screenshot-pair">
       <div>
         <img src="lingji-rescan-images/figma-available-rooms.png" alt="Figma 设计稿">
@@ -357,53 +321,22 @@
         <tr><th>差异项</th><th>设计稿</th><th>实际实现</th><th>优先级</th></tr>
       </thead>
       <tbody>
-        <tr>
-          <td><strong>房间名称格式</strong></td>
-          <td>"青松阁 · 国际交流中心"（主题名 + 描述）</td>
-          <td>"云亭学 (B801)"（简单名 + 编号）</td>
-          <td><span class="change-badge warning">中等</span></td>
-        </tr>
-        <tr>
-          <td><strong>位置描述详细度</strong></td>
-          <td>"总部B栋9楼（东侧电梯往前80米...）"</td>
-          <td>"B8南"（简短区域码）</td>
-          <td><span class="change-badge warning">中等</span></td>
-        </tr>
-        <tr>
-          <td><strong>"已停用"状态</strong></td>
-          <td>卡片有灰色"已停用"标签</td>
-          <td>未见"已停用"状态</td>
-          <td><span class="change-badge warning">中等</span></td>
-        </tr>
-        <tr>
-          <td><strong>筛选器文字截断</strong></td>
-          <td>"全部区域" + "全部标签" 完整显示</td>
-          <td>两个"全..."下拉框（文字截断）</td>
-          <td><span class="change-badge info">轻微</span></td>
-        </tr>
-        <tr>
-          <td><strong>卡片背景色</strong></td>
-          <td>卡片淡紫/灰色背景</td>
-          <td>卡片纯白背景</td>
-          <td><span class="change-badge info">轻微</span></td>
-        </tr>
-        <tr>
-          <td><strong>导航标签</strong></td>
-          <td>日历 / 会议 / 任务 / AI速记</td>
-          <td>日历 / 会议 / AI速记（无"任务"标签）</td>
-          <td><span class="change-badge info">轻微</span></td>
-        </tr>
+        <tr><td><strong>房间名称格式</strong></td><td>"青松阁 · 国际交流中心"（主题名 + 描述）</td><td>"云亭学 (B801)"（简单名 + 编号）</td><td><span class="change-badge warning">中等</span></td></tr>
+        <tr><td><strong>位置描述详细度</strong></td><td>"总部B栋9楼（东侧电梯往前80米...）"</td><td>"B8南"（简短区域码）</td><td><span class="change-badge warning">中等</span></td></tr>
+        <tr><td><strong>"已停用"状态</strong></td><td>卡片有灰色"已停用"标签</td><td>未见"已停用"状态</td><td><span class="change-badge warning">中等</span></td></tr>
+        <tr><td><strong>筛选器文字截断</strong></td><td>"全部区域" + "全部标签" 完整显示</td><td>两个"全..."下拉框（文字截断）</td><td><span class="change-badge info">轻微</span></td></tr>
+        <tr><td><strong>卡片背景色</strong></td><td>卡片淡紫/灰色背景</td><td>卡片纯白背景</td><td><span class="change-badge info">轻微</span></td></tr>
+        <tr><td><strong>导航标签</strong></td><td>日历 / 会议 / 任务 / AI速记</td><td>日历 / 会议 / AI速记（无"任务"标签）</td><td><span class="change-badge info">轻微</span></td></tr>
       </tbody>
     </table>
-
     <div style="margin-top: 16px; padding: 12px 16px; background: rgba(255,139,0,0.06); border-radius: 8px; font-size: 13px; color: rgba(0,0,0,0.65); line-height: 1.7;">
       <strong style="color:#FF8B00;">待对比："全部会议室"视图</strong><br>
       Figma 中"全部会议室"视图包含 08-23 时时间轴（色块标记已预订时段），尚未截图对比该视图的实现情况。
     </div>
-  </section>
+  </div>
 
-  <!-- 待验证 -->
-  <section>
+  <!-- Tab 4: 待验证 -->
+  <div id="tab-pending" class="tab-panel">
     <h2>待验证项</h2>
     <p style="font-size: 14px; color: rgba(0,0,0,0.65); margin-bottom: 12px;">以下项目本次未覆盖，建议下次走查时补充：</p>
     <ul style="font-size: 14px; color: rgba(0,0,0,0.65); padding-left: 20px; line-height: 2;">
@@ -416,7 +349,7 @@
       <li>跨页面组件一致性</li>
       <li>"全部会议室"视图时间轴</li>
     </ul>
-  </section>
+  </div>
 
   <!-- 相关报告 -->
   <section style="margin-top: 40px; padding-top: 32px; border-top: 1px solid rgba(0,0,0,0.08);">
@@ -442,5 +375,29 @@
   </footer>
 
 </div>
+
+<script>
+function switchTab(tabId, scrollTo) {
+  // Update buttons
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+  // Activate target
+  const targetPanel = document.getElementById('tab-' + tabId);
+  if (targetPanel) targetPanel.classList.add('active');
+  // Activate button (find by matching onclick)
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes("'" + tabId + "'")) {
+      btn.classList.add('active');
+    }
+  });
+  // Scroll to anchor if specified
+  if (scrollTo) {
+    setTimeout(() => {
+      const el = document.getElementById(scrollTo);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  }
+}
+</script>
 </body>
 </html>
