@@ -300,16 +300,16 @@
   <!-- Figma 设计稿对比 -->
   <section>
     <h2>Figma 设计稿对比</h2>
-    <p style="font-size: 14px; color: rgba(0,0,0,0.65); margin-bottom: 16px;">以下对比 Figma 设计稿（“全部会议室”页面）与实际实现的差异。</p>
+    <p style="font-size: 14px; color: rgba(0,0,0,0.65); margin-bottom: 16px;">以下对比 Figma 设计稿与实际实现的差异。截图均为“当前时间段可用”视图。</p>
 
     <div class="screenshot-pair">
       <div>
-        <img src="lingji-rescan-images/figma-all-rooms.png" alt="Figma 设计稿 - 全部会议室">
-        <div class="label">Figma 设计稿</div>
+        <img src="lingji-rescan-images/figma-available-rooms.png" alt="Figma 设计稿 - 当前时间段可用">
+        <div class="label">Figma 设计稿（当前时间段可用）</div>
       </div>
       <div>
-        <img src="lingji-rescan-images/03-meeting-list.png" alt="实际实现 - 全部会议室">
-        <div class="label">实际实现 v0.1.3</div>
+        <img src="lingji-rescan-images/03-meeting-list.png" alt="实际实现 - 当前时间段可用">
+        <div class="label">实际实现 v0.1.3（当前时间段可用）</div>
       </div>
     </div>
 
@@ -319,20 +319,14 @@
       </thead>
       <tbody>
         <tr>
-          <td><strong>时间轴可视化</strong></td>
-          <td>每张卡片包含 08-23 时时间轴，色块标记已预订/可用时段</td>
-          <td>卡片无时间轴，仅显示名称、容量、位置</td>
-          <td><span class="change-badge down">严重</span></td>
-        </tr>
-        <tr>
           <td><strong>房间名称格式</strong></td>
-          <td>“宇宙之窗 · 全球合作中心”（主题名 + 描述）</td>
+          <td>“青松阁 · 国际交流中心”（主题名 + 描述）</td>
           <td>“云亭学 (B801)”（简单名 + 编号）</td>
           <td><span class="change-badge same">中等</span></td>
         </tr>
         <tr>
           <td><strong>位置描述详细度</strong></td>
-          <td>“总部C栋7楼（西侧电梯往前50米...）”</td>
+          <td>“总部B栋9楼（东侧电梯往前80米...）”</td>
           <td>“B8南”（简短区域码）</td>
           <td><span class="change-badge same">中等</span></td>
         </tr>
@@ -349,9 +343,9 @@
           <td><span class="change-badge down">轻微</span></td>
         </tr>
         <tr>
-          <td><strong>卡片布局</strong></td>
-          <td>3 列网格，卡片较大（含时间轴）</td>
-          <td>3 列网格，卡片更紧凑（无时间轴）</td>
+          <td><strong>卡片背景色</strong></td>
+          <td>卡片淡紫/灰色背景，与设计系统一致</td>
+          <td>卡片纯白背景</td>
           <td><span class="change-badge same">轻微</span></td>
         </tr>
         <tr>
@@ -364,8 +358,8 @@
     </table>
 
     <div style="margin-top: 16px; padding: 12px 16px; background: rgba(255,139,0,0.06); border-radius: 8px; font-size: 13px; color: rgba(0,0,0,0.65); line-height: 1.7;">
-      <strong style="color:#FF8B00;">最大差异：时间轴可视化未实现</strong><br>
-      Figma 设计稿中每张会议室卡片都包含 08-23 时的时间轴，用色块标记已预订时段，用户可以一目了然看到哪些时段可用。实际实现中完全没有这个功能，用户只能通过点击“立即预订”后在新页面查看时间。
+      <strong style="color:#FF8B00;">注意：“全部会议室”视图</strong><br>
+      Figma 中“全部会议室”视图包含 08-23 时时间轴（色块标记已预订时段），当前截图是“当前时间段可用”视图故不含时间轴。需另行截图“全部会议室”视图对比时间轴实现情况。
     </div>
   </section>
 
