@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>金蝶灵基 — Design Token 扫描报告</title>
+<link rel="stylesheet" href="walkthrough-v2.css">
+<style>
+  .stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin: 24px 0; }
+  .stat-card { background: var(--surface, #fff); border: 1px solid var(--border, rgba(0,0,0,0.08)); border-radius: 12px; padding: 20px; text-align: center; }
+  .stat-card .num { font-size: 32px; font-weight: 700; }
+  .stat-card .label { font-size: 13px; color: rgba(0,0,0,0.45); margin-top: 6px; line-height: 1.5; }
+  .stat-card code { font-size: 12px; background: rgba(0,0,0,0.04); padding: 1px 4px; border-radius: 3px; }
+  .step { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 20px; }
+  .step-num { width: 28px; height: 28px; border-radius: 50%; background: #495DFF; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0; }
+  .step-content h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .step-content p { font-size: 14px; color: rgba(0,0,0,0.65); margin: 0; line-height: 1.6; }
+  .step-content code { font-size: 13px; background: rgba(0,0,0,0.04); padding: 1px 4px; border-radius: 3px; }
+  .note { background: rgba(255,139,0,0.06); border-left: 3px solid #FF8B00; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 24px 0; font-size: 14px; color: rgba(0,0,0,0.65); }
+  .report-link { display: flex; align-items: center; gap: 12px; background: var(--surface, #fff); border: 1px solid var(--border, rgba(0,0,0,0.08)); border-radius: 8px; padding: 16px 20px; text-decoration: none; color: inherit; transition: border-color 0.2s, box-shadow 0.2s; margin-top: 24px; }
+  .report-link:hover { border-color: #495DFF; box-shadow: 0 2px 8px rgba(73,93,255,0.1); }
+  .report-link .icon { font-size: 24px; }
+  .report-link h4 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+  .report-link span { font-size: 13px; color: rgba(0,0,0,0.45); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>金蝶灵基 — Design Token 扫描报告</h1>
+    <div class="meta">
+      <span>扫描时间：2026-08-10</span>
+      <span>应用版本：0.1.2（Electron）</span>
+      <span>工具：token-scan.js</span>
+    </div>
+  </header>
+
+  <!-- 这个技术是什么 -->
+  <section>
+    <h2>这是什么？</h2>
+    <p style="font-size: 15px; color: rgba(0,0,0,0.65); line-height: 1.7; margin-bottom: 16px;">设计系统都会定义一套<strong>Token 变量</strong>：比如主色叫 <code>--lg-primary-600</code>，值是 <code>#495DFF</code>。开发写代码时应该用变量而不是直接写色值——这样哪天品牌色换了，改一个变量全局生效，不用挨个文件去找。</p>
+    <p style="font-size: 15px; color: rgba(0,0,0,0.65); line-height: 1.7;">但实际项目中，难免有人图方便直接写 <code>background: #495DFF</code>。以前只能靠 code review 人肉找，现在可以让 AI 自动扫描。</p>
+  </section>
+
+  <!-- 怎么扫的 -->
+  <section>
+    <h2>怎么扫的？</h2>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>解包应用</h4>
+        <p>灵基是 Electron 应用，前端代码打包在 <code>app.asar</code> 里（就在 <code>/Applications/金蝶灵基.app/Contents/Resources/</code> 下面）。用 Electron 官方工具解包，得到所有 CSS 和 JS 文件。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>正则扫描</h4>
+        <p>用正则匹配所有 CSS/JS 文件，统计两类东西：<br>
+        &bull; <strong>Token 用法</strong>：<code>var(--lg-primary-600)</code>、<code>var(--lg-r-x-medium)</code> 等<br>
+        &bull; <strong>硬编码</strong>：直接写的 <code>#495DFF</code>、<code>border-radius: 8px</code>、<code>font-size: 14px</code></p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h4>分类过滤</h4>
+        <p>不是所有硬编码都是问题。工具会自动分类：<br>
+        &bull; <strong>Token 定义</strong>（<code>--lg-primary-600: #495DFF</code>）→ 正常<br>
+        &bull; <strong>CSS fallback</strong>（<code>var(--lg-primary-600, #495dff)</code>）→ 正常<br>
+        &bull; <strong>Tailwind 编译产物</strong> → 低风险<br>
+        &bull; <strong>SVG 图标填色</strong> → 单独分类<br>
+        &bull; <strong>真正的硬编码</strong> → 需要关注</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 扫描结果 -->
+  <section>
+    <h2>扫描结果</h2>
+
+    <h3 style="font-size: 16px; margin-bottom: 12px;">颜色 Token</h3>
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="num" style="color: #00B578;">2,267</div>
+        <div class="label">次使用了 Token 变量<br><code>var(--lg-*-color-*)</code></div>
+      </div>
+      <div class="stat-card">
+        <div class="num" style="color: #F12234;">522</div>
+        <div class="label">处直接写了硬编码色值<br>（含第三方库，每文件上限 20）</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" style="color: rgba(0,0,0,0.28);">375</div>
+        <div class="label">处 SVG 图标填色<br>（单独分类，不影响主统计）</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" style="color: #FF8B00;">13</div>
+        <div class="label">处 Tailwind arbitrary value<br><code>.text-[#495DFF]</code></div>
+      </div>
+    </div>
+
+    <h3 style="font-size: 16px; margin: 24px 0 12px;">圆角 &amp; 字号</h3>
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="num" style="color: #FF8B00;">96</div>
+        <div class="label">处圆角未用 Token<br><code>border-radius: 14px</code></div>
+      </div>
+      <div class="stat-card">
+        <div class="num" style="color: #00B578;">289</div>
+        <div class="label">处圆角硬编码但值匹配 Token<br>（建议改用变量）</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" style="color: #FF8B00;">111</div>
+        <div class="label">处字号未用 Token<br><code>font-size: 13px</code></div>
+      </div>
+      <div class="stat-card">
+        <div class="num" style="color: #00B578;">357</div>
+        <div class="label">处字号硬编码但值匹配 Token<br>（建议改用变量）</div>
+      </div>
+    </div>
+
+    <h3 style="font-size: 16px; margin: 24px 0 12px;">其他 Token</h3>
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="num" style="color: #495DFF;">56</div>
+        <div class="label">次使用了 Shadow Token</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" style="color: #495DFF;">82</div>
+        <div class="label">次使用了 Transition Token</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主要发现 -->
+  <section>
+    <h2>主要发现</h2>
+    <div style="font-size: 14px; color: rgba(0,0,0,0.65); line-height: 1.8;">
+      <p style="margin-bottom: 12px;"><strong style="color: #00B578;">做得好的：</strong>灵基自己的组件代码 Token 使用率很高，主色 <code>#495DFF</code> 基本都走了 <code>var(--lg-primary-600)</code>。Shadow、Transition 等 Token 也都有使用。</p>
+      <p style="margin-bottom: 12px;"><strong style="color: #FF8B00;">需要关注的：</strong></p>
+      <ul style="padding-left: 20px; margin-bottom: 12px;">
+        <li><strong>登录页</strong>（login.css）的按钮、链接色直接写了 <code>#495DFF</code></li>
+        <li><strong>小程序/WebView 窗口</strong>（miniapp.css、imageViewer.css）大量使用 iOS 蓝 <code>#007AFF</code> 而非灵基主色</li>
+        <li><strong>JS 内联色值</strong>：Toast 提示、Checkbox 图标、加载 Spinner 在 JS 中直接写了色值</li>
+        <li>圆角和字号虽然值匹配 Token，但直接写 px 而非用变量</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="note">
+    <strong>注意：</strong>这个工具只检查"有没有用变量"，不判断"该不该用这个色"——比如某个场景就该用 <code>#007AFF</code> 而不是主色，这需要设计师来判断。
+  </div>
+
+  <!-- 查看完整报告 -->
+  <a href="scripts/token-scan-result.html" class="report-link">
+    <div class="icon">&#x1F4CA;</div>
+    <div>
+      <h4>查看完整扫描报告</h4>
+      <span>包含每个文件、每个色值的详细明细和代码片段</span>
+    </div>
+  </a>
+
+  <!-- 相关报告 -->
+  <section style="margin-top: 48px;">
+    <h2>相关走查报告</h2>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+      <a href="lingji-walkthrough-v2.html" class="report-link" style="flex: 1; min-width: 200px; margin-top: 0;">
+        <div class="icon">&#x1F3E2;</div>
+        <div>
+          <h4>会议室预订 · UI 走查</h4>
+          <span>11 维度 · 评分 62 分</span>
+        </div>
+      </a>
+      <a href="lingji-walkthrough-chat-v2.html" class="report-link" style="flex: 1; min-width: 200px; margin-top: 0;">
+        <div class="icon">&#x1F4AC;</div>
+        <div>
+          <h4>对话功能 · UI 走查</h4>
+          <span>11 维度 · 评分 71 分</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <footer style="text-align: center; padding: 48px 0 0; color: rgba(0,0,0,0.28); font-size: 12px;">
+    金蝶灵基 &middot; AI 走查 &middot; 2026
+  </footer>
+
+</div>
+</body>
+</html>
