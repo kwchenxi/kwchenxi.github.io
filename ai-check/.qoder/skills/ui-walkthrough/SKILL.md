@@ -1,164 +1,191 @@
 ---
 name: ui-walkthrough
-description: Automate 11-dimension UI walkthrough for desktop or web applications. Use when the user asks to walkthrough, audit, review, or check a UI/page/app for design compliance, responsiveness, accessibility, or design system adherence. Accepts an app URL, Electron app path, or screenshots folder as input. Outputs a standardized HTML walkthrough report with scoring.
+description: "配置驱动的 UI 走查自动化。读取 walkthrough-config.json，执行代码扫描、界面截图、Figma 对比，生成 Tab 式 HTML 走查报告。触发词：走查、walkthrough、UI 检查、走查报告。输入：页面名称（如 meeting、chat）或 all。"
+user_invocable: true
 ---
 
-# UI Walkthrough Skill
+# UI Walkthrough — 配置驱动走查
 
-Automated 11-dimension UI walkthrough for any desktop or web application.
+读取项目配置文件，自动执行完整走查流程，生成可直接修复的问题清单报告。
 
-## Input
+## 输入
 
-One of:
-- **Web URL**: Use Playwright Browser Agent
-- **Electron app path**: Use Playwright Electron API (fallback: Computer Use)
-- **Screenshots folder**: Analyze pre-captured screenshots
+`$ARGUMENTS` — 页面名称（如 `meeting`、`chat`、`calendar`），或 `all` 走查全部页面。
 
-Optional:
-- **Spec file** (JSON): design token baseline (see `lingee-walkthrough-spec.json` for format)
-- **Design system docs**: URL or markdown file
+如果没有提供参数，列出 `walkthrough-config.json` 中的页面让用户选择。
 
-## 11-Dimension Framework
+## 第一步：读取配置
 
-| Layer | Dimension | Weight | What to Check |
-|-------|-----------|--------|---------------|
-| **L1 基础** | 响应式布局 | ×0.4 | 最小窗口/最大窗口/中等宽度的布局变化 |
-| | 设计规范对照 | ×0.4 | 间距、字号、颜色、圆角、阴影 vs 规范值 |
-| **L2 进阶** | 极限边界 | ×0.35 | 超长文本、空数据、极大列表、无网络 |
-| | 暗黑模式 | ×0.35 | 切换后对比度、色值是否正确 |
-| | 空状态/错误 | ×0.35 | 空列表、加载失败、404 页面 |
-| | 焦点/键盘 | ×0.35 | Tab 导航、focus ring、快捷键 |
-| **L3 深度** | 国际化 | ×0.25 | 文本截断、RTL 布局、多语言 |
-| | 无障碍 | ×0.25 | aria 属性、颜色对比度、可访问性 |
-| | Token 绑定 | ×0.25 | CSS 变量使用率、硬编码检测 |
-| | Variant 完整 | ×0.25 | 组件各 variant 是否都有实现 |
-| | 跨页面一致性 | ×0.25 | 同一组件在不同页面的表现 |
+读取项目根目录的 `walkthrough-config.json`，获取：
 
-## Scoring
+- `project` — 项目名称、版本、logo/mascot 路径
+- `app` — 应用类型（electron/web）、asar 路径、解包目录
+- `design` — 规范站 URL、Figma 链接、Figma PAT
+- `pages` — 可走查的页面列表及 Figma node ID
+- `scripts` — token-scan.js 等脚本路径
+- `output` — 报告输出目录、模板、CSS
+- `deploy` — 部署仓库路径
 
-```
-每维度满分 = 100
-扣分规则：严重 ×10 + 中等 ×5 + 轻微 ×2
-单维度最低 0 分
+**配置校验**：
+- 检查 `app.path` 是否存在
+- 检查 Figma PAT（`$FIGMA_PAT` 环境变量）
+- 检查 `scripts.tokenScan` 脚本是否存在
 
-总分 = Σ(维度得分 × 权重) / Σ(权重)
+## 第二步：读取设计规范
 
-等级：A ≥ 90 | B ≥ 75 | C ≥ 60 | D ≥ 40 | F < 40
+```bash
+# 用 Browser Agent 访问规范站
+Browser Agent → 打开 config.design.specUrl
+→ 提取关键数值：间距网格、字号体系、圆角规则、按钮尺寸、颜色 token
 ```
 
-## Walkthrough Workflow
+**同时**读取本地的 `config.design.specFile`（如果存在）获取结构化 token 数据。
 
-### Step 1: 准备
+提取的数值作为后续走查的**判断基准**。
+
+## 第三步：代码扫描
+
+```bash
+# 解包 app.asar（如果还没解包）
+npx @electron/asar extract <app.path> <app.extractDir>
+
+# 运行 token 扫描，输出 JSON
+node <scripts.tokenScan> <app.extractDir> --json /tmp/walkthrough-scan.json
+```
+
+从 JSON 中提取：
+
+1. **Token 覆盖率** — 总体和各模块的使用率
+2. **硬编码色值** — 按文件分组，统计数量和具体色值
+3. **硬编码圆角** — 不在 4px 网格上的值
+4. **硬编码字号** — 不在规范字号体系中的值
+5. **文件级统计** — 每个文件的 token 数和硬编码数
+
+这些数据直接填入报告的"代码扫描"Tab。
+
+## 第四步：界面截图 & 交互
+
+使用 **Computer Use** 操控桌面应用：
 
 ```
 Task Progress:
-- [ ] 确认输入（URL / app path / screenshots）
-- [ ] 读取规范基准（spec JSON / 设计文档）
-- [ ] 准备截图目录
-- [ ] 确定走查范围（哪些页面/功能）
+- [ ] 打开应用，截取默认窗口状态
+- [ ] 拖拽到最小窗口，截图（响应式测试）
+- [ ] 全屏/最大化，截图
+- [ ] 导航到目标页面
+- [ ] 点击筛选器/下拉框/搜索框，截图交互状态
+- [ ] 在输入框中输入文字，截图
+- [ ] 快速连续点击操作，检查面板残留
+- [ ] 滚动列表，截图
 ```
 
-**如果输入是 URL**：用 Playwright Browser Agent 打开页面。
-**如果输入是 Electron app**：
-1. 尝试 Playwright Electron API
-2. 若 macOS hardened runtime 阻止注入 → 兜底 Computer Use
+截图保存到 `config.output.screenshotDir` 目录。
 
-### Step 2: 截取基准截图
+## 第五步：Figma 设计稿对比（可选）
 
-对每个目标页面，系统性地截取：
+**前提**：`config.design.figmaPAT` 已配置，且目标页面有 `figmaNodeId`。
 
-| 状态 | 操作 | 目的 |
-|------|------|------|
-| 默认状态 | 截取正常视图 | 基准对比 |
-| 最小窗口 | 拖拽到最小宽度 | 响应式测试 |
-| 最大窗口 | 全屏/最大化 | 布局拉伸 |
-| 输入聚焦 | 点击输入框，截取 focus 态 | 焦点状态 |
-| 空状态 | 清空数据后截取 | 空状态设计 |
-| 加载中 | 触发加载，截取 loading | 加载态设计 |
-| 错误状态 | 触发错误（如断网） | 错误处理 |
+```bash
+# 通过 Figma API 获取节点图片
+curl -s -H "X-Figma-Token: $FIGMA_PAT" \
+  "https://api.figma.com/v1/images/<fileKey>?ids=<nodeId>&format=png" \
+  | python3 -c "import sys,json; print(json.load(sys.stdin)['images'])"
 
-### Step 3: 逐维度检查
-
-对每个维度，对照规范基准逐项比对：
-
-**L1 — 响应式布局**：
-- 窗口从 1440px → 1024px → 768px → 最小宽度
-- 记录：截断、溢出、列数不降、元素重叠
-
-**L1 — 设计规范对照**：
-- 从截图 + DOM 检查：间距、字号、颜色、圆角、按钮高度
-- 与 spec 中的 token 值比对，标记偏差
-
-**L2 — 交互状态**：
-- 点击按钮、展开下拉、触发 Toast
-- 快速连续操作，检查加载态和面板残留
-- 检查 focus ring、hover 态
-
-**L3 — Token 绑定**（如果有源码访问）：
-- 运行 `node scripts/token-scan.js <source-dir>` 扫描
-- 记录覆盖率、硬编码数量
-
-### Step 4: 问题分级
-
-| 严重级 | 定义 | 扣分 |
-|--------|------|------|
-| 严重 | 功能不可用或严重影响使用 | ×10 |
-| 中等 | 视觉偏差明显但不影响功能 | ×5 |
-| 轻微 | 微小瑕疵，几乎无感知 | ×2 |
-
-### Step 5: 生成报告
-
-使用 `walkthrough-template-v2.html` 模板（或参考其结构），生成包含：
-1. 评分仪表盘（总分、等级、各维度得分）
-2. 问题列表（严重/中等/轻微筛选、截图证据、修复建议）
-3. 维度明细（每个维度的详细检查记录）
-4. 相关报告链接
-
-## Spec JSON 格式
-
-规范基准文件结构（参考 `lingee-walkthrough-spec.json`）：
-
-```json
-{
-  "design_tokens": {
-    "color": { "primary": "#495DFF", ... },
-    "typography": { "heading": { "h1": { "size": 36, "weight": 600 } } },
-    "spacing": { "unit": "4px grid", "tokens": { "small": 12, "medium": 16 } },
-    "radius": { "small": 4, "medium": 6, "large": 12 },
-    "shadow": { ... }
-  },
-  "components": {
-    "Button": { "height": { "md": 28, "lg": 36 } },
-    "Dialog": { "width": [460, 640, 720] }
-  }
-}
+# 下载 Figma 渲染图
+curl -o /tmp/figma-compare.png "<imageUrl>"
 ```
 
-## Electron 应用特殊处理
+将 Figma 截图与实际页面截图逐项对比：
+- 布局结构差异
+- 文字内容差异
+- 颜色/样式差异
+- 缺失/多余的元素
+- 状态缺失（如"已停用"状态）
 
-macOS hardened runtime 会阻止 Playwright 注入 Electron 应用：
+## 第六步：生成走查报告
+
+参考 `config.output.reportTemplate`（`lingji-rescan-report.html`）的结构，生成新报告。
+
+### 报告结构（4 个 Tab）
 
 ```
-尝试顺序：
-1. npx @electron/asar extract <app.asar> → 静态代码分析（Token 扫描）
-2. Playwright _electron.launch() → 如果被拒绝
-3. Computer Use → 兜底方案（截屏+OCR+鼠标点击）
+┌─────────────────────────────────────┐
+│  [Logo] 项目名称 — 走查报告          │
+│  走查时间 | 版本                      │
+├─────────────────────────────────────┤
+│  数据卡片（可点击跳转）               │
+│  [覆盖率] [色值] [圆角] [字号] ...    │
+├─────────────────────────────────────┤
+│  总览(N) | 代码扫描(N) | 设计还原(N) | 待验证(N) │
+├─────────────────────────────────────┤
+│                                     │
+│  Tab 内容                            │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
-对于 Electron 应用，Token 静态扫描（`scripts/token-scan.js`）是可靠的降级方案。
+### 总览 Tab
+按优先级列出所有问题：
+- **严重** — 功能不可用或大面积影响
+- **中等** — 明显偏差但不影响功能
+- **轻微** — 微小瑕疵
 
-## 输出文件
+### 代码扫描 Tab
+- 模块级汇总（覆盖率、各模块硬编码数）
+- 文件级详情（哪个文件、多少处、具体值是什么）
 
-| 文件 | 说明 |
-|------|------|
-| `<app>-walkthrough.html` | 完整走查报告 |
-| `<app>-screenshots/` | 截图目录 |
-| `<app>-token-scan-result.html` | Token 扫描报告（Electron 应用） |
+### 设计还原 Tab
+- 实际截图 vs Figma 截图对比
+- 逐项标注差异
+
+### 待验证 Tab
+- 因环境限制未能测试的项目
+- 需要人工确认的项
+
+### 关键技术要点
+
+1. **数据卡片跳转**：`onclick="switchTab('tabId', 'scrollTarget')"`，没有 onclick 的卡片不加 `cursor:pointer`
+2. **Tab 栏吸顶**：`position: sticky; top: 0`
+3. **品牌元素**：header 加 logo，hero 加吉祥物（如果配置了）
+4. **问题编号连续**：总览 Tab 的问题从 #1 开始编号
+
+## 第七步：部署
+
+```bash
+# 复制到部署目录
+cp <报告文件> <deploy.repo>
+cp <截图目录>/* <deploy.repo>/
+# 提交并推送
+cd <deploy.repo> && git add -A && git commit -m "walkthrough: <page> 走查报告" && git push
+```
+
+## 完整执行清单
+
+```
+Walkthrough Progress:
+- [ ] 1. 读取 walkthrough-config.json
+- [ ] 2. 验证环境和依赖
+- [ ] 3. Browser Agent 访问规范站，提取基准数值
+- [ ] 4. 解包 app.asar（如需）
+- [ ] 5. 运行 token-scan.js，解析 JSON 结果
+- [ ] 6. Computer Use 打开应用，截取各状态截图
+- [ ] 7. 导航到目标页面，进行交互测试
+- [ ] 8. Figma API 获取设计稿截图（如配置了）
+- [ ] 9. 对比 Figma 截图与实际截图
+- [ ] 10. 整理问题清单，分级
+- [ ] 11. 生成 Tab 式 HTML 报告
+- [ ] 12. 复制到部署目录，git push
+```
 
 ## 参考文件
 
-- 报告模板：`walkthrough-template-v2.html`
-- 报告样式：`walkthrough-v2.css`
-- 灵基规范基准：`lingee-walkthrough-spec.json`
-- Token 扫描工具：`scripts/token-scan.js`
-- 灵基走查示例：`lingji-walkthrough-v2.html`、`lingji-walkthrough-chat-v2.html`
+| 文件 | 用途 |
+|------|------|
+| `walkthrough-config.json` | 项目配置（必读） |
+| `lingji-rescan-report.html` | 报告结构参考 |
+| `walkthrough-v2.css` | 报告样式 |
+| `scripts/token-scan.js` | Token 扫描脚本 |
+| `lingee-walkthrough-spec.json` | 设计 Token 基准 |
+| `Lingee-unified-page-generation-spec.md` | 统一页面生成规范 |
+| `assets/lingee-logo.png` | 品牌 Logo |
+| `assets/lingee-mascot.png` | 品牌吉祥物 |
