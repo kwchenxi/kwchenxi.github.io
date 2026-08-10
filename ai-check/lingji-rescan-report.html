@@ -20,7 +20,9 @@
   .screenshot-pair .label { font-size: 12px; color: rgba(0,0,0,0.45); text-align: center; margin-top: 4px; }
   @media (max-width: 768px) { .screenshot-pair { grid-template-columns: 1fr; } }
   .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 16px 0; }
-  .stat-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 8px; padding: 14px 16px; text-align: center; }
+  .stat-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 8px; padding: 14px 16px; text-align: center; cursor: pointer; transition: box-shadow 0.2s, border-color 0.2s; }
+  .stat-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: rgba(0,0,0,0.15); }
+  a.stat-link { text-decoration: none; color: inherit; }
   .stat-card .num { font-size: 24px; font-weight: 700; line-height: 1.2; }
   .stat-card .lbl { font-size: 12px; color: rgba(0,0,0,0.45); margin-top: 2px; }
   .stat-card .grade { font-size: 11px; font-weight: 600; margin-top: 4px; }
@@ -47,18 +49,24 @@
         <div class="lbl">颜色变量覆盖率</div>
         <div class="grade" style="color:#00B578;">B 级</div>
       </div>
+      <a href="#detail-colors" class="stat-link">
       <div class="stat-card">
         <div class="num" style="color:#F12234;">521</div>
         <div class="lbl">写死色值</div>
       </div>
+      </a>
+      <a href="#detail-radius" class="stat-link">
       <div class="stat-card">
         <div class="num" style="color:#FF8B00;">109</div>
         <div class="lbl">圆角没用变量</div>
       </div>
+      </a>
+      <a href="#detail-fontsize" class="stat-link">
       <div class="stat-card">
         <div class="num" style="color:#FF8B00;">122</div>
         <div class="lbl">字号没用变量</div>
       </div>
+      </a>
       <div class="stat-card">
         <div class="num">322</div>
         <div class="lbl">SVG 图标填色</div>
@@ -235,7 +243,7 @@
     <h2>文件级详情：具体哪里有问题</h2>
     <p style="font-size: 14px; color: rgba(0,0,0,0.45); margin-bottom: 8px;">每个表格列出问题最多的文件，括号内是出现次数。去这些文件里搜对应值就能定位到代码行。</p>
 
-    <h3 style="font-size: 16px; margin: 24px 0 12px;">写死色值 Top 文件（521 处）</h3>
+    <h3 id="detail-colors" style="font-size: 16px; margin: 24px 0 12px;">写死色值 Top 文件（521 处）</h3>
     <table class="compare-table">
       <thead><tr><th>文件</th><th style="width:50px">数量</th><th>具体色值（括号=出现次数）</th></tr></thead>
       <tbody>
@@ -252,7 +260,7 @@
       </tbody>
     </table>
 
-    <h3 style="font-size: 16px; margin: 24px 0 12px;">圆角偏差 Top 文件（109 处）</h3>
+    <h3 id="detail-radius" style="font-size: 16px; margin: 24px 0 12px;">圆角偏差 Top 文件（109 处）</h3>
     <table class="compare-table">
       <thead><tr><th>文件</th><th style="width:50px">数量</th><th>具体圆角值</th></tr></thead>
       <tbody>
@@ -268,7 +276,7 @@
       </tbody>
     </table>
 
-    <h3 style="font-size: 16px; margin: 24px 0 12px;">字号偏差 Top 文件（122 处）</h3>
+    <h3 id="detail-fontsize" style="font-size: 16px; margin: 24px 0 12px;">字号偏差 Top 文件（122 处）</h3>
     <table class="compare-table">
       <thead><tr><th>文件</th><th style="width:50px">数量</th><th>具体字号值</th></tr></thead>
       <tbody>
