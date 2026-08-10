@@ -20,8 +20,9 @@
   .screenshot-pair .label { font-size: 12px; color: rgba(0,0,0,0.45); text-align: center; margin-top: 4px; }
   @media (max-width: 768px) { .screenshot-pair { grid-template-columns: 1fr; } }
   .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 16px 0; }
-  .stat-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 8px; padding: 14px 16px; text-align: center; cursor: pointer; transition: box-shadow 0.2s, border-color 0.2s; }
-  .stat-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: rgba(0,0,0,0.15); }
+  .stat-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 8px; padding: 14px 16px; text-align: center; transition: box-shadow 0.2s, border-color 0.2s; }
+  .stat-card[onclick] { cursor: pointer; }
+  .stat-card[onclick]:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: rgba(0,0,0,0.15); }
   .stat-card .num { font-size: 24px; font-weight: 700; line-height: 1.2; }
   .stat-card .lbl { font-size: 12px; color: rgba(0,0,0,0.45); margin-top: 2px; }
   .stat-card .grade { font-size: 11px; font-weight: 600; margin-top: 4px; }
