@@ -27,12 +27,14 @@
 <body>
 <div class="container">
 
+  <div style="margin-bottom:16px;"><a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:rgba(0,0,0,0.45);text-decoration:none;font-size:13px;">&larr; 返回首页</a></div>
+
   <header>
     <h1>金蝶灵基 — Design Token 扫描报告</h1>
     <div class="meta">
+      <span>扫描范围：全应用（app.asar 解包）</span>
       <span>扫描时间：2026-08-10</span>
       <span>应用版本：0.1.2（Electron）</span>
-      <span>工具：token-scan.js</span>
     </div>
   </header>
 
@@ -153,10 +155,10 @@
   </div>
 
   <!-- 查看完整报告 -->
-  <a href="scripts/token-scan-result.html" class="report-link">
+  <a href="token-scan-data.html" class="report-link">
     <div class="icon">&#x1F4CA;</div>
     <div>
-      <h4>查看完整扫描报告</h4>
+      <h4>查看完整扫描数据</h4>
       <span>包含每个文件、每个色值的详细明细和代码片段</span>
     </div>
   </a>
@@ -165,18 +167,18 @@
   <section style="margin-top: 48px;">
     <h2>相关走查报告</h2>
     <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-      <a href="lingji-walkthrough-v2.html" class="report-link" style="flex: 1; min-width: 200px; margin-top: 0;">
-        <div class="icon">&#x1F3E2;</div>
+      <a href="lingji-note-walkthrough.html" class="report-link" style="flex: 1; min-width: 200px; margin-top: 0;">
+        <div class="icon">&#x1F4DD;</div>
         <div>
-          <h4>会议室预订 · UI 走查</h4>
-          <span>11 维度 · 评分 62 分</span>
+          <h4>AI速记 · UI 走查</h4>
+          <span>v0.1.3 · 16 个问题 · 评分 58 分</span>
         </div>
       </a>
-      <a href="lingji-walkthrough-chat-v2.html" class="report-link" style="flex: 1; min-width: 200px; margin-top: 0;">
-        <div class="icon">&#x1F4AC;</div>
+      <a href="lingji-rescan-report.html" class="report-link" style="flex: 1; min-width: 200px; margin-top: 0;">
+        <div class="icon">&#x1F4CB;</div>
         <div>
-          <h4>对话功能 · UI 走查</h4>
-          <span>11 维度 · 评分 71 分</span>
+          <h4>会议室+对话 · UI 走查</h4>
+          <span>v0.1.3 · 11 个问题 · 评分 68 分</span>
         </div>
       </a>
     </div>

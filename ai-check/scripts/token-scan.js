@@ -70,6 +70,86 @@ const RE = {
   fontSizeProp: /font-size\s*:\s*([^;{}]+)/g,
 };
 
+// ─── 选择器提取 ─────────────────────────────────────────────────
+
+/**
+ * 从 CSS 内容中提取匹配位置所属的选择器
+ * @param {string} content - 文件完整内容
+ * @param {number} matchIdx - 匹配位置索引
+ * @returns {object} { selector, line, isTailwind }
+ */
+function extractSelector(content, matchIdx) {
+  // 向前搜索最近的选择器开始位置（找最近未被闭合的 { ）
+  // 策略：从 matchIdx 向前找，找到第一个未配对的 {，再向前找选择器文本
+
+  let braceDepth = 0;
+  let selectorStart = -1;
+  let selectorEnd = -1;
+
+  // 从匹配位置向前扫描
+  for (let i = matchIdx - 1; i >= 0; i--) {
+    const ch = content[i];
+    if (ch === '}') {
+      braceDepth++;
+    } else if (ch === '{') {
+      if (braceDepth > 0) {
+        braceDepth--;
+      } else {
+        // 找到了包含此匹配的选择器块的起始 {
+        selectorEnd = i;
+        break;
+      }
+    }
+  }
+
+  if (selectorEnd === -1) {
+    return { selector: '', line: 0, isTailwind: false };
+  }
+
+  // 从 { 向前找选择器文本（跳过空白和换行）
+  let selStart = selectorEnd - 1;
+  while (selStart >= 0 && /[ \t\r\n]/.test(content[selStart])) {
+    selStart--;
+  }
+
+  // 再向前找选择器的开始（上一个 } 或文件开头，或换行）
+  let selEnd = selStart + 1;
+  while (selStart >= 0) {
+    const ch = content[selStart];
+    if (ch === '}' || ch === ';' || ch === '\n') {
+      break;
+    }
+    selStart--;
+  }
+  selStart++; // 跳过分隔符
+
+  // 提取选择器文本
+  let selector = content.slice(selStart, selEnd).trim();
+
+  // 处理多选择器情况（如 .a, .b { ... }）
+  // 如果选择器包含逗号，取最后一个
+  if (selector.includes(',')) {
+    const parts = selector.split(',');
+    selector = parts[parts.length - 1].trim();
+  }
+
+  // 检测 Tailwind arbitrary value
+  const isTailwind = /\[(?:[#.]|\\?)\d/.test(selector) || /\\[.#]/.test(selector);
+
+  // 计算行号
+  const lineNum = content.slice(0, matchIdx).split('\n').length;
+
+  return { selector, line: lineNum, isTailwind };
+}
+
+/**
+ * 提取 CSS 属性值所属的选择器（针对圆角、字号等）
+ */
+function extractSelectorForProperty(content, matchIdx) {
+  const result = extractSelector(content, matchIdx);
+  return result;
+}
+
 // ─── 分类引擎 ─────────────────────────────────────────────────
 
 /**
@@ -199,6 +279,16 @@ function scanFile(filePath, baseDir) {
     if (result.hardcoded.colors.filter(c => c.context !== 'svg').length >= MAX_PER_CATEGORY) continue;
 
     const isKnownToken = CONFIG.knownTokenColors.some(tc => tc.toUpperCase() === hex);
+
+    // 提取选择器（CSS 文件）
+    let selector = '';
+    let lineNum = 0;
+    if (ext === '.css') {
+      const selInfo = extractSelector(content, matchIdx);
+      selector = selInfo.selector;
+      lineNum = selInfo.line;
+    }
+
     // CSS 文件提取 snippet，JS 大文件跳过
     let snippet = '';
     if (ext === '.css') {
@@ -206,7 +296,7 @@ function scanFile(filePath, baseDir) {
       snippet = content.slice(s, Math.min(content.length, matchIdx + hex.length + 40)).replace(/\s+/g, ' ').trim();
     }
     result.hardcoded.colors.push({
-      value: '#' + hex, context: ctx, isKnownToken, line: 0, snippet,
+      value: '#' + hex, context: ctx, isKnownToken, line: lineNum, selector, snippet,
     });
   }
 
@@ -221,8 +311,12 @@ function scanFile(filePath, baseDir) {
       if (!pxM) continue;
       const px = parseFloat(pxM[1]);
       if (px === 0) continue;
+
+      // 提取选择器
+      const selInfo = extractSelector(content, rm.index);
+
       if (result.hardcoded.radius.length < MAX_PER_CATEGORY) {
-        result.hardcoded.radius.push({ value: px + 'px', inToken: isRadiusInToken(px), line: 0 });
+        result.hardcoded.radius.push({ value: px + 'px', inToken: isRadiusInToken(px), line: selInfo.line, selector: selInfo.selector });
       }
     }
 
@@ -235,8 +329,12 @@ function scanFile(filePath, baseDir) {
       if (!pxM) continue;
       const px = parseFloat(pxM[1]);
       if (px === 0) continue;
+
+      // 提取选择器
+      const selInfo = extractSelector(content, fm.index);
+
       if (result.hardcoded.fontSize.length < MAX_PER_CATEGORY) {
-        result.hardcoded.fontSize.push({ value: px + 'px', inToken: isFontSizeInToken(px), line: 0 });
+        result.hardcoded.fontSize.push({ value: px + 'px', inToken: isFontSizeInToken(px), line: selInfo.line, selector: selInfo.selector });
       }
     }
   }
@@ -337,6 +435,7 @@ function generateReport(scanResults, baseDir) {
 
 function generateHTML(report) {
   const { summary, details, meta, fileStats } = report;
+  const MAX_DISPLAY = 10;
   const grade = summary.colorCoverage >= 98 ? 'A' :
                 summary.colorCoverage >= 95 ? 'B' :
                 summary.colorCoverage >= 90 ? 'C' :
@@ -368,11 +467,13 @@ function generateHTML(report) {
   .badge-ok { background: rgba(0,181,120,0.1); color: var(--success); }
   .badge-warn { background: rgba(255,139,0,0.1); color: var(--warning); }
   .badge-err { background: rgba(241,34,52,0.1); color: var(--danger); }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
   th { text-align: left; padding: 8px 12px; background: var(--bg); border-bottom: 1px solid var(--border); font-weight: 600; }
-  td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; word-break: break-all; }
   td code { background: rgba(0,0,0,0.04); padding: 1px 4px; border-radius: 3px; font-size: 12px; font-family: "SF Mono", monospace; }
   .snippet { max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; color: var(--muted); }
+  .usage-cell { max-width: 260px; overflow: hidden; }
+  .usage-cell code { word-break: break-all; display: block; line-height: 1.4; }
   .token-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
   .token-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--bg); border-radius: 8px; }
   .token-item .name { font-size: 13px; font-weight: 500; }
@@ -414,24 +515,25 @@ function generateHTML(report) {
     <div class="section-label">需要修复</div>
     <h2>硬编码颜色（${details.hardcodedColors.hardcode.length} 处）</h2>
     <table>
-      <tr><th>色值</th><th>文件</th><th>行号</th><th>代码片段</th></tr>
-      ${details.hardcodedColors.hardcode.map(c =>
-        `<tr><td><code style="color:${c.value};border-left:3px solid ${c.value};padding-left:6px">${c.value}</code></td><td>${c.file}</td><td>${c.line}</td><td class="snippet">${escapeHtml(c.snippet)}</td></tr>`
+      <tr><th>色值</th><th>文件</th></tr>
+      ${details.hardcodedColors.hardcode.slice(0, MAX_DISPLAY).map(c =>
+        `<tr><td><code style="color:${c.value};border-left:3px solid ${c.value};padding-left:6px">${c.value}</code></td><td style="font-size:12px">${c.file}</td></tr>`
       ).join('\n      ')}
     </table>
+    ${details.hardcodedColors.hardcode.length > MAX_DISPLAY ? `<p style="font-size:13px;color:var(--muted);margin-top:12px;padding:8px 12px;background:var(--bg);border-radius:6px">显示前 ${MAX_DISPLAY} 条，还有 ${details.hardcodedColors.hardcode.length - MAX_DISPLAY} 条请查看 JSON 报告</p>` : ''}
   </div>` : '<div class="card"><h2>✅ 未发现硬编码颜色</h2></div>'}
 
   ${details.hardcodedColors.tailwind.length > 0 ? `
   <div class="card">
     <div class="section-label">低风险</div>
     <h2>Tailwind Arbitrary 色值（${details.hardcodedColors.tailwind.length} 处）</h2>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Tailwind 编译产物中的 arbitrary value 类名，如 <code>.text-\\[\\#495DFF\\]</code>。建议改用 Token 对应的 Tailwind 类。</p>
     <table>
-      <tr><th>色值</th><th>文件</th><th>行号</th><th>代码片段</th></tr>
-      ${details.hardcodedColors.tailwind.map(c =>
-        `<tr><td><code>${c.value}</code></td><td>${c.file}</td><td>${c.line}</td><td class="snippet">${escapeHtml(c.snippet)}</td></tr>`
+      <tr><th>色值</th><th>文件</th></tr>
+      ${details.hardcodedColors.tailwind.slice(0, MAX_DISPLAY).map(c =>
+        `<tr><td><code>${c.value}</code></td><td style="font-size:12px">${c.file}</td></tr>`
       ).join('\n      ')}
     </table>
+    ${details.hardcodedColors.tailwind.length > MAX_DISPLAY ? `<p style="font-size:13px;color:var(--muted);margin-top:12px;padding:8px 12px;background:var(--bg);border-radius:6px">显示前 ${MAX_DISPLAY} 条，还有 ${details.hardcodedColors.tailwind.length - MAX_DISPLAY} 条请查看 JSON 报告</p>` : ''}
   </div>` : ''}
 
   ${details.hardcodedRadius.offGrid.length > 0 ? `
@@ -439,11 +541,12 @@ function generateHTML(report) {
     <div class="section-label">圆角偏差</div>
     <h2>非 Token 圆角值（${details.hardcodedRadius.offGrid.length} 处）</h2>
     <table>
-      <tr><th>值</th><th>文件</th><th>行号</th><th>代码片段</th></tr>
-      ${details.hardcodedRadius.offGrid.map(r =>
-        `<tr><td><code>${r.value}</code></td><td>${r.file}</td><td>${r.line}</td><td class="snippet">${escapeHtml(r.snippet)}</td></tr>`
+      <tr><th>值</th><th>文件</th></tr>
+      ${details.hardcodedRadius.offGrid.slice(0, MAX_DISPLAY).map(r =>
+        `<tr><td><code>${r.value}</code></td><td style="font-size:12px">${r.file}</td></tr>`
       ).join('\n      ')}
     </table>
+    ${details.hardcodedRadius.offGrid.length > MAX_DISPLAY ? `<p style="font-size:13px;color:var(--muted);margin-top:12px;padding:8px 12px;background:var(--bg);border-radius:6px">显示前 ${MAX_DISPLAY} 条，还有 ${details.hardcodedRadius.offGrid.length - MAX_DISPLAY} 条请查看 JSON 报告</p>` : ''}
   </div>` : ''}
 
   ${details.hardcodedRadius.onGrid.length > 0 ? `
@@ -457,11 +560,12 @@ function generateHTML(report) {
     <div class="section-label">字号偏差</div>
     <h2>非 Token 字号值（${details.hardcodedFontSize.offGrid.length} 处）</h2>
     <table>
-      <tr><th>值</th><th>文件</th><th>行号</th></tr>
-      ${details.hardcodedFontSize.offGrid.map(f =>
-        `<tr><td><code>${f.value}</code></td><td>${f.file}</td><td>${f.line}</td></tr>`
+      <tr><th>值</th><th>文件</th></tr>
+      ${details.hardcodedFontSize.offGrid.slice(0, MAX_DISPLAY).map(f =>
+        `<tr><td><code>${f.value}</code></td><td style="font-size:12px">${f.file}</td></tr>`
       ).join('\n      ')}
     </table>
+    ${details.hardcodedFontSize.offGrid.length > MAX_DISPLAY ? `<p style="font-size:13px;color:var(--muted);margin-top:12px;padding:8px 12px;background:var(--bg);border-radius:6px">显示前 ${MAX_DISPLAY} 条，还有 ${details.hardcodedFontSize.offGrid.length - MAX_DISPLAY} 条请查看 JSON 报告</p>` : ''}
   </div>` : ''}
 
   <div class="card">
@@ -484,7 +588,75 @@ function escapeHtml(str) {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+/**
+ * 生成使用位置追踪结果的 HTML
+ */
+function usageToHtml(usage) {
+  if (!usage || usage.length === 0) return '<span style="color:var(--muted)">-</span>';
+  return '<div class="usage-cell">' + usage.slice(0, 3).map(u => {
+    const ctx = u.context.length > 50 ? u.context.slice(0, 50) + '...' : u.context;
+    return `<div style="font-size:11px;margin:2px 0"><strong>${u.file}</strong>:<code>${escapeHtml(ctx)}</code></div>`;
+  }).join('') + '</div>';
+}
+
 // ─── CLI ──────────────────────────────────────────────────────
+
+/**
+ * 在 JS 文件中搜索 Tailwind arbitrary value 或 CSS Module 类名的使用位置
+ * @param {string} baseDir - 扫描目录
+ * @param {string} pattern - 搜索模式（如 "text-[11px]" 或原始类名）
+ * @returns {Array<{file: string, context: string}>}
+ */
+function traceUsageInJS(baseDir, pattern) {
+  const results = [];
+  const jsFiles = walkDir(baseDir).filter(f => f.endsWith('.js'));
+
+  // 跳过无意义的选择器
+  if (pattern === ':root' || pattern === 'html' || pattern === 'body' || pattern === '*') {
+    return [];
+  }
+
+  // 去掉 CSS Module 哈希前缀，提取原始类名
+  // _pendingPreview_62mt9_2411 → pendingPreview
+  // text-\[11px\] → text-[11px]
+  let searchTerm = pattern;
+  const m = pattern.match(/^_([a-zA-Z][a-zA-Z0-9]*)_[a-zA-Z0-9]+$/);
+  if (m) {
+    searchTerm = m[1];
+  } else if (pattern.includes('\\[')) {
+    // Tailwind arbitrary value，还原为原始形式
+    searchTerm = pattern.replace(/\\\\\[/g, '[').replace(/\\\\\]/g, ']');
+  }
+
+  for (const jsFile of jsFiles) {
+    try {
+      const content = fs.readFileSync(jsFile, 'utf-8');
+      // 搜索原始类名或 arbitrary value（匹配 class="xxx" 或 className='xxx'）
+      const re = new RegExp('["\'`][^"\'`]*' + escapeRegex(searchTerm) + '[^"\'`]*["\'`]', 'g');
+      let match;
+      let count = 0;
+      while ((match = re.exec(content)) !== null && count < 3) {
+        // 提取更精准的上下文：只取类名字符串本身
+        const matchedStr = match[0].slice(1, -1); // 去掉引号
+        // 只显示包含目标类名的那个 class 组合，限制长度
+        const classes = matchedStr.split(/\s+/).filter(c => c.includes(searchTerm) || c.length < 30);
+        const displayContext = classes.slice(0, 5).join(' ');
+        const shortContext = displayContext.length > 60 ? displayContext.slice(0, 60) + '...' : displayContext;
+
+        results.push({
+          file: path.relative(baseDir, jsFile),
+          context: shortContext,
+        });
+        count++;
+      }
+    } catch (e) { /* skip */ }
+  }
+  return results;
+}
+
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 function main() {
   const args = process.argv.slice(2);
@@ -496,6 +668,7 @@ Lingee Token Scan — Design Token 静态扫描工具
   node token-scan.js <目录>                  扫描并输出 JSON 到 stdout
   node token-scan.js <目录> --html           同时生成 HTML 报告
   node token-scan.js <目录> --json out.json  输出 JSON 到文件
+  node token-scan.js <目录> --trace          追踪硬编码值在 JS 中的使用位置
   node token-scan.js <目录> --html --json out.json
 
 示例:
@@ -509,6 +682,7 @@ Lingee Token Scan — Design Token 静态扫描工具
 
   const dir = args[0];
   const wantHtml = args.includes('--html');
+  const wantTrace = args.includes('--trace');
   const jsonIdx = args.indexOf('--json');
   const jsonOut = jsonIdx >= 0 ? args[jsonIdx + 1] : null;
 
@@ -531,6 +705,39 @@ Lingee Token Scan — Design Token 静态扫描工具
   }
 
   const report = generateReport(results, dir);
+
+  // ── 使用位置追踪（--trace 模式）──
+  if (wantTrace) {
+    console.error('\n▶ 追踪硬编码值的使用位置...');
+
+    // 追踪颜色硬编码
+    for (const c of report.details.hardcodedColors.hardcode) {
+      if (c.selector) {
+        c.usage = traceUsageInJS(dir, c.selector);
+      }
+    }
+    for (const c of report.details.hardcodedColors.tailwind) {
+      if (c.selector) {
+        c.usage = traceUsageInJS(dir, c.selector);
+      }
+    }
+
+    // 追踪圆角硬编码
+    for (const r of report.details.hardcodedRadius.offGrid) {
+      if (r.selector) {
+        r.usage = traceUsageInJS(dir, r.selector);
+      }
+    }
+
+    // 追踪字号硬编码
+    for (const f of report.details.hardcodedFontSize.offGrid) {
+      if (f.selector) {
+        f.usage = traceUsageInJS(dir, f.selector);
+      }
+    }
+
+    console.error('▶ 追踪完成');
+  }
 
   // 控制台摘要
   console.error('\n════════════════════════════════════════');

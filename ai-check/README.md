@@ -14,10 +14,10 @@
 
 | 方向 | 说明 | 状态 |
 |------|------|------|
-| **A. 报告升级** | 统一模板、11 维度检查体系、评分系统、双层规范基准 | ✅ 已完成 |
-| **B. 自动化流程** | 沉淀为可复用 Skill/脚本，输入 URL 自动跑走查 | ⬜ 待做 |
+| **A. 报告升级** | 统一模板、评分系统（综合评分+维度评分）、代码扫描、Figma 还原对比 | ✅ 已完成 |
+| **B. 自动化流程** | 沉淀为可复用 Skill/脚本，输入 URL 自动跑走查 | ✅ 已完成 |
 | **C. 技术栈切换** | 从 Computer Use 切换到 Playwright（Web→PW，Electron→PW Electron API） | 🔄 进行中 |
-| **D. 设计稿对比** | 引入 Figma 设计稿作为基准 | ⬜ 待做 |
+| **D. 设计稿对比** | 引入 Figma 设计稿作为基准 | ✅ 已完成 |
 
 ---
 
@@ -43,12 +43,10 @@
 
 | 文件 | 说明 |
 |------|------|
-| `lingji-walkthrough-v2.html` | 会议室预订 v2 走查报告（评分 62/C，18 个问题） |
-| `lingji-walkthrough-chat-v2.html` | 对话功能 v2 走查报告（评分 71/B，7 个问题） |
-| `walkthrough-v2.css` | 两份 v2 报告共享的 CSS（保证布局一致） |
-| `walkthrough-template-v2.html` | 可复用报告模板（{{placeholder}} 占位符） |
-| `lingee-walkthrough-spec.json` | 结构化规范基准数据（Token、组件、维度、评分） |
-| `Lingee-unified-page-generation-spec.md` | v2.5.0 AI 页面生成治理合约（5542 行） |
+| `lingji-note-walkthrough.html` | AI速记 走查报告（v0.1.3，评分 58/C，16 个问题，代码扫描+Figma 还原对比） |
+| `lingji-rescan-report.html` | 会议室+对话模块 走查报告（v0.1.3，评分 68/C，11 个问题，代码扫描+Figma 还原对比） |
+| `lingji-token-report.html` | Token 扫描说明（全应用扫描原理和数据） |
+| `walkthrough-v2.css` | 报告共享 CSS（评分仪表盘、Tab 切换、卡片布局） |
 | `index.html` | 项目首页，介绍 AI 走查方案 |
 
 ### C. 技术栈切换（进行中）
@@ -114,19 +112,17 @@ node scripts/token-scan.js ./lingee-extracted --html --json result.json
 ```
 AICheck/
 ├── index.html                          # 项目首页
-├── lingji-walkthrough-v2.html          # 会议室预订 v2 报告
-├── lingji-walkthrough-chat-v2.html     # 对话功能 v2 报告
+├── lingji-note-walkthrough.html        # AI速记 走查报告（v0.1.3）
+├── lingji-rescan-report.html           # 会议室+对话模块 走查报告（v0.1.3）
+├── lingji-token-report.html            # Token 扫描说明（全应用）
+├── token-scan-data.html                # 全应用扫描数据（v0.1.3）
+├── project-comparison.html             # 新旧方案对比页
 ├── walkthrough-v2.css                  # 报告共享样式
 ├── walkthrough-template-v2.html        # 可复用报告模板
-├── lingee-walkthrough-spec.json        # 结构化规范基准
-├── Lingee-unified-page-generation-spec.md  # AI 页面生成合约
-├── lingji-walkthrough.html             # v1 报告（会议室）
-├── lingji-walkthrough-chat.html        # v1 报告（对话）
 ├── lingji-report-images/               # 走查截图
-│   ├── chat/                           # 对话功能截图 (11 张)
-│   └── meeting/                        # 会议室预订截图 (9 张)
 ├── scripts/
 │   ├── token-scan.js                   # Token 静态扫描工具（主力）
+│   ├── token-scan-result.html          # 自动生成的详细扫描报告
 │   └── check-token-binding.js          # Playwright Electron 运行时扫描（备用）
 └── README.md                           # 本文件
 ```

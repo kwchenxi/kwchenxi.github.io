@@ -53,6 +53,8 @@
 <body>
 <div class="container">
 
+  <div style="margin-bottom:16px;"><a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:rgba(0,0,0,0.45);text-decoration:none;font-size:13px;">&larr; 返回首页</a></div>
+
   <header>
     <h1><img src="assets/lingee-logo.png" alt="" style="width:32px;height:32px;vertical-align:middle;margin-right:8px;border-radius:50%;">金蝶灵基 — AI速记 走查报告</h1>
     <div class="meta">
@@ -68,6 +70,68 @@
     <img src="assets/lingee-mascot.png" alt="" style="width:80px;height:auto;flex-shrink:0;opacity:0.8;">
   </div>
 
+  <!-- ====== SCORE DASHBOARD ====== -->
+  <div class="score-dashboard">
+    <h2>综合评分</h2>
+    <div class="score-overall">
+      <div class="score-circle score-grade-C">
+        <span class="num">58</span>
+        <span class="grade">C · 合格</span>
+      </div>
+      <div class="score-summary-text">
+        <p>共发现 <strong>16</strong> 个界面问题（5 严重 / 6 中等 / 5 轻微），列表筛选 Tab 缺失、发起按钮缺失等功能完整性问题突出。Token 覆盖率 87.8%，设计还原发现 7 处差异。</p>
+        <div class="issue-counts">
+          <span class="issue-count"><span class="dot dot-critical"></span>5 严重</span>
+          <span class="issue-count"><span class="dot dot-major"></span>6 中等</span>
+          <span class="issue-count"><span class="dot dot-minor"></span>5 轻微</span>
+          <span class="issue-count" style="color:var(--text-muted)">3 未覆盖维度</span>
+        </div>
+      </div>
+    </div>
+    <div class="dim-scores">
+      <div class="dim-score-card">
+        <div class="dim-name">颜色 Token 覆盖 <span class="dim-level">L1</span></div>
+        <div class="dim-bar"><div class="dim-bar-fill fill-B" style="width:88%"></div></div>
+        <div class="dim-value" style="color:#3b82f6">88</div>
+      </div>
+      <div class="dim-score-card">
+        <div class="dim-name">设计还原度 <span class="dim-level">L1</span></div>
+        <div class="dim-bar"><div class="dim-bar-fill fill-C" style="width:55%"></div></div>
+        <div class="dim-value" style="color:#d97706">55</div>
+      </div>
+      <div class="dim-score-card">
+        <div class="dim-name">界面完整性 <span class="dim-level">L1</span></div>
+        <div class="dim-bar"><div class="dim-bar-fill fill-D" style="width:45%"></div></div>
+        <div class="dim-value" style="color:#f97316">45</div>
+      </div>
+      <div class="dim-score-card">
+        <div class="dim-name">圆角规范 <span class="dim-level">L2</span></div>
+        <div class="dim-bar"><div class="dim-bar-fill fill-C" style="width:65%"></div></div>
+        <div class="dim-value" style="color:#d97706">65</div>
+      </div>
+      <div class="dim-score-card">
+        <div class="dim-name">字号规范 <span class="dim-level">L2</span></div>
+        <div class="dim-bar"><div class="dim-bar-fill fill-C" style="width:63%"></div></div>
+        <div class="dim-value" style="color:#d97706">63</div>
+      </div>
+      <div class="dim-score-card">
+        <div class="dim-name">响应式布局 <span class="dim-level">L2</span></div>
+        <div class="dim-bar"><div class="dim-bar-fill fill-na" style="width:0%"></div></div>
+        <div class="dim-value dim-na">未覆盖</div>
+      </div>
+      <div class="dim-score-card">
+        <div class="dim-name">暗黑模式 <span class="dim-level">L2</span></div>
+        <div class="dim-bar"><div class="dim-bar-fill fill-na" style="width:0%"></div></div>
+        <div class="dim-value dim-na">未覆盖</div>
+      </div>
+      <div class="dim-score-card">
+        <div class="dim-name">无障碍 <span class="dim-level">L3</span></div>
+        <div class="dim-bar"><div class="dim-bar-fill fill-na" style="width:0%"></div></div>
+        <div class="dim-value dim-na">未覆盖</div>
+      </div>
+    </div>
+  </div>
+
   <!-- Stat Cards -->
   <div class="stat-grid">
     <div class="stat-card" onclick="switchTab('overview','')">
@@ -75,7 +139,7 @@
       <div class="lbl">发现问题</div>
     </div>
     <div class="stat-card" onclick="switchTab('code','')">
-      <div class="num" style="color:#FF8B00;">472</div>
+      <div class="num" style="color:#FF8B00;">479</div>
       <div class="lbl">硬编码 hex 色值</div>
       <div class="grade" style="color:#FF8B00;">D 级</div>
     </div>
@@ -92,7 +156,7 @@
       <div class="lbl">字号偏差</div>
     </div>
     <div class="stat-card">
-      <div class="num" style="color:#00B578;">3,953</div>
+      <div class="num" style="color:#00B578;">3,965</div>
       <div class="lbl">Token 引用</div>
     </div>
   </div>
@@ -295,6 +359,7 @@
   <!-- ==================== 代码扫描 Tab ==================== -->
   <div class="tab-panel" id="tab-code">
     <h3 style="font-size:16px;margin-bottom:16px;">AI速记模块代码扫描结果</h3>
+    <a href="token-scan-data.html" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(73,93,255,0.08);color:#495DFF;border-radius:8px;text-decoration:none;font-size:13px;font-weight:500;margin-bottom:20px;">📊 查看全量 Token 扫描数据 &rarr;</a>
 
     <div class="diff-section">
       <h4>文件级统计</h4>
@@ -701,10 +766,22 @@
     </div>
   </div>
 
-</div>
+  <!-- 相关报告 -->
+  <section style="margin-top: 40px; padding-top: 32px; border-top: 1px solid rgba(0,0,0,0.08);">
+    <h2 style="font-size: 18px; margin-bottom: 16px;">相关报告</h2>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+      <a href="lingji-rescan-report.html" style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 200px; padding: 14px 18px; background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; text-decoration: none; color: inherit;">
+        <span style="font-size: 22px;">📋</span>
+        <div><div style="font-size: 14px; font-weight: 600;">会议室+对话模块 走查</div><div style="font-size: 12px; color: rgba(0,0,0,0.45);">v0.1.3 · 11 个问题</div></div>
+      </a>
+      <a href="lingji-token-report.html" style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 200px; padding: 14px 18px; background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; text-decoration: none; color: inherit;">
+        <span style="font-size: 22px;">🎨</span>
+        <div><div style="font-size: 14px; font-weight: 600;">Token 扫描说明</div><div style="font-size: 12px; color: rgba(0,0,0,0.45);">全应用扫描 · 扫描原理和数据</div></div>
+      </a>
+    </div>
+  </section>
 
-<script>
-function switchTab(tabId, scrollTarget) {
+</div>
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
   const panel = document.getElementById('tab-' + tabId);

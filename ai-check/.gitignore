@@ -1,4 +1,5 @@
 .DS_Store
 scripts/token-scan-result.*
-scripts/token-scan-report.html
 lingee-extracted/
+extracted/
+token-scan-data.json
