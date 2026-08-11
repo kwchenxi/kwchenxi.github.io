@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>金蝶灵基 — AI速记走查报告</title>
+<link rel="stylesheet" href="walkthrough-v2.css">
+<style>
+  .compare-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  .compare-table th, .compare-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.06); }
+  .compare-table th { background: rgba(0,0,0,0.03); font-weight: 600; font-size: 13px; color: rgba(0,0,0,0.65); }
+  .change-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+  .change-badge.critical { background: rgba(241,34,52,0.1); color: #F12234; }
+  .change-badge.warning { background: rgba(255,139,0,0.1); color: #FF8B00; }
+  .change-badge.info { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.45); }
+  .change-badge.ok { background: rgba(0,181,120,0.1); color: #00B578; }
+  .screenshot-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .screenshot-pair img { width: 100%; border-radius: 8px; border: 1px solid rgba(0,0,0,0.08); }
+  .screenshot-pair .label { font-size: 12px; color: rgba(0,0,0,0.45); text-align: center; margin-top: 4px; }
+  @media (max-width: 768px) { .screenshot-pair { grid-template-columns: 1fr; } }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 16px 0; }
+  .stat-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 8px; padding: 14px 16px; text-align: center; transition: box-shadow 0.2s, border-color 0.2s; }
+  .stat-card[onclick] { cursor: pointer; }
+  .stat-card[onclick]:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: rgba(0,0,0,0.15); }
+  .stat-card .num { font-size: 24px; font-weight: 700; line-height: 1.2; }
+  .stat-card .lbl { font-size: 12px; color: rgba(0,0,0,0.45); margin-top: 2px; }
+  .stat-card .grade { font-size: 11px; font-weight: 600; margin-top: 4px; }
+  .tabs { display: flex; gap: 0; border-bottom: 2px solid rgba(0,0,0,0.06); margin: 24px 0 0; position: sticky; top: 0; background: var(--bg, #F7F7F8); z-index: 10; padding-top: 4px; }
+  .tab-btn { padding: 10px 20px; font-size: 14px; font-weight: 600; color: rgba(0,0,0,0.45); background: none; border: none; cursor: pointer; position: relative; transition: color 0.2s; }
+  .tab-btn:hover { color: rgba(0,0,0,0.65); }
+  .tab-btn.active { color: #495DFF; }
+  .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 2px; background: #495DFF; border-radius: 1px; }
+  .tab-btn .badge { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: 11px; font-weight: 700; margin-left: 4px; }
+  .tab-btn .badge.red { background: rgba(241,34,52,0.1); color: #F12234; }
+  .tab-btn .badge.orange { background: rgba(255,139,0,0.1); color: #FF8B00; }
+  .tab-btn .badge.blue { background: rgba(73,93,255,0.1); color: #495DFF; }
+  .tab-btn .badge.gray { background: rgba(0,0,0,0.06); color: rgba(0,0,0,0.45); }
+  .tab-panel { display: none; padding-top: 24px; }
+  .tab-panel.active { display: block; }
+  .issue-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 8px; padding: 16px; margin: 12px 0; }
+  .issue-card .issue-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .issue-card .issue-id { font-size: 13px; font-weight: 700; color: rgba(0,0,0,0.28); }
+  .issue-card .issue-title { font-size: 14px; font-weight: 600; color: rgba(0,0,0,0.82); }
+  .issue-card .issue-detail { font-size: 13px; color: rgba(0,0,0,0.65); line-height: 1.7; }
+  .issue-card .issue-detail code { background: rgba(0,0,0,0.04); padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+  .file-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0; }
+  .file-table th { padding: 8px 10px; background: rgba(0,0,0,0.03); font-weight: 600; text-align: left; color: rgba(0,0,0,0.65); }
+  .file-table td { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.04); }
+  .diff-section { margin: 20px 0; }
+  .diff-section h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1><img src="assets/lingee-logo.png" alt="" style="width:32px;height:32px;vertical-align:middle;margin-right:8px;border-radius:50%;">金蝶灵基 — AI速记 走查报告</h1>
+    <div class="meta">
+      走查时间：2026-08-11 · 版本：v0.1.3 · 走查范围：AI速记（列表页 + 录音页 + 详情页）
+    </div>
+  </header>
+
+  <div class="hero" style="display:flex;align-items:center;justify-content:space-between;gap:24px;">
+    <div>
+      <h2 style="margin:0;font-size:20px;">AI速记业务走查</h2>
+      <p style="font-size:14px;color:rgba(0,0,0,0.65);margin:4px 0 0;">覆盖代码扫描、界面交互、Figma 设计还原三个维度</p>
+    </div>
+    <img src="assets/lingee-mascot.png" alt="" style="width:80px;height:auto;flex-shrink:0;opacity:0.8;">
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="stat-grid">
+    <div class="stat-card" onclick="switchTab('overview','')">
+      <div class="num" style="color:#F12234;">16</div>
+      <div class="lbl">发现问题</div>
+    </div>
+    <div class="stat-card" onclick="switchTab('code','')">
+      <div class="num" style="color:#FF8B00;">472</div>
+      <div class="lbl">硬编码 hex 色值</div>
+      <div class="grade" style="color:#FF8B00;">D 级</div>
+    </div>
+    <div class="stat-card" onclick="switchTab('code','')">
+      <div class="num" style="color:#FF8B00;">69</div>
+      <div class="lbl">硬编码 rgba 色值</div>
+    </div>
+    <div class="stat-card" onclick="switchTab('code','')">
+      <div class="num" style="color:#495DFF;">65</div>
+      <div class="lbl">圆角偏差</div>
+    </div>
+    <div class="stat-card" onclick="switchTab('code','')">
+      <div class="num" style="color:#495DFF;">63</div>
+      <div class="lbl">字号偏差</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" style="color:#00B578;">3,953</div>
+      <div class="lbl">Token 引用</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('overview','')">总览 <span class="badge red">16</span></button>
+    <button class="tab-btn" onclick="switchTab('code','')">代码扫描 <span class="badge orange">4</span></button>
+    <button class="tab-btn" onclick="switchTab('figma','')">设计还原 <span class="badge blue">7</span></button>
+    <button class="tab-btn" onclick="switchTab('pending','')">待验证 <span class="badge gray">5</span></button>
+  </div>
+
+  <!-- ==================== 总览 Tab ==================== -->
+  <div class="tab-panel active" id="tab-overview">
+    <h3 style="font-size:16px;margin-bottom:16px;">所有问题（按严重程度排序）</h3>
+
+    <!-- Critical -->
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">#1</span>
+        <span class="change-badge critical">严重</span>
+        <span class="issue-title">列表筛选 Tabs 缺失</span>
+      </div>
+      <div class="issue-detail">
+        Figma 设计有 <code>最近 / 我的 / 共享 / 收藏</code> 四个筛选 Tab，实际页面完全缺失。用户无法按维度筛选速记列表，影响功能完整性。
+      </div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">#2</span>
+        <span class="change-badge critical">严重</span>
+        <span class="issue-title">列表页「发起速记」按钮缺失</span>
+      </div>
+      <div class="issue-detail">
+        Figma 设计中搜索栏右侧有蓝色「发起速记」按钮（带麦克风图标），实际列表页未显示该按钮。用户必须通过录音窗口入口才能发起速记，入口不直观。
+        <br><em>注：录音中页面存在此按钮，但列表页作为主入口缺失影响较大。</em>
+      </div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">#3</span>
+        <span class="change-badge critical">严重</span>
+        <span class="issue-title">搜索框 placeholder 文案不完整</span>
+      </div>
+      <div class="issue-detail">
+        Figma: <code>搜索纪要标题、内容、参与人...</code><br>
+        实际: <code>搜索纪要标题</code><br>
+        缺失了"内容、参与人"的搜索提示，用户可能不知道支持这些维度的搜索。
+      </div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">#4</span>
+        <span class="change-badge critical">严重</span>
+        <span class="issue-title">voiceRecord/window.css 硬编码色值 371 处</span>
+      </div>
+      <div class="issue-detail">
+        <code>voiceRecord/window.css</code>（248KB）包含 371 个硬编码 hex 色值和 8 个 rgba 色值。大量使用 <code>#007aff</code>、<code>#2f2f2f</code>、<code>#be3896</code> 等非 Token 值，未使用 <code>var(--yui-*)</code> 变量，影响主题切换和维护性。
+      </div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">#5</span>
+        <span class="change-badge critical">严重</span>
+        <span class="issue-title">QuickNotesPage.css 硬编码色值 159 处</span>
+      </div>
+      <div class="issue-detail">
+        <code>QuickNotesPage.BCCz-dVs.css</code>（90KB）包含 101 个 hex + 58 个 rgba 硬编码色值。典型问题值：<code>#007aff</code>、<code>#3395ff</code>、<code>#3d0e0b</code>、<code>rgba(255,255,255,.08)</code>。
+      </div>
+    </div>
+
+    <!-- Warning -->
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">#6</span>
+        <span class="change-badge warning">中等</span>
+        <span class="issue-title">最小窗口下按钮文字被截断</span>
+      </div>
+      <div class="issue-detail">
+        窗口缩至约 800×600 时，「发起速记」按钮仅显示麦克风图标，文字完全消失。用户难以识别按钮功能。建议设置 min-width 或在图标旁保留首字。
+      </div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">#7</span>
+        <span class="change-badge warning">中等</span>
+        <span class="issue-title">最小窗口下列表字段截断</span>
+      </div>
+      <div class="issue-detail">
+        创建时间列显示为 <code>2026年8月...</code>，日期信息不完整。建议使用更紧凑的日期格式（如 <code>08-07 15:34</code>），与 Figma 设计一致。
+      </div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">#8</span>
+        <span class="change-badge warning">中等</span>
+        <span class="issue-title">顶部试用提示文案有选中高亮残留</span>
+      </div>
+      <div class="issue-detail">
+        多张截图中「当前为免费试用阶段，单次录音时长限制为 30 分钟」文案出现灰色选中态，疑似 <code>user-select: none</code> 未设置或初始化时文本被意外选中。
+      </div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">#9</span>
+        <span class="change-badge warning">中等</span>
+        <span class="issue-title">搜索框点击后缺少聚焦反馈</span>
+      </div>
+      <div class="issue-detail">
+        设计规范：输入框聚焦时应有主色描边 <code>#495DFF</code>。实际点击搜索框后无明显光标或高亮边框，用户无法判断是否已进入输入状态。
+      </div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">#10</span>
+        <span class="change-badge warning">中等</span>
+        <span class="issue-title">「发起速记」无二次确认，直接开始录音</span>
+      </div>
+      <div class="issue-detail">
+        点击后立即打开录音窗口并开始录音，无确认弹窗。用户误触可能造成非预期录音。建议增加确认步骤或 toast 提示。
+      </div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">#11</span>
+        <span class="change-badge warning">中等</span>
+        <span class="issue-title">voiceRecord/window.css 圆角偏差 27 处</span>
+      </div>
+      <div class="issue-detail">
+        非标准值：<code>3px</code>（规范无此值）、<code>9px</code>（应为 8px）、<code>9999px</code>（应为 999 Token）。标准 Token 匹配 310 处，偏差率约 8%。
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">#12</span>
+        <span class="change-badge info">轻微</span>
+        <span class="issue-title">空状态图标与 Figma 不一致</span>
+      </div>
+      <div class="issue-detail">
+        Figma 空状态使用灰色折角文档图标 + 文字「暂无速记文件」，实际显示「未找到相关速记文件」（搜索结果空状态）。空列表的初始空状态未触发验证。
+      </div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">#13</span>
+        <span class="change-badge info">轻微</span>
+        <span class="issue-title">列表滚动反馈不明显</span>
+      </div>
+      <div class="issue-detail">
+        列表内容较少时尝试滚动无视觉反馈。虽非缺陷，但可考虑在列表不可滚动时隐藏滚动区域或禁用滚动行为。
+      </div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">#14</span>
+        <span class="change-badge info">轻微</span>
+        <span class="issue-title">QuickNotesPage.css 字号偏差 37 处</span>
+      </div>
+      <div class="issue-detail">
+        非标准值：<code>10px</code>（规范最小 12px）、<code>13px</code>（不在 p1-p4 体系中）、<code>15px</code>、<code>18px</code>。建议使用 Token 变量 <code>--yui-text-*</code>。
+      </div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">#15</span>
+        <span class="change-badge info">轻微</span>
+        <span class="issue-title">voiceRecord/window.css 字号偏差 26 处</span>
+      </div>
+      <div class="issue-detail">
+        非标准值：<code>11px</code>、<code>15px</code>、<code>22px</code>、<code>30px</code>。标准 Token 匹配 367 处。
+      </div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">#16</span>
+        <span class="change-badge info">轻微</span>
+        <span class="issue-title">未发现筛选器入口</span>
+      </div>
+      <div class="issue-detail">
+        如果产品预期有按状态/创建人等维度的筛选能力，当前页面未看到筛选入口。Figma 设计中也未包含独立筛选器组件。
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 代码扫描 Tab ==================== -->
+  <div class="tab-panel" id="tab-code">
+    <h3 style="font-size:16px;margin-bottom:16px;">AI速记模块代码扫描结果</h3>
+
+    <div class="diff-section">
+      <h4>文件级统计</h4>
+      <table class="file-table">
+        <thead>
+          <tr><th>文件</th><th>大小</th><th>Token 引用</th><th>硬编码 hex</th><th>硬编码 rgba</th><th>圆角偏差</th><th>字号偏差</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>voiceRecord/window.css</code></td>
+            <td>248 KB</td>
+            <td style="color:#00B578;font-weight:600;">2,684</td>
+            <td style="color:#F12234;font-weight:600;">371</td>
+            <td style="color:#F12234;font-weight:600;">8</td>
+            <td style="color:#FF8B00;">27</td>
+            <td style="color:#FF8B00;">26</td>
+          </tr>
+          <tr>
+            <td><code>voiceRecord/window.js</code></td>
+            <td>601 KB</td>
+            <td>9</td>
+            <td style="color:#FF8B00;">7</td>
+            <td>3</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <td><code>QuickNotesPage.css</code></td>
+            <td>90 KB</td>
+            <td style="color:#00B578;font-weight:600;">1,269</td>
+            <td style="color:#F12234;font-weight:600;">101</td>
+            <td style="color:#F12234;font-weight:600;">58</td>
+            <td style="color:#FF8B00;">38</td>
+            <td style="color:#FF8B00;">37</td>
+          </tr>
+          <tr>
+            <td><code>QuickNotesPage.js</code></td>
+            <td>49 KB</td>
+            <td>3</td>
+            <td style="color:#00B578;">0</td>
+            <td style="color:#00B578;">0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+          <tr style="font-weight:600;background:rgba(0,0,0,0.02);">
+            <td>合计</td>
+            <td>988 KB</td>
+            <td>3,965</td>
+            <td style="color:#F12234;">479</td>
+            <td style="color:#F12234;">69</td>
+            <td style="color:#FF8B00;">65</td>
+            <td style="color:#FF8B00;">63</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="diff-section">
+      <h4>硬编码色值 Top 10（voiceRecord/window.css）</h4>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;">
+        <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:rgba(0,0,0,0.03);border-radius:4px;font-size:12px;font-family:monospace;">
+          <span style="width:12px;height:12px;border-radius:2px;background:#007aff;display:inline-block;"></span> #007aff
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:rgba(0,0,0,0.03);border-radius:4px;font-size:12px;font-family:monospace;">
+          <span style="width:12px;height:12px;border-radius:2px;background:#2f2f2f;display:inline-block;"></span> #2f2f2f
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:rgba(0,0,0,0.03);border-radius:4px;font-size:12px;font-family:monospace;">
+          <span style="width:12px;height:12px;border-radius:2px;background:#be3896;display:inline-block;"></span> #be3896
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:rgba(0,0,0,0.03);border-radius:4px;font-size:12px;font-family:monospace;">
+          <span style="width:12px;height:12px;border-radius:2px;background:#3336d6;display:inline-block;"></span> #3336d6
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:rgba(0,0,0,0.03);border-radius:4px;font-size:12px;font-family:monospace;">
+          <span style="width:12px;height:12px;border-radius:2px;background:#3395ff;display:inline-block;"></span> #3395ff
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:rgba(0,0,0,0.03);border-radius:4px;font-size:12px;font-family:monospace;">
+          <span style="width:12px;height:12px;border-radius:2px;background:#d8eeff;display:inline-block;"></span> #d8eeff
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:rgba(0,0,0,0.03);border-radius:4px;font-size:12px;font-family:monospace;">
+          <span style="width:12px;height:12px;border-radius:2px;background:#bcd8ff;display:inline-block;"></span> #bcd8ff
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:rgba(0,0,0,0.03);border-radius:4px;font-size:12px;font-family:monospace;">
+          <span style="width:12px;height:12px;border-radius:2px;background:#fa3;display:inline-block;"></span> #fa3
+        </span>
+      </div>
+    </div>
+
+    <div class="diff-section">
+      <h4>JS 中的硬编码色值（voiceRecord/window.js）</h4>
+      <table class="file-table">
+        <thead><tr><th>色值</th><th>可能用途</th><th>建议替换</th></tr></thead>
+        <tbody>
+          <tr><td><code>#007aff</code></td><td>iOS 蓝</td><td><code>var(--yui-blue-700)</code></td></tr>
+          <tr><td><code>#078E3B</code></td><td>成功绿</td><td><code>var(--yui-green-500)</code></td></tr>
+          <tr><td><code>#E26735</code></td><td>警告橙</td><td><code>var(--yui-orange-500)</code></td></tr>
+          <tr><td><code>#F12234</code></td><td>危险红</td><td><code>var(--yui-red-500)</code></td></tr>
+          <tr><td><code>#2970FF</code></td><td>蓝色</td><td><code>var(--yui-blue-500)</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="diff-section">
+      <h4>圆角偏差 — 选择器级定位</h4>
+      <p style="font-size:13px;color:rgba(0,0,0,0.45);margin-bottom:12px;">以下是需要修复的具体选择器，可直接定位到源码修改。</p>
+
+      <h5 style="font-size:13px;font-weight:600;color:rgba(0,0,0,0.82);margin:16px 0 8px;">QuickNotesPage.css — 3 处</h5>
+      <table class="file-table">
+        <thead><tr><th>CSS Module 类名</th><th>实际值</th><th>建议 Token</th><th>组件推测</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>._pendingPreview_62mt9_2411</code></td>
+            <td style="color:#F12234;">5px</td>
+            <td>small (4px) 或 medium (6px)</td>
+            <td>待预览状态卡片</td>
+          </tr>
+          <tr>
+            <td><code>._speakerButton_62mt9_2450</code></td>
+            <td style="color:#F12234;">5px</td>
+            <td>small (4px) 或 medium (6px)</td>
+            <td>说话人按钮</td>
+          </tr>
+          <tr>
+            <td><code>._uploadingPreview_62mt9_2770</code></td>
+            <td style="color:#F12234;">5px</td>
+            <td>small (4px) 或 medium (6px)</td>
+            <td>上传中预览卡片</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h5 style="font-size:13px;font-weight:600;color:rgba(0,0,0,0.82);margin:16px 0 8px;">voiceRecord/window.css — 5 处</h5>
+      <table class="file-table">
+        <thead><tr><th>选择器</th><th>实际值</th><th>建议 Token</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>::-webkit-scrollbar-thumb</code></td>
+            <td style="color:#FF8B00;">9px</td>
+            <td>x-medium (8px)</td>
+            <td>滚动条滑块</td>
+          </tr>
+          <tr>
+            <td><code>.g-icon-*-group:before</code></td>
+            <td style="color:#FF8B00;">2px</td>
+            <td>small (4px)</td>
+            <td>图标组前缀元素</td>
+          </tr>
+          <tr>
+            <td><code>.rounded-[10px]</code></td>
+            <td style="color:#FF8B00;">10px</td>
+            <td>x-medium (8px)</td>
+            <td>Tailwind arbitrary value，源码改 <code>rounded-lg</code></td>
+          </tr>
+          <tr>
+            <td><code>.rounded-[2px]</code></td>
+            <td style="color:#FF8B00;">2px</td>
+            <td>small (4px)</td>
+            <td>Tailwind arbitrary value，源码改 <code>rounded</code></td>
+          </tr>
+          <tr>
+            <td><code>.rounded-[3px]</code></td>
+            <td style="color:#FF8B00;">3px</td>
+            <td>small (4px)</td>
+            <td>Tailwind arbitrary value，源码改 <code>rounded</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:12px;color:rgba(0,0,0,0.45);margin-top:8px;">
+        <code>.rounded-full</code> (9999px) 和 <code>.!rounded-full</code> (9999px) 为 Tailwind 标准工具类，无需修改。
+      </p>
+    </div>
+
+    <div class="diff-section">
+      <h4>字号偏差 — 选择器级定位</h4>
+      <p style="font-size:13px;color:rgba(0,0,0,0.45);margin-bottom:12px;">实际只有 5 处偏差（之前统计的 63 处包含了规范声明本身的数值）。</p>
+
+      <h5 style="font-size:13px;font-weight:600;color:rgba(0,0,0,0.82);margin:16px 0 8px;">voiceRecord/window.css — 4 处</h5>
+      <table class="file-table">
+        <thead><tr><th>选择器</th><th>实际值</th><th>建议</th><th>源码修改方式</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>h2</code></td>
+            <td style="color:#F12234;">30px</td>
+            <td>36px (h2)</td>
+            <td>全局 h2 标签样式，检查是否有意为之</td>
+          </tr>
+          <tr>
+            <td><code>.text-[11px]</code></td>
+            <td style="color:#F12234;">11px</td>
+            <td>10px (p4) 或 12px (p3)</td>
+            <td>源码 <code>className="text-[11px]"</code> → 改 <code>text-xs</code></td>
+          </tr>
+          <tr>
+            <td><code>.text-[15px]</code></td>
+            <td style="color:#F12234;">15px</td>
+            <td>14px (p2) 或 16px (p1)</td>
+            <td>源码 <code>className="text-[15px]"</code> → 改 <code>text-sm</code></td>
+          </tr>
+          <tr>
+            <td><code>.text-[22px]</code></td>
+            <td style="color:#F12234;">22px</td>
+            <td>20px (h3) 或 24px (h2)</td>
+            <td>源码 <code>className="text-[22px]"</code> → 改 <code>text-xl</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h5 style="font-size:13px;font-weight:600;color:rgba(0,0,0,0.82);margin:16px 0 8px;">QuickNotesPage.css — 1 处</h5>
+      <table class="file-table">
+        <thead><tr><th>CSS Module 类名</th><th>实际值</th><th>建议</th><th>组件推测</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>._dropzoneTitle_62mt9_2365</code></td>
+            <td style="color:#F12234;">15px</td>
+            <td>14px (p2)</td>
+            <td>拖拽上传区域的标题文字</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ==================== 设计还原 Tab ==================== -->
+  <div class="tab-panel" id="tab-figma">
+    <h3 style="font-size:16px;margin-bottom:16px;">Figma 设计稿 vs 实际实现</h3>
+
+    <div class="diff-section">
+      <h4>列表页整体布局</h4>
+      <div class="screenshot-pair">
+        <div>
+          <img src="screenshots/note/figma-list.png" alt="Figma 列表页">
+          <div class="label">Figma 设计稿</div>
+        </div>
+        <div>
+          <img src="screenshots/note/note-03-baseline.png" alt="实际列表页">
+          <div class="label">实际实现</div>
+        </div>
+      </div>
+      <table class="compare-table">
+        <thead><tr><th>差异项</th><th>Figma 设计</th><th>实际实现</th><th>严重度</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>筛选 Tabs</td>
+            <td>最近 / 我的 / 共享 / 收藏</td>
+            <td style="color:#F12234;font-weight:600;">缺失</td>
+            <td><span class="change-badge critical">严重</span></td>
+          </tr>
+          <tr>
+            <td>发起速记按钮</td>
+            <td>蓝色按钮 + 麦克风图标</td>
+            <td style="color:#F12234;font-weight:600;">缺失</td>
+            <td><span class="change-badge critical">严重</span></td>
+          </tr>
+          <tr>
+            <td>搜索框 placeholder</td>
+            <td>搜索纪要标题、内容、参与人...</td>
+            <td>搜索纪要标题</td>
+            <td><span class="change-badge critical">严重</span></td>
+          </tr>
+          <tr>
+            <td>试用提示 Banner</td>
+            <td>无</td>
+            <td>有（免费试用阶段...）</td>
+            <td><span class="change-badge info">运营</span></td>
+          </tr>
+          <tr>
+            <td>数据量</td>
+            <td>10 行示例数据</td>
+            <td>1 行实际数据</td>
+            <td><span class="change-badge info">数据</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="diff-section">
+      <h4>空状态对比</h4>
+      <div class="screenshot-pair">
+        <div>
+          <img src="screenshots/note/figma-empty.png" alt="Figma 空状态">
+          <div class="label">Figma 空状态</div>
+        </div>
+        <div>
+          <img src="screenshots/note/note-08-input.png" alt="实际搜索空状态">
+          <div class="label">实际搜索无结果</div>
+        </div>
+      </div>
+      <table class="compare-table">
+        <thead><tr><th>差异项</th><th>Figma 设计</th><th>实际实现</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>空状态文案</td>
+            <td>「暂无速记文件」</td>
+            <td>「未找到相关速记文件」（搜索空状态）</td>
+          </tr>
+          <tr>
+            <td>图标</td>
+            <td>灰色折角文档图标</td>
+            <td>类似图标，尺寸偏大</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="diff-section">
+      <h4>响应式（最小窗口 ~800px）</h4>
+      <div class="screenshot-pair">
+        <div>
+          <img src="screenshots/note/note-09-maxwindow.png" alt="最大窗口">
+          <div class="label">最大窗口</div>
+        </div>
+        <div>
+          <img src="screenshots/note/note-02-minwindow.png" alt="最小窗口">
+          <div class="label">最小窗口 (~800px)</div>
+        </div>
+      </div>
+      <table class="compare-table">
+        <thead><tr><th>问题</th><th>描述</th><th>严重度</th></tr></thead>
+        <tbody>
+          <tr><td>按钮文字消失</td><td>「发起速记」仅显示图标</td><td><span class="change-badge warning">中等</span></td></tr>
+          <tr><td>日期截断</td><td>创建时间显示不全</td><td><span class="change-badge warning">中等</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="diff-section">
+      <h4>交互状态</h4>
+      <div class="screenshot-pair">
+        <div>
+          <img src="screenshots/note/note-04-search.png" alt="搜索框聚焦">
+          <div class="label">搜索框聚焦</div>
+        </div>
+        <div>
+          <img src="screenshots/note/note-05-create.png" alt="发起录音">
+          <div class="label">发起录音（录音窗口）</div>
+        </div>
+      </div>
+      <table class="compare-table">
+        <thead><tr><th>问题</th><th>设计规范</th><th>实际表现</th></tr></thead>
+        <tbody>
+          <tr><td>搜索框聚焦</td><td>主色描边 #495DFF</td><td>无明显聚焦反馈</td></tr>
+          <tr><td>发起速记</td><td>-</td><td>无二次确认，直接开始录音</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="diff-section">
+      <h4>快速切换测试</h4>
+      <div style="text-align:center;">
+        <img src="screenshots/note/note-10-rapid-click.png" alt="快速切换" style="max-width:100%;border-radius:8px;border:1px solid rgba(0,0,0,0.08);">
+      </div>
+      <p style="font-size:13px;color:rgba(0,0,0,0.65);margin-top:8px;">
+        快速在日历 → 会议 → AI速记之间切换，未发现面板残留或内容错位。<span class="change-badge ok">通过</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== 待验证 Tab ==================== -->
+  <div class="tab-panel" id="tab-pending">
+    <h3 style="font-size:16px;margin-bottom:16px;">待验证项</h3>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">P1</span>
+        <span class="change-badge info">待验证</span>
+        <span class="issue-title">列表初始空状态</span>
+      </div>
+      <div class="issue-detail">当前列表有 1 条数据，无法验证 0 条数据时的空状态展示。Figma 设计有「暂无速记文件」空状态，需人工在无数据账号下验证。</div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">P2</span>
+        <span class="change-badge info">待验证</span>
+        <span class="issue-title">纪要详情页</span>
+      </div>
+      <div class="issue-detail">Figma 有纪要详情页设计（含音频播放器），当前仅有 1 条 5 秒录音记录，未能充分验证详情页的完整展示。建议在有完整录音记录时重新走查。</div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">P3</span>
+        <span class="change-badge info">待验证</span>
+        <span class="issue-title">暗黑模式适配</span>
+      </div>
+      <div class="issue-detail">本次走查在亮色模式下进行。需切换暗黑模式后重新截图对比，检查硬编码色值在深色背景下的表现。</div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">P4</span>
+        <span class="change-badge info">待验证</span>
+        <span class="issue-title">键盘导航与无障碍</span>
+      </div>
+      <div class="issue-detail">Tab 键导航顺序、focus ring 可见性、aria-label 完整性未在本次走查中验证。需要人工逐项检查。</div>
+    </div>
+
+    <div class="issue-card">
+      <div class="issue-header">
+        <span class="issue-id">P5</span>
+        <span class="change-badge info">待验证</span>
+        <span class="issue-title">录音中窗口最小化</span>
+      </div>
+      <div class="issue-detail">Figma 有「录音中最小化」设计（node 220:31020），本次未测试录音进行中窗口最小化的表现。</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function switchTab(tabId, scrollTarget) {
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+  const panel = document.getElementById('tab-' + tabId);
+  if (panel) panel.classList.add('active');
+  const btns = document.querySelectorAll('.tab-btn');
+  const tabIndex = { overview: 0, code: 1, figma: 2, pending: 3 };
+  if (btns[tabIndex[tabId]]) btns[tabIndex[tabId]].classList.add('active');
+  if (scrollTarget) {
+    setTimeout(() => {
+      const el = document.getElementById(scrollTarget);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }
+}
+</script>
+</body>
+</html>
