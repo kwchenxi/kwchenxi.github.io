@@ -52,7 +52,7 @@ header .meta a:hover { text-decoration: underline; }
 .dim-score-card { padding: 12px 14px; border-radius: 8px; border: 1px solid var(--border); }
 .dim-score-card .dim-name { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
 .dim-score-card .dim-bar { height: 6px; border-radius: 3px; background: #eee; margin-bottom: 4px; overflow: hidden; }
-.dim-score-card .dim-bar-fill { height: 100%; border-radius: 3px; }
+.dim-score-card .dim-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
 .dim-score-card .dim-value { font-size: 13px; font-weight: 700; }
 .dim-level { font-size: 10px; color: var(--text-muted); background: var(--bg); padding: 1px 6px; border-radius: 4px; margin-left: 4px; }
 .fill-A { background: var(--success); }

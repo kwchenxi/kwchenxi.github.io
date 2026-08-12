@@ -148,12 +148,12 @@
       <div class="lbl">硬编码 rgba 色值</div>
     </div>
     <div class="stat-card" onclick="switchTab('code','')">
-      <div class="num" style="color:#495DFF;">65</div>
-      <div class="lbl">圆角偏差</div>
+      <div class="num" style="color:#495DFF;">8</div>
+      <div class="lbl">圆角偏差（选择器级）</div>
     </div>
     <div class="stat-card" onclick="switchTab('code','')">
-      <div class="num" style="color:#495DFF;">63</div>
-      <div class="lbl">字号偏差</div>
+      <div class="num" style="color:#495DFF;">5</div>
+      <div class="lbl">字号偏差（选择器级）</div>
     </div>
     <div class="stat-card">
       <div class="num" style="color:#00B578;">3,965</div>
@@ -295,7 +295,7 @@
         <span class="issue-title">voiceRecord/window.css 圆角偏差 27 处</span>
       </div>
       <div class="issue-detail">
-        非标准值：<code>3px</code>（规范无此值）、<code>9px</code>（应为 8px）、<code>9999px</code>（应为 999 Token）。标准 Token 匹配 310 处，偏差率约 8%。
+        非标准值：<code>3px</code>（规范无此值）、<code>9px</code>（应为 8px）、<code>9999px</code>（应为 999 Token）。详见代码扫描 Tab 圆角偏差表。
       </div>
     </div>
 
@@ -340,7 +340,7 @@
         <span class="issue-title">voiceRecord/window.css 字号偏差 26 处</span>
       </div>
       <div class="issue-detail">
-        非标准值：<code>11px</code>、<code>15px</code>、<code>22px</code>、<code>30px</code>。标准 Token 匹配 367 处。
+        非标准值：<code>11px</code>、<code>15px</code>、<code>22px</code>、<code>30px</code>。详见代码扫描 Tab 字号偏差表。
       </div>
     </div>
 
@@ -463,7 +463,7 @@
 
     <div class="diff-section">
       <h4>圆角偏差 — 选择器级定位</h4>
-      <p style="font-size:13px;color:rgba(0,0,0,0.45);margin-bottom:12px;">以下是需要修复的具体选择器，可直接定位到源码修改。</p>
+      <p style="font-size:13px;color:rgba(0,0,0,0.45);margin-bottom:12px;">实际只有 8 处偏差（原始扫描的 65 处包含了规范声明本身的数值）。以下是需要修复的具体选择器，可直接定位到源码修改。</p>
 
       <h5 style="font-size:13px;font-weight:600;color:rgba(0,0,0,0.82);margin:16px 0 8px;">QuickNotesPage.css — 3 处</h5>
       <table class="file-table">
@@ -686,10 +686,11 @@
 
     <div class="diff-section">
       <h4>交互状态</h4>
+      <p style="font-size:13px;color:rgba(0,0,0,0.45);margin-bottom:12px;">注：搜索框聚焦后界面无视觉变化，截图与默认态一致——这本身就是问题（无聚焦反馈）。</p>
       <div class="screenshot-pair">
         <div>
           <img src="screenshots/note/note-04-search.png" alt="搜索框聚焦">
-          <div class="label">搜索框聚焦</div>
+          <div class="label">搜索框聚焦（与默认态一致）</div>
         </div>
         <div>
           <img src="screenshots/note/note-05-create.png" alt="发起录音">
@@ -708,10 +709,10 @@
     <div class="diff-section">
       <h4>快速切换测试</h4>
       <div style="text-align:center;">
-        <img src="screenshots/note/note-10-rapid-click.png" alt="快速切换" style="max-width:100%;border-radius:8px;border:1px solid rgba(0,0,0,0.08);">
+        <img src="screenshots/note/note-10-rapid-click.png" alt="快速切换后状态" style="max-width:100%;border-radius:8px;border:1px solid rgba(0,0,0,0.08);">
       </div>
       <p style="font-size:13px;color:rgba(0,0,0,0.65);margin-top:8px;">
-        快速在日历 → 会议 → AI速记之间切换，未发现面板残留或内容错位。<span class="change-badge ok">通过</span>
+        快速在日历 → 会议 → AI速记之间切换，未发现面板残留或内容错位。切换后界面恢复正常，与最大窗口态一致。<span class="change-badge ok">通过</span>
       </p>
     </div>
   </div>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lingee Token Scan Report</title>
+<title>金蝶灵基 — Token 扫描原始数据</title>
 <style>
   :root { --primary: #495DFF; --bg: #F7F7F8; --surface: #FFF; --text: rgba(0,0,0,0.82); --muted: rgba(0,0,0,0.45); --border: rgba(0,0,0,0.08); --success: #00B578; --danger: #F12234; --warning: #FF8B00; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,12 +40,12 @@
 <body>
 <div class="container">
   <div style="margin-bottom:16px;"><a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;font-size:13px;">&larr; 返回首页</a></div>
-  <h1>Lingee Token Scan Report</h1>
+  <h1>金蝶灵基 — Token 扫描原始数据</h1>
   <div class="meta">扫描时间：2026-08-11 09:06:17 &middot; 扫描文件：146 个 &middot; 目录：./extracted</div>
 
   <div class="card">
     <div style="display:flex;align-items:center;gap:24px">
-      <div class="grade">D <small>89.3% 覆盖率</small></div>
+      <div class="grade" style="color:#3b82f6">B <small>89.3% 覆盖率</small></div>
     </div>
     <div class="stats">
       <div class="stat"><div class="num">4,729</div><div class="label">Token 使用次数</div></div>
@@ -181,6 +181,7 @@
       <tr><td style="font-size:12px">dist/renderer/windows/jsbridges/selectPersons.css</td><td>0</td><td><span class="badge badge-err">50</span></td></tr>
       <tr><td style="font-size:12px">dist/renderer/windows/jsbridges/selectOrgs.css</td><td>0</td><td><span class="badge badge-err">48</span></td></tr>
     </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:12px;padding:8px 12px;background:var(--bg);border-radius:6px">每文件硬编码上限 20 处，超过的文件按实际值取上限展示。</p>
   </div>
 
 </div>
