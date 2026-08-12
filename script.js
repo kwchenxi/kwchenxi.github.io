@@ -18,13 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
         card.classList.add('visible');
     });
 
-    window.addEventListener('scroll', function() {
-        const scrollTop = window.pageYOffset;
-        const docHeight = document.documentElement.scrollHeight;
-        const winHeight = window.innerHeight;
-        const scrollPercent = (scrollTop / (docHeight - winHeight)) * 100;
-    });
-
     if ('ontouchstart' in window) {
         const interactiveElements = document.querySelectorAll('.project-icon, .project-detail-link, a, .version-btn');
         interactiveElements.forEach(element => {

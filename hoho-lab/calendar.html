@@ -9,13 +9,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      /* 颜色系统 - 与其他页面统一 */
-      --primary-color: #6366f1;
-      --primary-dark: #4f46e5;
+      /* 颜色系统 - 与主站统一 (#4598F0 蓝) */
+      --primary-color: #4598F0;
+      --primary-dark: #3477b3;
       --secondary-color: #8b5cf6;
       --accent-color: #06b6d4;
       --blue-light: #e6f2ff;
       --blue-dark: #3477b3;
+      /* 语义别名，供页面各处复用 */
+      --main-blue: #4598F0;
+      --hover-blue: rgba(69, 152, 240, 0.1);
+      --dark-blue: #3477b3;
+      --light-blue: #e6f2ff;
+      --text: #1e293b;
+      --subtext: #64748b;
+      --gray: #f1f5f9;
+      --transition: var(--transition-normal);
       --background: #f8fafc;
       --surface: #ffffff;
       --text-primary: #1e293b;
@@ -812,8 +821,9 @@
     const viewSelect = document.getElementById('viewSelect');
     if (viewSelect) {
       viewSelect.addEventListener('change', function () {
+        // 月视图页面尚未创建，切换时仅保留当前视图，避免 404
         if (this.value === 'month') {
-          window.location.href = '月视图.html';
+          this.value = 'week';
         }
       });
     }
