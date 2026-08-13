@@ -82,13 +82,15 @@ node scripts/token-scan.js ./lingee-extracted --html --json result.json
 
 | 指标 | 数值 |
 |------|------|
-| Token 使用总计 | 2,405 次（color: 2267, shadow: 56, transition: 82） |
-| 硬编码颜色 | 522 处（含第三方 UI 库，每文件上限 20） |
-| SVG 图标色 | 375 处（单独分类，不计入主硬编码） |
-| Tailwind 色值 | 13 处 |
-| 非 Token 圆角 | 96 处（匹配 Token 值: 289） |
-| 非 Token 字号 | 111 处（匹配 Token 值: 357） |
-| 颜色 Token 覆盖率 | 80.9% |
+| Token 使用总计 | 4,729 次（color: 4603, shadow: 66, transition: 60） |
+| 硬编码颜色 | 521 处（含第三方 UI 库，每文件上限 20） |
+| SVG 图标色 | 322 处（单独分类，不计入主硬编码） |
+| Tailwind 色值 | 33 处 |
+| 非 Token 圆角 | 109 处（匹配 Token 值: 310） |
+| 非 Token 字号 | 122 处（匹配 Token 值: 367） |
+| 颜色 Token 覆盖率 | 88~89%（核心模块，不同模块略有差异） |
+
+> 以上数据与 `lingji-token-report.html` / `token-scan-data.html` 一致，扫描时间 2026-08-11，应用版本 v0.1.3。
 
 **脚本文件**：
 - `scripts/token-scan.js` — 静态扫描工具（主力）
@@ -110,7 +112,7 @@ node scripts/token-scan.js ./lingee-extracted --html --json result.json
 ## 目录结构
 
 ```
-AICheck/
+ai-check/
 ├── index.html                          # 项目首页
 ├── lingji-note-walkthrough.html        # AI速记 走查报告（v0.1.3）
 ├── lingji-rescan-report.html           # 会议室+对话模块 走查报告（v0.1.3）
@@ -122,7 +124,6 @@ AICheck/
 ├── lingji-report-images/               # 走查截图
 ├── scripts/
 │   ├── token-scan.js                   # Token 静态扫描工具（主力）
-│   ├── token-scan-result.html          # 自动生成的详细扫描报告
 │   └── check-token-binding.js          # Playwright Electron 运行时扫描（备用）
 └── README.md                           # 本文件
 ```
@@ -153,7 +154,7 @@ AICheck/
 
 ```bash
 # 启动本地预览
-cd AICheck && python3 -m http.server 8765
+cd ai-check && python3 -m http.server 8765
 # 访问 http://localhost:8765
 
 # Token 静态扫描（需要先解包 app.asar）
