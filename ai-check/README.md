@@ -144,7 +144,7 @@ ai-check/
 - 对比静态分析 vs 运行时扫描结果差异
 
 ### D. 设计稿对比
-- 接入 Figma API（file key: HXHbn9VT1RgPuJ70JI4tQ5）
+- 接入 Figma API
 - 自动截图 + 像素级对比
 - 输出差异标注报告
 
