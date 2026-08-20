@@ -64,10 +64,10 @@
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
-  .page { max-width: 780px; margin: 0 auto; padding: var(--s-48) var(--s-24) var(--s-72); }
-  .back { display: inline-flex; align-items: center; gap: var(--s-6); color: var(--text-secondary); text-decoration: none; font-size: 14px; margin-bottom: var(--s-36); transition: color 0.2s; }
+  .page { max-width: 780px; margin: 0 auto; padding: var(--s-24) var(--s-24) var(--s-72); }
+  .back { display: inline-flex; align-items: center; gap: var(--s-6); color: var(--text-secondary); text-decoration: none; font-size: 14px; margin-bottom: var(--s-12); transition: color 0.2s; }
   .back:hover { color: var(--primary); }
-  .hero { margin-bottom: var(--s-48); }
+  .hero { margin-bottom: var(--s-32); }
   .hero h1 { font-size: 36px; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; margin-bottom: var(--s-12); color: var(--text-strong); }
   .hero .meta { color: var(--text-muted); font-size: 14px; }
   .section { margin-bottom: var(--s-48); }
@@ -101,8 +101,21 @@
   .insight-icon.pro { background: rgba(0,181,120,0.10); color: var(--success); }
   .insight-icon.con { background: rgba(255,139,0,0.10); color: var(--warning); }
   .insight p { font-size: 15px; color: var(--text-secondary); margin: 0; line-height: 1.6; }
+  .io-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+  .io-card { padding: 16px; border-radius: 8px; transition: transform 0.2s, box-shadow 0.2s; }
+  .io-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-small); }
+  .io-card.input { background: rgba(73,93,255,0.04); border: 1px solid rgba(73,93,255,0.10); }
+  .io-card.output { background: rgba(0,181,120,0.04); border: 1px solid rgba(0,181,120,0.12); }
+  .io-card .io-label { font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+  .io-card.input .io-label { color: var(--primary); }
+  .io-card.output .io-label { color: var(--success); }
+  .io-card ul { font-size: 14px; color: var(--text-secondary); padding-left: 18px; line-height: 1.8; margin: 0; }
+  .sub-link { display: inline-block; margin-top: 12px; font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .sub-link:hover { color: var(--primary); }
+  .compare-btn { display: inline-block; font-size: 14px; color: var(--primary); text-decoration: none; border: 1px solid rgba(73,93,255,0.25); background: rgba(73,93,255,0.04); padding: 10px 22px; border-radius: 8px; transition: all 0.2s; font-weight: 500; }
+  .compare-btn:hover { background: rgba(73,93,255,0.10); border-color: var(--primary); }
   .divider { height: 1px; background: var(--border); margin: var(--s-48) 0; }
-  footer { text-align: center; padding: var(--s-36) 0 0; color: var(--text-muted); font-size: 12px; }
+  footer { text-align: center; padding: var(--s-36) 0 0; color: var(--text-muted); font-size: 13px; }
   code { background: var(--bg-muted); padding: var(--s-2) var(--s-6); border-radius: var(--r-small); font-size: 14px; font-family: "SF Mono", "Fira Code", monospace; }
 </style>
 </head>
@@ -114,43 +127,39 @@
   <div class="hero" style="display:flex;align-items:center;justify-content:space-between;gap:24px;">
     <div>
       <h1 style="background:linear-gradient(135deg,#2563FF 0%,#7858F9 55%,#FF9FF0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">用 AI 做 UI 走查</h1>
-      <div class="meta">Hoho &middot; 2026-08-04 &middot; 阅读约 5 分钟</div>
     </div>
     <img src="assets/lingee-mascot.png" alt="Lingee" style="width:120px;height:auto;flex-shrink:0;filter:drop-shadow(0 8px 24px rgba(80,80,220,0.15));">
   </div>
 
   <div class="section">
-    <span class="section-label">01 / 解法</span>
-    <h2>让 AI 像人一样做设计走查</h2>
-    <p>桌面 APP 无法像网页一样自动化走查，我想到一个解法：让 AI 像人一样坐在电脑前操作&mdash;打开应用、拖拽窗口、点击，通过截图判断视觉问题。</p>
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0;">
-      <div style="padding: 16px; background: rgba(73,93,255,0.04); border-radius: 8px;">
-        <div style="font-size: 12px; font-weight: 600; color: #495DFF; margin-bottom: 8px;">输入</div>
-        <ul style="font-size: 14px; color: rgba(0,0,0,0.65); padding-left: 18px; line-height: 1.8; margin: 0;">
+    <span class="section-label">01 / 思路</span>
+    <h2>如何让 AI 走查桌面端、移动端？<br>以及没有设计稿的细节？</h2>
+    <p>让 AI 接管原本需要人工逐页完成的走查：打开应用、截图、对照规范、记录问题，同时覆盖视觉还原、响应式、暗黑模式、无障碍等 11 个维度。</p>
+    <div class="io-grid">
+      <div class="io-card input">
+        <div class="io-label">输入</div>
+        <ul>
           <li>APP 访问权限（桌面端或网页）</li>
           <li>设计规范站地址（AI 读取规范数值作为基准）</li>
           <li>Figma 设计稿链接（可选，用于设计还原对比）</li>
         </ul>
       </div>
-      <div style="padding: 16px; background: rgba(0,181,120,0.04); border-radius: 8px;">
-        <div style="font-size: 12px; font-weight: 600; color: #00B578; margin-bottom: 8px;">输出</div>
-        <ul style="font-size: 14px; color: rgba(0,0,0,0.65); padding-left: 18px; line-height: 1.8; margin: 0;">
+      <div class="io-card output">
+        <div class="io-label">输出</div>
+        <ul>
           <li>设计走查报告</li>
           <li>按优先级排列的问题清单</li>
           <li>文件级定位（哪个文件、哪个值要改）</li>
         </ul>
       </div>
     </div>
-    <p style="margin-top: 16px;">
-      <a href="project-comparison.html" style="font-size: 13px; color: var(--primary); text-decoration: none;">&rarr; 新旧方案对比：Design Review vs AICheck</a>
-    </p>
   </div>
 
   <div class="section">
     <span class="section-label">02 / 实际案例</span>
-    <h2><img src="assets/lingee-logo.png" alt="" style="width:28px;height:28px;vertical-align:middle;margin-right:6px;border-radius:50%;">金蝶灵基 &middot; 走查报告</h2>
+    <h2><img src="assets/lingee-logo.png" alt="" style="width:28px;height:28px;vertical-align:middle;margin-right:6px;">金蝶灵基 &middot; 走查报告</h2>
     <div class="case-links">
-      <a href="lingji-note-walkthrough.html" class="case-link" style="border-color: #495DFF; background: rgba(73,93,255,0.03);">
+      <a href="lingji-note-walkthrough.html" class="case-link">
         <div class="case-link-icon">&#x1F4DD;</div>
         <div class="case-link-text">
           <h4>AI速记 走查报告</h4>
@@ -165,17 +174,12 @@
         </div>
       </a>
     </div>
-    <p style="margin-top: 12px; font-size: 13px; color: rgba(0,0,0,0.35);">
-      <a href="lingji-token-report.html" style="color:rgba(0,0,0,0.35)">🎨 Token 扫描说明 — 全应用扫描原理和数据</a>
-    </p>
+    <a href="lingji-token-report.html" class="sub-link">🎨 Token 扫描说明 — 全应用扫描原理和数据</a>
   </div>
 
-  <div class="divider"></div>
-
   <div class="section">
-    <span class="section-label">03 / 走查流程</span>
-    <h2>从打开应用到输出报告</h2>
-    <p>整个过程不需要写测试脚本，AI 就像一个刚入职的测试同学，但速度比人快 3-5 倍，而且不会遗漏检查项。</p>
+    <span class="section-label">03 / 流程</span>
+    <h2>从授权应用到输出报告</h2>
     <div class="timeline">
       <div class="timeline-item">
         <div class="timeline-dot"></div>
@@ -205,12 +209,10 @@
     </div>
   </div>
 
-  <div class="divider"></div>
-
   <div class="section">
     <span class="section-label">04 / 思考</span>
     <h2>AI 走查的边界在哪里</h2>
-    <p>实验下来，有几个比较明确的结论：</p>
+    <p>多轮测试下来，有几个比较明确的结论：</p>
     <div class="insight-list">
       <div class="insight">
         <div class="insight-icon pro">&check;</div>
@@ -221,6 +223,18 @@
         <p><strong>规范偏差检查很稳定。</strong>只要规范数值明确，AI 就能准确判断实际实现是否偏离，不受主观影响。</p>
       </div>
       <div class="insight">
+        <div class="insight-icon pro">&check;</div>
+        <p><strong>代码扫描能发现人眼看不到的问题。</strong>通过解包代码，可以批量找出所有没用设计变量的地方，按模块拆分，精准定位哪些业务需要改进。这类问题人工走查根本发现不了。</p>
+      </div>
+      <div class="insight">
+        <div class="insight-icon pro">&check;</div>
+        <p><strong>Figma 对比让设计还原可量化。</strong>直接拿设计稿和实现截图对比，自动发现组件命名、状态缺失、布局差异等问题，比人工逐像素对比高效得多。</p>
+      </div>
+      <div class="insight">
+        <div class="insight-icon pro">&check;</div>
+        <p><strong>回归验证很高效。</strong>代码修复后重新跑一遍，自动生成新的问题清单，之前发现的问题是否还在一目了然。</p>
+      </div>
+      <div class="insight">
         <div class="insight-icon con">&triangle;</div>
         <p><strong>视觉美感判断还做不了。</strong>颜色搭配是否和谐、留白是否舒适、视觉层次是否清晰 &mdash; 这些需要设计直觉的问题，AI 目前只能给出&ldquo;符合/不符合规范&rdquo;的二元判断。</p>
       </div>
@@ -228,23 +242,15 @@
         <div class="insight-icon con">&triangle;</div>
         <p><strong>交互逻辑深度不足。</strong>对于需要多步骤、多状态联动的复杂业务逻辑（如审批流程），AI 只能测试表层 UI，无法理解业务流程是否正确。</p>
       </div>
-      <div class="insight">
-        <div class="insight-icon pro">&check;</div>
-        <p><strong>代码扫描能发现人眼看不到的问题。</strong>通过解包代码，可以批量找出所有没用设计变量的地方，按模块拆分，精准定位哪些业务需要改进。这类问题人工走查根本发现不了。</p>
-      </div>
-      <div class="insight">
-        <div class="insight-icon pro">&check;</div>
-        <p><strong>Figma 对比让设计还原可量化。</strong>直接拿设计稿和实现截图对比，自动发现名称格式、状态缺失、布局差异等问题，比人工逐像素对比高效得多。</p>
-      </div>
-      <div class="insight">
-        <div class="insight-icon pro">&check;</div>
-        <p><strong>回归验证很高效。</strong>代码修复后重新跑一遍，自动生成新的问题清单，之前发现的问题是否还在一目了然。</p>
-      </div>
-      <div class="insight">
-        <div class="insight-icon pro">&check;</div>
-        <p><strong>未来方向：AI 走查 + 人工审核。</strong>AI 负责批量扫描布局、代码规范性问题和设计还原度，人工聚焦在设计意图和业务逻辑的验证上，效率可以提升 3-5 倍。</p>
-      </div>
     </div>
+    <p style="margin-top: 20px; font-size: 14px; color: var(--text-secondary); line-height: 1.8;">
+      <strong style="color: var(--text-strong);">下一步方向：AI 走查 + 人工审核。</strong>
+      AI 负责批量扫描布局、代码规范性问题和设计还原度，人工聚焦在设计意图和业务逻辑的验证上 &mdash; 两者结合，效率可提升数倍。
+    </p>
+  </div>
+
+  <div class="section" style="text-align: center; padding: 24px 0;">
+    <a href="project-comparison.html" class="compare-btn">&rarr; 新旧方案对比：Design Review vs AICheck</a>
   </div>
 
   <footer>

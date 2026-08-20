@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>新旧方案对比 — Design Review vs AICheck</title>
+<title>Design Review vs AICheck — 两种不同走查工具对比</title>
 <style>
   :root {
     --primary: #495DFF;
@@ -16,9 +16,9 @@
     --border: rgba(0,0,0,0.08);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--bg); color: var(--text); font: 15px/1.7 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  body { background: var(--bg); color: var(--text); font: 16px/1.7 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
   .page { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
-  .back { display: inline-block; font-size: 13px; color: var(--text-muted); text-decoration: none; margin-bottom: 24px; }
+  .back { display: inline-block; font-size: 14px; color: var(--text-muted); text-decoration: none; margin-bottom: 24px; }
   .back:hover { color: var(--primary); }
   .hero { margin-bottom: 40px; }
   .hero h1 { font-size: 32px; font-weight: 700; color: var(--text-strong); line-height: 1.3; }
@@ -29,30 +29,63 @@
   p { color: var(--text-secondary); margin-bottom: 12px; }
   .divider { height: 1px; background: var(--border); margin: 40px 0; }
 
+  /* Dual positioning cards */
+  .pos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .pos-card { padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
+  .pos-card.a { background: rgba(0,181,120,0.03); border-color: rgba(0,181,120,0.2); }
+  .pos-card.b { background: rgba(73,93,255,0.03); border-color: rgba(73,93,255,0.2); }
+  .pos-card .tool-name { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .pos-card h3 { font-size: 17px; font-weight: 700; color: var(--text-strong); margin-bottom: 8px; }
+  .pos-card.a h3 { color: #00B578; }
+  .pos-card.b h3 { color: var(--primary); }
+  .pos-card p { font-size: 14px; color: var(--text-secondary); margin: 0; line-height: 1.7; }
+  .pos-card .question { font-size: 15px; font-weight: 600; color: var(--text-strong); margin-bottom: 6px; }
+
+  /* Decision guide */
+  .decision-list { list-style: none; padding: 0; }
+  .decision-list li { padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; font-size: 15px; line-height: 1.6; display: flex; align-items: flex-start; gap: 10px; }
+  .decision-list li.group-label { background: rgba(0,0,0,0.02); border: none; padding: 8px 16px; margin-top: 16px; margin-bottom: 4px; font-size: 13px; color: var(--text-muted); gap: 8px; }
+  .decision-list li.group-label:first-child { margin-top: 0; }
+  .decision-list li:hover { background: rgba(73,93,255,0.02); }
+  .decision-list .scene { color: var(--text); flex: 1; }
+  .decision-list .tool { font-weight: 600; white-space: nowrap; padding: 2px 10px; border-radius: 12px; font-size: 13px; }
+  .decision-list .tool.dr { background: rgba(0,181,120,0.1); color: #00B578; }
+  .decision-list .tool.aic { background: rgba(73,93,255,0.1); color: var(--primary); }
+
   /* Comparison table */
-  .cmp-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 16px 0; }
+  .cmp-table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 16px 0; }
   .cmp-table th, .cmp-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); }
-  .cmp-table th { background: rgba(0,0,0,0.03); font-weight: 600; font-size: 13px; color: var(--text-muted); }
+  .cmp-table th { background: rgba(0,0,0,0.03); font-weight: 600; font-size: 14px; color: var(--text-muted); }
   .cmp-table td:first-child { font-weight: 600; color: var(--text-strong); width: 120px; white-space: nowrap; }
   .cmp-table td:nth-child(2) { color: var(--text-secondary); }
   .cmp-table td:nth-child(3) { color: var(--text-secondary); }
   .cmp-table tr:hover td { background: rgba(73,93,255,0.02); }
 
-  /* Tag */
-  .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
-  .tag.old { background: rgba(0,0,0,0.06); color: var(--text-muted); }
-  .tag.new { background: rgba(73,93,255,0.1); color: var(--primary); }
-  .tag.win { background: rgba(0,181,120,0.1); color: #00B578; }
+  /* Dimension grid */
+  .dim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .dim-card { padding: 16px; border-radius: 10px; border: 1px solid var(--border); }
+  .dim-card.dr { background: rgba(0,181,120,0.02); }
+  .dim-card.aic { background: rgba(73,93,255,0.02); }
+  .dim-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+  .dim-card.dr h4 { color: #00B578; }
+  .dim-card.aic h4 { color: var(--primary); }
+  .dim-card ul { font-size: 14px; color: var(--text-secondary); padding-left: 16px; line-height: 1.9; }
 
-  /* Strength/weakness cards */
-  .sw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
-  .sw-card { padding: 16px; border-radius: 8px; border: 1px solid var(--border); }
-  .sw-card.pro { background: rgba(0,181,120,0.03); border-color: rgba(0,181,120,0.15); }
-  .sw-card.con { background: rgba(241,34,52,0.03); border-color: rgba(241,34,52,0.1); }
-  .sw-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
-  .sw-card.pro h4 { color: #00B578; }
-  .sw-card.con h4 { color: #F12234; }
-  .sw-card ul { font-size: 13px; color: var(--text-secondary); padding-left: 16px; line-height: 1.8; }
+  /* Output comparison cards */
+  .out-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .out-card { padding: 16px; border-radius: 10px; border: 1px solid var(--border); }
+  .out-card.dr { background: rgba(0,181,120,0.02); }
+  .out-card.aic { background: rgba(73,93,255,0.02); }
+  .out-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+  .out-card.dr h4 { color: #00B578; }
+  .out-card.aic h4 { color: var(--primary); }
+  .out-card .out-item { font-size: 14px; color: var(--text-secondary); line-height: 1.8; padding: 4px 0; }
+  .out-card .out-item strong { color: var(--text-strong); font-weight: 600; }
+  a.out-card { text-decoration: none; display: block; transition: all 0.2s; cursor: pointer; }
+  a.out-card:hover { border-color: var(--primary); transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  a.out-card::after { content: ' 查看示例 \2192'; display: block; margin-top: 12px; font-size: 13px; font-weight: 600; }
+  a.out-card.dr::after { color: #00B578; }
+  a.out-card.aic::after { color: var(--primary); }
 
   /* Verdict */
   .verdict { padding: 20px; background: linear-gradient(135deg, rgba(73,93,255,0.04), rgba(0,181,120,0.04)); border-radius: 12px; border: 1px solid rgba(73,93,255,0.1); }
@@ -63,7 +96,18 @@
   a.project-link { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--text-secondary); text-decoration: none; transition: all 0.2s; }
   a.project-link:hover { border-color: var(--primary); color: var(--primary); background: rgba(73,93,255,0.03); }
 
-  footer { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+  /* Tech details (collapsed) */
+  details.tech-details { margin-top: 16px; }
+  details.tech-details summary { font-size: 14px; color: var(--text-muted); cursor: pointer; padding: 8px 12px; border: 1px dashed var(--border); border-radius: 6px; display: inline-block; }
+  details.tech-details summary:hover { color: var(--primary); border-color: var(--primary); }
+  details.tech-details[open] summary { margin-bottom: 12px; }
+
+  footer { text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* Highlight tag */
+  .hl { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+  .hl.dr { background: rgba(0,181,120,0.1); color: #00B578; }
+  .hl.aic { background: rgba(73,93,255,0.1); color: var(--primary); }
 </style>
 </head>
 <body>
@@ -72,13 +116,173 @@
   <a href="index.html" class="back">&larr; 返回主页</a>
 
   <div class="hero">
-    <h1>Design Review → AICheck<br>新旧方案对比</h1>
-    <div class="meta">Hoho &middot; 2026-08-20 &middot; 两个项目的技术、流程、效果全面对比</div>
+    <h1>Design Review & AICheck<br>两种不同走查工具对比</h1>
   </div>
 
   <div class="section">
-    <span class="section-label">01 / 项目链接</span>
-    <h2>访问两个项目</h2>
+    <span class="section-label">01 / 两个工具的区别</span>
+    <h2>解决的是完全不同的问题</h2>
+    <div class="pos-grid">
+      <div class="pos-card a">
+        <div class="tool-name">Design Review</div>
+        <div class="question">&ldquo;这张图和设计稿差多少？&rdquo;</div>
+        <p>聚焦视觉还原度。给两张图 &mdash; 线上截图和设计稿 &mdash; 得到精确的像素差异数据，快速定位&ldquo;哪里对不上&rdquo;。</p>
+      </div>
+      <div class="pos-card b">
+        <div class="tool-name">AICheck</div>
+        <div class="question">&ldquo;这个产品的体验质量怎么样？&rdquo;</div>
+        <p>全维度体验走查。不只是视觉还原，还覆盖响应式、暗黑模式、空状态、无障碍、Token 规范、代码质量等 11 个维度，输出可执行的改进清单。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <span class="section-label">02 / 什么时候用哪个</span>
+    <h2>场景化决策</h2>
+    <ul class="decision-list">
+      <li class="group-label"><span class="tool aic">AICheck</span><span class="scene">体验质量审计</span></li>
+      <li>
+        <span class="scene">支持走查桌面端、移动端、网页端 👍</span>
+        <span class="tool aic">AICheck</span>
+      </li>
+      <li>
+        <span class="scene">需要一轮完整的走查，出报告给开发</span>
+        <span class="tool aic">AICheck</span>
+      </li>
+      <li>
+        <span class="scene">检查暗黑模式、空状态、极端窗口大小等边界情况</span>
+        <span class="tool aic">AICheck</span>
+      </li>
+      <li>
+        <span class="scene">追踪产品体验质量的版本间变化趋势</span>
+        <span class="tool aic">AICheck</span>
+      </li>
+      <li>
+        <span class="scene">检查设计系统（Token）在代码中的落地情况</span>
+        <span class="tool aic">AICheck</span>
+      </li>
+      <li class="group-label"><span class="tool dr">Design Review</span><span class="scene">设计稿还原检查</span></li>
+      <li>
+        <span class="scene">刚做完一个页面，快速看一下和设计稿差在哪</span>
+        <span class="tool dr">Design Review</span>
+      </li>
+      <li>
+        <span class="scene">对比设计稿与线上版本的像素级差异</span>
+        <span class="tool dr">Design Review</span>
+      </li>
+      <li>
+        <span class="scene">前端自测，交付前快速确认还原度</span>
+        <span class="tool dr">Design Review</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <span class="section-label">03 / 检查范围</span>
+    <h2>一个看还原，一个看全貌</h2>
+    <div class="dim-grid">
+      <div class="dim-card dr">
+        <h4><span class="hl dr">1</span> &nbsp;维度 &mdash; 设计稿还原度</h4>
+        <ul>
+          <li>像素级视觉差异</li>
+          <li>布局偏差、颜色偏差</li>
+          <li>间距、字号不对</li>
+        </ul>
+      </div>
+      <div class="dim-card aic">
+        <h4><span class="hl aic">11</span> &nbsp;维度 &mdash; 体验质量审计</h4>
+        <ul>
+          <li>响应式布局（窄屏 / 宽屏）</li>
+          <li>暗黑模式适配</li>
+          <li>空状态 / 错误状态</li>
+          <li>焦点态 / 键盘可访问性</li>
+          <li>国际化</li>
+          <li>无障碍（a11y）</li>
+          <li>Token 绑定 / 设计系统落地</li>
+          <li>Variant 完整性</li>
+          <li>跨页面一致性</li>
+          <li>设计规范对照</li>
+          <li>极限边界情况</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size: 14px; color: var(--text-muted); margin-top: 12px;">
+      Design Review 回答的是&ldquo;像不像&rdquo;，AICheck 回答的是&ldquo;好不好用、是否完整&rdquo;。
+    </p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <span class="section-label">04 / 输出物</span>
+    <h2>报告长什么样</h2>
+    <div class="out-grid">
+      <a class="out-card dr" href="https://design-review-roan.vercel.app" target="_blank">
+        <h4>Design Review &mdash; 差异可视化</h4>
+        <div class="out-item"><strong>差异热力图</strong> &mdash; 直观看到哪里对不上</div>
+        <div class="out-item"><strong>差异百分比</strong> &mdash; &ldquo;整体差异 3.7%&rdquo; 这种精确数值</div>
+        <div class="out-item"><strong>颜色偏差</strong> &mdash; CIE76 感知色差量化</div>
+        <div class="out-item"><strong>Issue 卡片</strong> &mdash; 逐个差异点标注</div>
+      </a>
+      <a class="out-card aic" href="lingji-rescan-report.html">
+        <h4>AICheck &mdash; 可执行报告</h4>
+        <div class="out-item"><strong>综合评分</strong> &mdash; A/B/C/D/F 五档，一眼看整体质量</div>
+        <div class="out-item"><strong>11 维度评分</strong> &mdash; 每个维度单独打分，知道哪里弱</div>
+        <div class="out-item"><strong>问题清单</strong> &mdash; 严重 / 中等 / 轻微分级</div>
+        <div class="out-item"><strong>文件级定位</strong> &mdash; 告诉开发改哪个文件、哪个值</div>
+        <div class="out-item"><strong>Token 覆盖率</strong> &mdash; 设计系统落地数据</div>
+      </a>
+    </div>
+    <p style="font-size: 14px; color: var(--text-muted); margin-top: 12px;">
+      Design Review 的报告适合&ldquo;一眼看出差异&rdquo;；AICheck 的报告适合&ldquo;拿着改&rdquo; &mdash; 开发可以直接按报告定位到具体文件和代码行。
+    </p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <span class="section-label">05 / 底层技术</span>
+    <h2>实现方式（简述）</h2>
+    <p>以下是技术层面的对比，帮助理解两者的能力边界。</p>
+
+    <details class="tech-details">
+      <summary>展开查看技术细节</summary>
+      <table class="cmp-table">
+        <thead><tr><th>维度</th><th>Design Review</th><th>AICheck</th></tr></thead>
+        <tbody>
+          <tr><td>对比引擎</td><td>pixelmatch + CIE76 DeltaE（像素级量化）</td><td>AI 视觉判断（截图分析）</td></tr>
+          <tr><td>截图方式</td><td>Puppeteer（自动截网页）</td><td>Computer Use（任意桌面端，移动端可通过投屏）+ Playwright（网页 / Electron）</td></tr>
+          <tr><td>代码扫描</td><td>不涉及</td><td>token-scan.js（色值/圆角/字号硬编码检测）</td></tr>
+          <tr><td>Figma</td><td>Figma API 提取设计数据</td><td>Figma API 拉截图对比</td></tr>
+          <tr><td>AI 角色</td><td>可选辅助（OpenAI / Claude / DeepSeek）</td><td>核心引擎（AI 就是走查员）</td></tr>
+          <tr><td>在线工具</td><td>有（Vercel 部署，拖图即出报告）</td><td>无（GitHub Pages 展示静态报告）</td></tr>
+          <tr><td>工程化</td><td>完整 npm 包，有 CLI + Web + Claude Code Skill</td><td>脚本集合 + Skill（Qoder / Claude Code）</td></tr>
+        </tbody>
+      </table>
+
+      <table class="cmp-table" style="margin-top: 24px;">
+        <thead><tr><th>工作流</th><th>Design Review</th><th>AICheck</th></tr></thead>
+        <tbody>
+          <tr><td>1. 输入</td><td>人工提供 2 张截图或 URL</td><td>配置文件 + 一句话触发</td></tr>
+          <tr><td>2. 截图</td><td>Puppeteer 自动截（仅网页）</td><td>Computer Use 操控应用（含移动端投屏） / Playwright 驱动 Web 或 Electron</td></tr>
+          <tr><td>3. 对比</td><td>像素算法量化差异 + 可选 AI</td><td>AI 看截图判断问题</td></tr>
+          <tr><td>4. 代码</td><td>不涉及</td><td>解包 asar &rarr; 扫描硬编码</td></tr>
+          <tr><td>5. 规范</td><td>不涉及</td><td>读规范站提取基准数值</td></tr>
+          <tr><td>6. 报告</td><td>HTML + Markdown，Issue 卡片式</td><td>Tab 式 HTML，文件级定位</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <span class="section-label">06 / 项目入口</span>
+    <h2>访问两个工具</h2>
     <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px;">
       <a class="project-link" href="https://design-review-roan.vercel.app" target="_blank">
         <span style="font-size: 16px;">&#x1F310;</span> Design Review 在线工具
@@ -87,7 +291,7 @@
         <span style="font-size: 16px;">&#x1F4E6;</span> Design Review GitHub
       </a>
       <a class="project-link" href="lingji-rescan-report.html">
-        <span style="font-size: 16px;">&#x1F4CB;</span> AICheck 走查报告
+        <span style="font-size: 16px;">&#x1F4CB;</span> AICheck 走查报告示例
       </a>
       <a class="project-link" href="https://github.com/kwchenxi/ai-ui-check" target="_blank">
         <span style="font-size: 16px;">&#x1F4E6;</span> AICheck GitHub
@@ -98,135 +302,11 @@
   <div class="divider"></div>
 
   <div class="section">
-    <span class="section-label">02 / 定位</span>
-    <h2>解决不同的问题</h2>
-    <p><strong>Design Review</strong>（2025.04）是一个设计还原度检查工具 &mdash; 给它两张图，它告诉你&ldquo;差在哪、差多少&rdquo;。</p>
-    <p><strong>AICheck</strong>（2026.08）是一个 AI 驱动的全流程走查方案 &mdash; 它代替测试工程师完成从打开应用到输出报告的整个过程。</p>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="section">
-    <span class="section-label">03 / 技术栈</span>
-    <h2>底层技术差异</h2>
-    <table class="cmp-table">
-      <thead><tr><th>维度</th><th>Design Review <span class="tag old">旧</span></th><th>AICheck <span class="tag new">新</span></th></tr></thead>
-      <tbody>
-        <tr><td>语言</td><td>TypeScript 完整工程（src/dist/web）</td><td>JS 脚本 + HTML 报告</td></tr>
-        <tr><td>对比引擎</td><td>pixelmatch + CIE76 DeltaE（像素级量化）</td><td>AI 视觉判断（截图分析）</td></tr>
-        <tr><td>截图方式</td><td>Puppeteer（自动截网页）</td><td>Computer Use（桌面）+ Playwright（网页）</td></tr>
-        <tr><td>代码扫描</td><td>不涉及</td><td>token-scan.js（色值/圆角/字号硬编码检测）</td></tr>
-        <tr><td>Figma</td><td>Figma API 提取设计数据</td><td>Figma API 拉截图对比</td></tr>
-        <tr><td>AI 角色</td><td>可选辅助（OpenAI / Claude / DeepSeek）</td><td>核心引擎（AI 就是走查员）</td></tr>
-        <tr><td>在线工具</td><td>有（Vercel 部署，拖图即出报告）</td><td>无（GitHub Pages 展示静态报告）</td></tr>
-        <tr><td>工程化</td><td>完整 npm 包，有 CLI + Web + Claude Code Skill</td><td>脚本集合 + Skill（Qoder / Claude Code）</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="section">
-    <span class="section-label">04 / 工作流</span>
-    <h2>从输入到输出的全过程</h2>
-    <table class="cmp-table">
-      <thead><tr><th>步骤</th><th>Design Review</th><th>AICheck</th></tr></thead>
-      <tbody>
-        <tr><td>1. 输入</td><td>人工提供 2 张截图或 URL</td><td>配置文件 + 一句话触发</td></tr>
-        <tr><td>2. 截图</td><td>Puppeteer 自动截（仅网页）</td><td>Computer Use / Playwright 自动截图</td></tr>
-        <tr><td>3. 对比</td><td>像素算法量化差异 + 可选 AI</td><td>AI 看截图判断问题</td></tr>
-        <tr><td>4. 代码</td><td>不涉及</td><td>解包 asar &rarr; 扫描硬编码</td></tr>
-        <tr><td>5. 规范</td><td>不涉及</td><td>读规范站提取基准数值</td></tr>
-        <tr><td>6. 报告</td><td>HTML + Markdown，Issue 卡片式</td><td>Tab 式 HTML，文件级定位</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="section">
-    <span class="section-label">05 / 各自优势</span>
-    <h2>Design Review 更强的地方</h2>
-    <div class="sw-grid">
-      <div class="sw-card pro">
-        <h4>&check; 量化精度</h4>
-        <ul>
-          <li>pixelmatch 精确计算差异像素数</li>
-          <li>CIE76 DeltaE 感知色差，比人眼更客观</li>
-          <li>输出&ldquo;差异 3.7%&rdquo;这种精确数值</li>
-        </ul>
-      </div>
-      <div class="sw-card pro">
-        <h4>&check; 易用性</h4>
-        <ul>
-          <li>在线工具，拖两张图就出报告</li>
-          <li>任何人打开链接就能用</li>
-          <li>不需要 IDE、不需要配置</li>
-        </ul>
-      </div>
-      <div class="sw-card pro">
-        <h4>&check; 工程完整度</h4>
-        <ul>
-          <li>Claude Code Skill、在线工具、本地 CLI 三种用法</li>
-          <li>npm install 即可使用</li>
-          <li>支持多种 AI 后端切换</li>
-        </ul>
-      </div>
-      <div class="sw-card con">
-        <h4>&times; 局限</h4>
-        <ul>
-          <li>只支持网页（Puppeteer 不能操作桌面）</li>
-          <li>不涉及代码层面检查</li>
-          <li>需要人工提供截图</li>
-        </ul>
-      </div>
-    </div>
-
-    <h2 style="margin-top: 32px;">AICheck 更强的地方</h2>
-    <div class="sw-grid">
-      <div class="sw-card pro">
-        <h4>&check; 全自动化</h4>
-        <ul>
-          <li>打开应用 &rarr; 操作 &rarr; 截图 &rarr; 扫描 &rarr; 对比 &rarr; 出报告</li>
-          <li>配置驱动，一句话触发</li>
-          <li>支持任何桌面应用（不限于网页）</li>
-        </ul>
-      </div>
-      <div class="sw-card pro">
-        <h4>&check; 代码层面</h4>
-        <ul>
-          <li>解包 asar 扫描硬编码</li>
-          <li>精确到文件、具体值</li>
-          <li>有源码时可直接定位行号</li>
-        </ul>
-      </div>
-      <div class="sw-card pro">
-        <h4>&check; 报告可用性</h4>
-        <ul>
-          <li>Tab 式布局，按类别查看</li>
-          <li>数据卡片点击跳转详情</li>
-          <li>文件级定位，开发可直接改</li>
-        </ul>
-      </div>
-      <div class="sw-card con">
-        <h4>&times; 局限</h4>
-        <ul>
-          <li>AI 视觉判断偏主观，无法量化&ldquo;差多少&rdquo;</li>
-          <li>需要在 IDE 里使用，门槛较高</li>
-          <li>无在线工具，不便分享给非技术人员</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="section">
-    <span class="section-label">06 / 结论</span>
-    <h2>互补，不替代</h2>
+    <span class="section-label">07 / 最佳实践</span>
+    <h2>互补使用，不是二选一</h2>
     <div class="verdict">
-      <h3>最佳方案 = AICheck 的全自动流程 + Design Review 的量化引擎</h3>
-      <p>如果将两者合并：用 Computer Use 自动操作应用截图，用 pixelmatch + CIE76 量化 Figma 差异，用 token-scan 扫描代码硬编码，再套上 Design Review 的在线工具形态 &mdash; 那就是一个既有 AI 判断&ldquo;有什么问题&rdquo;、又有算法量化&ldquo;差了多少像素&rdquo;的完整走查平台。</p>
+      <h3>还原度检查用 Design Review，体验质量审计用 AICheck</h3>
+      <p>设计稿做完一个页面，用 Design Review 快速验证还原度；版本迭代时，用 AICheck 做一轮全维度走查，追踪体验质量的变化。两者结合：既有像素级的&ldquo;对不对&rdquo;，又有全貌的&ldquo;好不好&rdquo; &mdash; 覆盖从交付自查到质量审计的完整链路。</p>
     </div>
   </div>
 
