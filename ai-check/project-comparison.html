@@ -73,7 +73,7 @@
 
   <div class="hero">
     <h1>Design Review → AICheck<br>新旧方案对比</h1>
-    <div class="meta">Hoho &middot; 2026-08-10 &middot; 两个项目的技术、流程、效果全面对比</div>
+    <div class="meta">Hoho &middot; 2026-08-20 &middot; 两个项目的技术、流程、效果全面对比</div>
   </div>
 
   <div class="section">
@@ -89,7 +89,7 @@
       <a class="project-link" href="lingji-rescan-report.html">
         <span style="font-size: 16px;">&#x1F4CB;</span> AICheck 走查报告
       </a>
-      <a class="project-link" href="https://github.com/kwchenxi/kwchenxi.github.io/tree/main/ai-check" target="_blank">
+      <a class="project-link" href="https://github.com/kwchenxi/ai-ui-check" target="_blank">
         <span style="font-size: 16px;">&#x1F4E6;</span> AICheck GitHub
       </a>
     </div>
@@ -114,12 +114,12 @@
       <tbody>
         <tr><td>语言</td><td>TypeScript 完整工程（src/dist/web）</td><td>JS 脚本 + HTML 报告</td></tr>
         <tr><td>对比引擎</td><td>pixelmatch + CIE76 DeltaE（像素级量化）</td><td>AI 视觉判断（截图分析）</td></tr>
-        <tr><td>截图方式</td><td>Puppeteer（自动截网页）</td><td>Computer Use（操控桌面 APP）</td></tr>
+        <tr><td>截图方式</td><td>Puppeteer（自动截网页）</td><td>Computer Use（桌面）+ Playwright（网页）</td></tr>
         <tr><td>代码扫描</td><td>不涉及</td><td>token-scan.js（色值/圆角/字号硬编码检测）</td></tr>
         <tr><td>Figma</td><td>Figma API 提取设计数据</td><td>Figma API 拉截图对比</td></tr>
         <tr><td>AI 角色</td><td>可选辅助（OpenAI / Claude / DeepSeek）</td><td>核心引擎（AI 就是走查员）</td></tr>
         <tr><td>在线工具</td><td>有（Vercel 部署，拖图即出报告）</td><td>无（GitHub Pages 展示静态报告）</td></tr>
-        <tr><td>工程化</td><td>完整 npm 包，有 CLI + Web + Docker</td><td>脚本集合 + Qoder Skill</td></tr>
+        <tr><td>工程化</td><td>完整 npm 包，有 CLI + Web + Claude Code Skill</td><td>脚本集合 + Skill（Qoder / Claude Code）</td></tr>
       </tbody>
     </table>
   </div>
@@ -133,7 +133,7 @@
       <thead><tr><th>步骤</th><th>Design Review</th><th>AICheck</th></tr></thead>
       <tbody>
         <tr><td>1. 输入</td><td>人工提供 2 张截图或 URL</td><td>配置文件 + 一句话触发</td></tr>
-        <tr><td>2. 截图</td><td>Puppeteer 自动截（仅网页）</td><td>Computer Use 操控桌面 APP</td></tr>
+        <tr><td>2. 截图</td><td>Puppeteer 自动截（仅网页）</td><td>Computer Use / Playwright 自动截图</td></tr>
         <tr><td>3. 对比</td><td>像素算法量化差异 + 可选 AI</td><td>AI 看截图判断问题</td></tr>
         <tr><td>4. 代码</td><td>不涉及</td><td>解包 asar &rarr; 扫描硬编码</td></tr>
         <tr><td>5. 规范</td><td>不涉及</td><td>读规范站提取基准数值</td></tr>
@@ -167,7 +167,7 @@
       <div class="sw-card pro">
         <h4>&check; 工程完整度</h4>
         <ul>
-          <li>CLI + Web + Docker 三种部署方式</li>
+          <li>Claude Code Skill、在线工具、本地 CLI 三种用法</li>
           <li>npm install 即可使用</li>
           <li>支持多种 AI 后端切换</li>
         </ul>
