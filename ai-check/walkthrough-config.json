@@ -1,0 +1,57 @@
+{
+  "project": {
+    "name": "金蝶灵基",
+    "version": "v0.1.3",
+    "logo": "assets/lingee-logo.png",
+    "mascot": "assets/lingee-mascot.png"
+  },
+  "app": {
+    "type": "electron",
+    "path": "/Applications/金蝶灵基.app/Contents/Resources/app.asar",
+    "extractDir": "/tmp/lingee-rescan/"
+  },
+  "design": {
+    "specUrl": "https://kingdee.github.io/lingee-ui",
+    "specFile": "lingee-walkthrough-spec.json",
+    "unifiedSpecMd": "Lingee-unified-page-generation-spec.md",
+    "figmaUrl": "https://www.figma.com/design/4pDYsPKRBSOGm66x6CGq0A/%E5%B7%A5%E4%BD%9C-%E6%97%A5%E5%8E%86%E3%80%81%E4%BC%9A%E8%AE%AE%E3%80%81%E4%BB%BB%E5%8A%A1%E3%80%81%E9%80%9F%E8%AE%B0",
+    "figmaPAT": "$FIGMA_PAT",
+    "tokenPrefix": "--lg-"
+  },
+  "pages": {
+    "meeting": {
+      "name": "会议室预订",
+      "figmaNodeId": "44-19295",
+      "description": "会议室列表、预订、筛选功能"
+    },
+    "chat": {
+      "name": "对话",
+      "figmaNodeId": "",
+      "description": "AI 对话、消息列表、输入交互"
+    },
+    "calendar": {
+      "name": "日历",
+      "figmaNodeId": "",
+      "description": "日历视图、日程管理"
+    },
+    "task": {
+      "name": "任务",
+      "figmaNodeId": "",
+      "description": "任务列表、创建、状态管理"
+    }
+  },
+  "scripts": {
+    "tokenScan": "scripts/token-scan.js",
+    "checkTokenBinding": "scripts/check-token-binding.js"
+  },
+  "output": {
+    "dir": "./reports",
+    "screenshotDir": "./screenshots",
+    "reportTemplate": "lingji-rescan-report.html",
+    "cssFile": "walkthrough-v2.css"
+  },
+  "deploy": {
+    "repo": "/tmp/kwchenxi.github.io/ai-check/",
+    "githubPages": "https://kwchenxi.github.io/ai-check/"
+  }
+}

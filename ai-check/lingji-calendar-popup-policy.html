@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日历模块弹窗清单与 Tab 切换关闭策略</title>
+<link rel="stylesheet" href="walkthrough-v2.css">
+<style>
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 16px 0; }
+  .stat-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 8px; padding: 14px 16px; text-align: center; }
+  .stat-card .num { font-size: 28px; font-weight: 700; line-height: 1.2; }
+  .stat-card .lbl { font-size: 12px; color: rgba(0,0,0,0.45); margin-top: 2px; }
+  .stat-card .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+  .stat-card .dot.green { background: #00B578; }
+  .stat-card .dot.orange { background: #FF8B00; }
+  .stat-card .dot.gray { background: rgba(0,0,0,0.28); }
+  .policy-section { margin: 28px 0; }
+  .policy-section h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .policy-section h3 .count { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+  .policy-section h3 .count.close { background: rgba(0,181,120,0.1); color: #00B578; }
+  .policy-section h3 .count.keep { background: rgba(255,139,0,0.1); color: #FF8B00; }
+  .policy-section h3 .count.special { background: rgba(0,0,0,0.06); color: rgba(0,0,0,0.45); }
+  .cat-label { font-size: 12px; font-weight: 600; color: rgba(0,0,0,0.45); padding: 8px 0 4px; margin-top: 8px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+  .popup-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 4px 0 16px; }
+  .popup-table th { padding: 8px 10px; background: rgba(0,0,0,0.03); font-weight: 600; text-align: left; color: rgba(0,0,0,0.65); font-size: 12px; position: sticky; top: 0; }
+  .popup-table td { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.04); vertical-align: top; }
+  .popup-table tr:hover td { background: rgba(73,93,255,0.02); }
+  .popup-table td:first-child { color: rgba(0,0,0,0.28); font-variant-numeric: tabular-nums; width: 28px; }
+  .popup-table code { background: rgba(0,0,0,0.04); padding: 1px 4px; border-radius: 3px; font-size: 11px; white-space: nowrap; }
+  .popup-table .name { font-weight: 500; color: rgba(0,0,0,0.82); }
+  .popup-table .trigger { font-size: 12px; color: rgba(0,0,0,0.45); }
+  .keep-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 4px 0 16px; }
+  .keep-table th { padding: 8px 10px; background: rgba(0,0,0,0.03); font-weight: 600; text-align: left; color: rgba(0,0,0,0.65); font-size: 12px; }
+  .keep-table td { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.04); vertical-align: top; }
+  .keep-table tr:hover td { background: rgba(255,139,0,0.02); }
+  .keep-table td:first-child { color: rgba(0,0,0,0.28); width: 28px; }
+  .keep-table code { background: rgba(0,0,0,0.04); padding: 1px 4px; border-radius: 3px; font-size: 11px; }
+  .keep-table .reason { font-size: 11px; color: rgba(0,0,0,0.45); display: block; margin-top: 2px; }
+  .arch-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0; }
+  .arch-table th { padding: 8px 10px; background: rgba(0,0,0,0.03); font-weight: 600; text-align: left; color: rgba(0,0,0,0.65); font-size: 12px; }
+  .arch-table td { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.04); }
+  .arch-table code { background: rgba(0,0,0,0.04); padding: 1px 4px; border-radius: 3px; font-size: 11px; }
+  .mechanism-box { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 8px; padding: 16px 20px; margin: 12px 0; }
+  .mechanism-box pre { background: rgba(0,0,0,0.03); border-radius: 6px; padding: 12px 16px; font-size: 13px; line-height: 1.6; overflow-x: auto; margin: 8px 0; }
+  .mechanism-box p { font-size: 13px; color: rgba(0,0,0,0.65); line-height: 1.7; margin: 8px 0 0; }
+  .principle-box { background: rgba(73,93,255,0.03); border: 1px solid rgba(73,93,255,0.10); border-radius: 8px; padding: 14px 18px; margin: 16px 0; font-size: 14px; line-height: 22px; }
+  .principle-box strong { color: #495DFF; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div style="margin-bottom:16px;"><a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:rgba(0,0,0,0.45);text-decoration:none;font-size:13px;">&larr; 返回首页</a></div>
+
+  <header>
+    <h1><img src="assets/lingee-logo.png" alt="" style="width:32px;height:32px;vertical-align:middle;margin-right:8px;border-radius:50%;">日历模块弹窗完整清单与 Tab 切换关闭策略</h1>
+    <div class="meta">
+      梳理范围：calendar 项目 Lingee 品牌桌面端 · 分类依据：切换外层 Tab 后弹窗是否应自动关闭
+    </div>
+  </header>
+
+  <!-- 统计概览 -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="num" style="color:rgba(0,0,0,0.82);">34</div>
+      <div class="lbl">弹窗总数</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" style="color:#00B578;">23</div>
+      <div class="lbl"><span class="dot green"></span>Tab 切换时关闭</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" style="color:#FF8B00;">8</div>
+      <div class="lbl"><span class="dot orange"></span>不应关闭</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" style="color:rgba(0,0,0,0.45);">3</div>
+      <div class="lbl"><span class="dot gray"></span>特殊情况</div>
+    </div>
+  </div>
+
+  <div class="principle-box">
+    <strong>核心原则：</strong>含用户正在编辑的数据 → 不关闭；无编辑数据 → 可关闭。
+  </div>
+
+  <!-- ====== 一、应关闭 ====== -->
+  <div class="policy-section">
+    <h3>一、应在 Tab 切换时关闭的弹窗 <span class="count close">23 个</span></h3>
+
+    <div class="cat-label">1.1 导航 / 工具类 Popover（8 个）</div>
+    <table class="popup-table">
+      <thead><tr><th>#</th><th>弹窗名称</th><th>触发方式</th><th>状态变量</th><th>触发器文件</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td class="name">迷你日历 Popover</td><td class="trigger">点击 ViewHeader 日期标题按钮</td><td><code>isMiniCalendarPopoverOpen</code></td><td><code>ViewHeaderView.tsx</code></td></tr>
+        <tr><td>2</td><td class="name">"我的日历" Popover</td><td class="trigger">点击齿轮图标按钮</td><td><code>isSettingPopoverOpen</code></td><td><code>ViewHeaderView.tsx</code></td></tr>
+        <tr><td>3</td><td class="name">更多日程 Popover (+N)</td><td class="trigger">点击"更多 N 项"按钮</td><td><code>hostedMoreEventsPopover</code></td><td><code>WeekComponentView.tsx</code></td></tr>
+        <tr><td>4</td><td class="name">重复编辑范围 Popover</td><td class="trigger">点击循环日程编辑图标</td><td><code>showRepeatEditPopover</code></td><td><code>EventPanelView.tsx</code></td></tr>
+        <tr><td>5</td><td class="name">更多操作 Popover</td><td class="trigger">点击"…"三点按钮</td><td><code>showMoreActionsPopover</code></td><td><code>EventPanelView.tsx</code></td></tr>
+        <tr><td>6</td><td class="name">拒绝理由 Popover</td><td class="trigger">点击"拒绝"按钮</td><td><code>showRefuseReasonSheet</code></td><td><code>EventPanelView.tsx</code></td></tr>
+        <tr><td>7</td><td class="name">日历选择器 Popover</td><td class="trigger">点击日历归属下拉</td><td><code>组件内部 state</code></td><td><code>EventTimeSection/</code></td></tr>
+        <tr><td>8</td><td class="name">忙闲视图日期 Popover</td><td class="trigger">点击日期单元格</td><td><code>FreeBusy 相关 state</code></td><td><code>EventFreeBusyDayView.tsx</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="cat-label">1.2 侧边栏菜单类（2 个）</div>
+    <table class="popup-table">
+      <thead><tr><th>#</th><th>弹窗名称</th><th>触发方式</th><th>状态变量</th><th>触发器文件</th></tr></thead>
+      <tbody>
+        <tr><td>9</td><td class="name">日历广场管理菜单</td><td class="trigger">点击日历卡片"管理"或"…"</td><td><code>deleteConfirmOpen</code> 等</td><td><code>calendarSquare/</code></td></tr>
+        <tr><td>10</td><td class="name">CalendarSidebar 更多菜单</td><td class="trigger">悬浮日历项出现"…"按钮</td><td><code>每项本地 open state</code></td><td><code>DesktopCalendarSidebarView.tsx</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="cat-label">1.3 确认对话框类（10 个）</div>
+    <table class="popup-table">
+      <thead><tr><th>#</th><th>弹窗名称</th><th>触发方式</th><th>状态变量</th><th>触发器文件</th></tr></thead>
+      <tbody>
+        <tr><td>11</td><td class="name">删除确认对话框</td><td class="trigger">点击删除图标按钮</td><td><code>showDeleteAlert</code></td><td><code>EventPanelView.tsx</code></td></tr>
+        <tr><td>12</td><td class="name">放弃编辑确认</td><td class="trigger">编辑模式点击关闭/切换</td><td><code>showUnsavedAlert</code></td><td><code>EventPanelView.tsx</code></td></tr>
+        <tr><td>13</td><td class="name">发起群聊确认</td><td class="trigger">点击"发起群聊"按钮</td><td><code>showGroupChatConfirm</code></td><td><code>EventPanelView.tsx</code></td></tr>
+        <tr><td>14</td><td class="name">任务完成确认</td><td class="trigger">点击"完成任务"按钮</td><td><code>showProjectTaskCompleteAlert</code></td><td><code>EventPanelView.tsx</code></td></tr>
+        <tr><td>15</td><td class="name">任务废弃确认</td><td class="trigger">点击"废弃任务"按钮</td><td><code>showProjectTaskDiscardAlert</code></td><td><code>EventPanelView.tsx</code></td></tr>
+        <tr><td>16</td><td class="name">切换日历确认</td><td class="trigger">更改日程所属日历</td><td><code>showCalendarChangeConfirm</code></td><td><code>useEventEditViewModel.ts</code></td></tr>
+        <tr><td>17</td><td class="name">过去时间确认</td><td class="trigger">结束时间设为过去后保存</td><td><code>showPastTimeConfirm</code></td><td><code>useEventEditViewModel.ts</code></td></tr>
+        <tr><td>18</td><td class="name">申请代建确认</td><td class="trigger">侧边栏菜单"申请代建"</td><td><code>useOpenApplyCreateApprovalDialog</code></td><td><code>DesktopCalendarSidebarView.tsx</code></td></tr>
+        <tr><td>19</td><td class="name">取消关注确认</td><td class="trigger">侧边栏菜单"取消关注"</td><td><code>侧边栏本地 state</code></td><td><code>DesktopCalendarSidebarView.tsx</code></td></tr>
+        <tr><td>20</td><td class="name">催办确认</td><td class="trigger">与会人列表点击"催办"</td><td><code>对话框本地 state</code></td><td><code>ParticipantsDialogView.tsx</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="cat-label">1.4 信息展示对话框类（3 个）</div>
+    <table class="popup-table">
+      <thead><tr><th>#</th><th>弹窗名称</th><th>触发方式</th><th>状态变量</th><th>触发器文件</th></tr></thead>
+      <tbody>
+        <tr><td>21</td><td class="name">与会人列表对话框</td><td class="trigger">点击参会人数量/头像</td><td><code>对话框 open prop</code></td><td><code>eventDetail/index.tsx</code></td></tr>
+        <tr><td>22</td><td class="name">组织人列表对话框</td><td class="trigger">点击组织者名称</td><td><code>对话框 open prop</code></td><td><code>eventDetail/index.tsx</code></td></tr>
+        <tr><td>23</td><td class="name">签到码对话框</td><td class="trigger">点击签到码入口</td><td><code>对话框 open prop</code></td><td><code>eventDetail/index.tsx</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ====== 二、不应关闭 ====== -->
+  <div class="policy-section">
+    <h3>二、不应在 Tab 切换时关闭的弹窗 <span class="count keep">8 个</span></h3>
+    <p style="font-size:13px;color:rgba(0,0,0,0.65);margin:0 0 12px;">这些弹窗包含用户正在编辑的表单数据，关闭会导致数据丢失。</p>
+    <table class="keep-table">
+      <thead><tr><th>#</th><th>弹窗名称</th><th>不关闭原因</th><th>文件位置</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td class="name">日程编辑对话框<span class="reason">EventEdit</span></td><td>用户可能已填写标题、时间、参会人、地点、描述等</td><td><code>EventEdit.tsx</code> → <code>EventEditView.tsx</code></td></tr>
+        <tr><td>2</td><td class="name">EventPanel 编辑模式</td><td>编辑模式含完整表单（标题、时间、参会人、提醒等）</td><td><code>eventPanel/index.tsx</code> → <code>EventPanelView.tsx</code></td></tr>
+        <tr><td>3</td><td class="name">腾讯会议设置子对话框</td><td>用户正在配置会议密码、等候室、安全选项等</td><td><code>useEventEditViewModel.ts</code></td></tr>
+        <tr><td>4</td><td class="name">发布日历对话框</td><td>用户正在编辑日历名称、描述、封面、订阅范围等</td><td><code>PublishCalendarDialogView.tsx</code></td></tr>
+        <tr><td>5</td><td class="name">日历设置对话框</td><td>用户正在修改日历颜色、名称、共享权限、默认提醒等</td><td><code>CalendarSettingsDialogView.tsx</code></td></tr>
+        <tr><td>6</td><td class="name">申请代建审批对话框</td><td>用户正在填写审批表单（审批人、理由等）</td><td><code>useOpenApplyCreateApprovalDialog.tsx</code></td></tr>
+        <tr><td>7</td><td class="name">AI 速记弹窗</td><td>可能正在进行录音，独立窗口不受 Tab 切换影响</td><td><code>useOpenAiNotesDialog.ts</code></td></tr>
+        <tr><td>8</td><td class="name">外部 Qing 弹窗</td><td>由宿主容器管理生命周期，calendar 项目无法控制其关闭</td><td><code>useOpenQingDialog.ts</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ====== 三、特殊情况 ====== -->
+  <div class="policy-section">
+    <h3>三、特殊情况 <span class="count special">3 个</span></h3>
+    <table class="keep-table">
+      <thead><tr><th>#</th><th>弹窗名称</th><th>当前行为</th><th>建议</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td class="name">EventPanel 查看模式</td><td>切 Tab 后关闭</td><td>✅ 可以关闭 — 仅展示详情，无编辑数据</td></tr>
+        <tr><td>2</td><td class="name">EventPanel 编辑模式</td><td>切 Tab 后保留</td><td>❌ 不能关闭 — 含表单数据</td></tr>
+        <tr><td>3</td><td class="name">安全验证二维码对话框</td><td>切 Tab 后保留</td><td>❌ 不建议关闭 — 正在进行安全校验流程</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ====== 四、Tab 切换感知机制 ====== -->
+  <div class="policy-section">
+    <h3>四、Tab 切换感知机制</h3>
+    <p style="font-size:13px;color:rgba(0,0,0,0.65);margin:0 0 12px;">calendar 项目通过以下方式感知外层 Tab 切换：</p>
+    <div class="mechanism-box">
+      <pre><code>// 监听页面重新出现（从其他 Tab 切回日历）
+subscribeQingEvent("appear", () => {
+  // 刷新数据、关闭轻量弹窗
+});
+
+// 监听页面离开（切到其他 Tab）
+subscribeQingEvent("disappear", () => {
+  // 停止轮询等
+});</code></pre>
+      <p><strong>关键文件：</strong><code>hooks/useCalendarRuntimeController.ts</code>、<code>hooks/useRightPanel.ts</code></p>
+      <p><strong>兜底方案：</strong><code>document.visibilitychange</code> 事件</p>
+      <p><strong>已实现的关闭逻辑：</strong><code>useViewHeaderViewModel.tsx</code> 中订阅 <code>appear</code> 事件，自动关闭"迷你日历 Popover"和"我的日历 Popover"。</p>
+    </div>
+  </div>
+
+  <!-- ====== 五、状态管理架构 ====== -->
+  <div class="policy-section">
+    <h3>五、状态管理架构</h3>
+    <table class="arch-table">
+      <thead><tr><th>管理层级</th><th>管理的弹窗</th><th>文件</th></tr></thead>
+      <tbody>
+        <tr><td><code>CalendarRoot</code></td><td>EventPanel 全局状态、MoreEventsPopover</td><td><code>core/CalendarRoot.tsx</code></td></tr>
+        <tr><td><code>useViewHeaderViewModel</code></td><td>迷你日历、我的日历 Popover</td><td><code>viewHeader/hooks/useViewHeaderViewModel.tsx</code></td></tr>
+        <tr><td><code>useEventPanelViewModel</code></td><td>EventPanel 所有子弹窗（13+ 个状态变量）</td><td><code>eventPanel/hooks/useEventPanelViewModel.ts</code></td></tr>
+        <tr><td><code>useEventEditViewModel</code></td><td>EventEdit 所有子弹窗（5+ 个状态变量）</td><td><code>eventDialog/hooks/useEventEditViewModel.ts</code></td></tr>
+        <tr><td><code>useCalendarSquareViewModel</code></td><td>日历广场相关弹窗</td><td><code>calendarSquare/hooks/useCalendarSquareViewModel.ts</code></td></tr>
+        <tr><td>组件本地 state</td><td>Sidebar 菜单、广场卡片菜单等</td><td>各组件文件内</td></tr>
+        <tr><td><code>useOpenQingDialog</code></td><td>外部宿主弹窗（AI 速记、会议室等）</td><td><code>hooks/useOpenQingDialog.ts</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="text-align:center;padding:32px 0 16px;color:rgba(0,0,0,0.28);font-size:12px;">
+    <a href="index.html" style="color:rgba(0,0,0,0.45);text-decoration:none;">&larr; 返回走查展示页</a>
+  </div>
+
+</div>
+</body>
+</html>

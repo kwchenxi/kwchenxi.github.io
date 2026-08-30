@@ -1,0 +1,447 @@
+        /* 页面加载动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 页面元素加载动画 */
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* 脉动动画用于强调元素 */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* 页面加载效果 - 优化加载速度 */
+        body {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* === Lingee UI Design Tokens === */
+            /* 主色调 */
+            --primary-color: #4598F0;
+            --primary-dark: #3477b3;
+            --primary-light: #6eb6ff;
+            --secondary-color: #8b5cf6;
+            --secondary-dark: #7c3aed;
+            --secondary-light: #a78bfa;
+            --accent-color: #06b6d4;
+            --accent-dark: #0891b2;
+            --accent-light: #22d3ee;
+            /* 中性色 - Lingee UI foreground 体系 */
+            --background: #f5f6f8;
+            --surface: #ffffff;
+            --text-primary: rgba(0, 0, 0, 0.85);
+            --text-secondary: rgba(0, 0, 0, 0.65);
+            --text-muted: rgba(0, 0, 0, 0.28);
+            --border: rgba(0, 0, 0, 0.08);
+            --border-light: rgba(0, 0, 0, 0.04);
+            --border-dark: rgba(0, 0, 0, 0.18);
+            /* Spacing Token - Lingee UI 4px基准 */
+            --spacing-3xs: 2px;
+            --spacing-2xs: 4px;
+            --spacing-1-5xs: 6px;
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 16px;
+            --spacing-lg: 20px;
+            --spacing-xl: 24px;
+            --spacing-2xl: 36px;
+            --spacing-3xl: 48px;
+            --spacing-4xl: 72px;
+            /* Radius Token - Lingee UI */
+            --radius-small: 4px;
+            --radius-medium: 6px;
+            --radius-x-medium: 8px;
+            --radius-large: 12px;
+            --radius-x-large: 16px;
+            --radius-2xl: 20px;
+            --radius-3xl: 24px;
+            --radius-pill: 999px;
+            /* Shadow Token - Lingee UI */
+            --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.04), 0 1px 4px 0 rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px 0 rgba(0,0,0,0.06), 0 2px 4px 0 rgba(0,0,0,0.04);
+            --shadow-lg: 0 8px 24px 0 rgba(0,0,0,0.08), 0 4px 8px 0 rgba(0,0,0,0.04);
+            --shadow-xl: 0 12px 32px 0 rgba(0,0,0,0.10), 0 4px 8px 0 rgba(0,0,0,0.04);
+            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.18);
+            /* 过渡 */
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        /* 版本切换按钮样式 */
+        .version-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 8px;
+        }
+
+        /* 确保网格布局中的卡片高度一致 */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(300px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        /* 确保描述内容区域充分展开 */
+        .project-description {
+            flex-grow: 1;
+            margin-bottom: 8px; /* 保持适当间距 */
+        }
+        
+        /* 项目卡片样式调整 - 确保标签和详情链接固定在底部 */
+        .project-tags {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: auto; /* 关键：将标签容器推到底部 */
+            padding-top: 12px; /* 适当的顶部内边距 */
+        }
+
+        body {
+            font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: var(--spacing-3xl) var(--spacing-xl) var(--spacing-2xl);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            margin-bottom: var(--spacing-2xl);
+            border-radius: var(--radius-3xl);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        .project-card {
+            background: var(--surface);
+            border-radius: var(--radius-x-large);
+            padding: var(--spacing-sm);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-normal);
+            border: 1px solid var(--border);
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            contain: layout style paint;
+            position: relative;
+            overflow: hidden;
+            opacity: 1 !important;
+            transform: none !important;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-dark);
+        }
+        
+        /* 确保选中文本有可见效果 */
+        ::selection {
+            background-color: rgba(99, 102, 241, 0.2);
+        }
+
+        /* 详情链接样式 */
+        .project-detail-link {
+            cursor: pointer;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            margin-left: auto;
+            white-space: nowrap;
+            margin-top: var(--spacing-2xs);
+            padding: var(--spacing-3xs) var(--spacing-xs);
+            border-radius: var(--radius-pill);
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-3xs);
+        }
+        .project-detail-link:hover {
+            background: var(--primary-color);
+            color: var(--surface);
+            text-decoration: none;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+        .project-detail-link::after {
+            content: "→";
+            font-size: 0.8rem;
+            transition: transform var(--transition-fast);
+        }
+        .project-detail-link:hover::after {
+            transform: translateX(2px);
+        }
+
+        /* 移除渐变条装饰 */
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .project-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 1.25rem;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        /* 确保favicon图片正确显示 */
+        .project-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: inherit;
+        }
+
+        .project-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-3xs);
+            line-height: 1.4;
+        }
+
+        .project-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-xs);
+            font-weight: 400;
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px; /* 固定的4px间距 */
+        }
+
+        .tag {
+            background: var(--surface);
+            color: var(--text-secondary);
+            padding: var(--spacing-3xs) var(--spacing-xs);
+            border-radius: var(--radius-pill);
+            font-size: 12px;
+            font-weight: 400;
+            border: 1px solid var(--border);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .project-link:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .project-link::after {
+            content: "→";
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .project-link:hover::after {
+            transform: translateX(4px);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+        }
+
+        /* 展开/收起按钮样式 */
+        .toggle-more-btn {
+            display: block;
+            margin: 0 auto var(--spacing-2xl);
+            padding: var(--spacing-xs) var(--spacing-xl);
+            background: var(--surface);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            font-size: 14px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-sm);
+        }
+        .toggle-more-btn:hover {
+            background: var(--primary-color);
+            color: var(--surface);
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        .toggle-more-btn .arrow {
+            display: inline-block;
+            margin-left: 6px;
+            transition: transform var(--transition-fast);
+        }
+        .toggle-more-btn.expanded .arrow {
+            transform: rotate(180deg);
+        }
+
+        /* 实验室区域折叠：默认隐藏第7张及之后的卡片 */
+        .lab-grid.collapsed .project-card:nth-child(n+7) {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 var(--spacing-sm);
+            }
+            
+            .header {
+                padding: var(--spacing-xl) var(--spacing-sm) var(--spacing-lg);
+                height: auto;
+                border-radius: var(--radius-2xl);
+            }
+            
+            .header h1 {
+                font-size: 1.6rem;
+                margin-bottom: var(--spacing-xs);
+            }
+            
+            .header p {
+                font-size: 14px;
+                padding: 0 var(--spacing-md);
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+                margin-bottom: var(--spacing-xl);
+            }
+            
+            .project-card {
+                padding: var(--spacing-sm);
+                border-radius: var(--radius-large);
+            }
+            
+            .project-header {
+                margin-bottom: var(--spacing-sm);
+            }
+            
+            .project-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .project-title {
+                font-size: 1rem;
+                margin-bottom: var(--spacing-3xs);
+            }
+            
+            .project-subtitle {
+                font-size: 12px;
+            }
+            
+            .project-description {
+                font-size: 14px;
+                margin-bottom: var(--spacing-sm);
+            }
+            
+            .tag {
+                padding: var(--spacing-3xs) var(--spacing-xs);
+                font-size: 12px;
+                border-radius: var(--radius-pill);
+            }
+            
+            .project-tags {
+                gap: var(--spacing-xs);
+            }
+            
+            .project-detail-link {
+                padding: var(--spacing-3xs) var(--spacing-sm);
+                font-size: 14px;
+            }
+            
+            section.header {
+                padding: var(--spacing-md) 0;
+                height: auto;
+            }
+            
+            section.header h1 {
+                font-size: 1.4rem;
+            }
+        }

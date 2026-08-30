@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>用 AI 做 UI 走查</title>
+<title>用 AI 做体验走查</title>
 <style>
-  /* ===== Lingee Design Tokens（来源：Lingee UI 规范 v2.5.0）===== */
+  /* ===== Lingee Design Tokens（来源：Lingee UI 规范 v5.3.0）===== */
   :root {
     /* Color · Primary */
     --primary: #495DFF;
@@ -36,87 +36,221 @@
     --warning: #FF8B00;
     --success: #00B578;
 
-    /* Radius */
+    /* Radius · 11 tokens（radius.json, mode=light）*/
     --r-small: 4px;
     --r-medium: 6px;
     --r-x-medium: 8px;
     --r-large: 12px;
     --r-x-large: 16px;
-    --radius: var(--r-large);     /* 卡片：large 12 */
-    --radius-sm: var(--r-x-medium); /* x-medium 8 */
+    --r-2x-large: 20px;
+    --r-3x-large: 24px;
+    --r-4x-large: 32px;
+    --r-5x-large: 40px;
+    --r-pill: 999px;
+    --r-circle: 50%;
+    --radius: var(--r-large);     /* 卡片：radius-large 12 */
+    --radius-sm: var(--r-x-medium); /* radius-x-medium 8 */
 
     /* Shadow */
     --shadow-small: 0 1px 2px rgba(0,0,0,0.04), 0 1px 4px rgba(0,0,0,0.04);
     --shadow-medium: 0 4px 12px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
     --shadow-large: 0 8px 24px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04);
 
-    /* Spacing · 4px 网格 */
-    --s-2: 2px; --s-4: 4px; --s-6: 6px; --s-8: 8px; --s-10: 10px;
-    --s-12: 12px; --s-16: 16px; --s-20: 20px; --s-24: 24px; --s-28: 28px;
-    --s-36: 36px; --s-48: 48px; --s-72: 72px;
+    /* Spacing · 13 tokens（spacing.json, mode=Mode 1, 4px 网格）*/
+    --s-2: 2px;   /* spacing-3x-small */
+    --s-4: 4px;   /* spacing-2x-small */
+    --s-6: 6px;   /* spacing-1.5x-small */
+    --s-8: 8px;   /* spacing-x-small */
+    --s-10: 10px; /* spacing-0.5x-small */
+    --s-12: 12px; /* spacing-small */
+    --s-16: 16px; /* spacing-medium */
+    --s-20: 20px; /* spacing-large */
+    --s-24: 24px; /* 0-5x-large */
+    --s-28: 28px; /* spacing-x-large */
+    --s-32: 32px; /* 未登记，保留兼容 */
+    --s-36: 36px; /* spacing-2x-large */
+    --s-48: 48px; /* spacing-3x-large */
+    --s-72: 72px; /* spacing-4x-large */
+
+    /* Typography · font-family 语义别名 */
+    --font-title: "PingFang SC", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;  /* family.title */
+    --font-body: "PingFang SC", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;   /* family.body */
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    font-family: var(--font-body);
     background: var(--bg);
     color: var(--text);
-    font-size: 16px;
-    line-height: 1.6;
+    font-size: 16px;          /* body-16 */
+    line-height: 24px;        /* body-16: 24px */
     -webkit-font-smoothing: antialiased;
   }
   .page { max-width: 780px; margin: 0 auto; padding: var(--s-24) var(--s-24) var(--s-72); }
-  .back { display: inline-flex; align-items: center; gap: var(--s-6); color: var(--text-secondary); text-decoration: none; font-size: 14px; margin-bottom: var(--s-12); transition: color 0.2s; }
+  .back { display: inline-flex; align-items: center; gap: var(--s-6); color: var(--text-secondary); text-decoration: none; font-size: 14px; line-height: 22px; margin-bottom: var(--s-12); transition: color 0.2s; }
   .back:hover { color: var(--primary); }
-  .hero { margin-bottom: var(--s-32); }
-  .hero h1 { font-size: 36px; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; margin-bottom: var(--s-12); color: var(--text-strong); }
-  .hero .meta { color: var(--text-muted); font-size: 14px; }
+  .hero { margin-bottom: var(--s-36); position: relative; overflow: hidden; }
+  .hero-mascot { position: absolute; top: -20px; right: -20px; width: 140px; height: auto; opacity: 0.12; pointer-events: none; filter: drop-shadow(0 8px 24px rgba(80,80,220,0.15)); }
+  .hero h1 { font-family: var(--font-title); font-size: 36px; font-weight: 600; line-height: 54px; letter-spacing: -0.01em; margin-bottom: var(--s-12); color: var(--text-strong); }  /* heading-36 */
+  .hero .meta { color: var(--text-muted); font-size: 14px; line-height: 22px; }  /* body-14 */
   .section { margin-bottom: var(--s-48); }
-  .section-label { display: inline-block; font-size: 12px; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: var(--s-8); }
-  .section h2 { font-size: 24px; font-weight: 600; margin-bottom: var(--s-20); line-height: 1.35; color: var(--text-strong); }
-  .section p { font-size: 16px; color: var(--text-secondary); margin-bottom: var(--s-16); line-height: 1.7; }
+  .section-label { display: inline-block; font-size: 12px; font-weight: 600; line-height: 18px; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: var(--s-8); }  /* body-12 */
+  .section h2 { font-family: var(--font-title); font-size: 24px; font-weight: 600; margin-bottom: var(--s-20); line-height: 36px; color: var(--text-strong); }  /* heading-24 */
+  .section p { font-size: 16px; color: var(--text-secondary); margin-bottom: var(--s-16); line-height: 24px; }  /* body-16 */
   .section p strong { color: var(--text); font-weight: 600; }
   .section p:last-child { margin-bottom: 0; }
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s-20); margin-top: var(--s-24); }
   .card { background: var(--surface); border-radius: var(--radius); padding: var(--s-24); border: 1px solid var(--border); transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s; }
   .card:hover { box-shadow: var(--shadow-medium); transform: translateY(-2px); border-color: var(--border-medium); }
   .card-icon { font-size: 28px; margin-bottom: var(--s-12); }
-  .card h3 { font-size: 16px; font-weight: 600; margin-bottom: var(--s-8); color: var(--text-strong); }
-  .card p { font-size: 14px; color: var(--text-secondary); margin-bottom: 0; line-height: 1.6; }
+  .card h3 { font-family: var(--font-title); font-size: 16px; font-weight: 600; margin-bottom: var(--s-8); line-height: 24px; color: var(--text-strong); }  /* heading-16 */
+  .card p { font-size: 14px; color: var(--text-secondary); margin-bottom: 0; line-height: 22px; }  /* body-14 */
   .timeline { position: relative; padding-left: var(--s-28); margin-top: var(--s-24); }
   .timeline::before { content: ''; position: absolute; left: 7px; top: 8px; bottom: 8px; width: 2px; background: var(--border-medium); }
   .timeline-item { position: relative; margin-bottom: var(--s-24); }
   .timeline-item:last-child { margin-bottom: 0; }
-  .timeline-dot { position: absolute; left: -28px; top: 6px; width: 16px; height: 16px; border-radius: 50%; background: var(--primary); border: 3px solid var(--bg); }
-  .timeline-item h4 { font-size: 14px; font-weight: 600; margin-bottom: var(--s-4); color: var(--text-strong); }
-  .timeline-item p { font-size: 14px; color: var(--text-secondary); margin-bottom: 0; line-height: 1.6; }
-  .case-links { display: flex; gap: var(--s-16); margin-top: var(--s-24); flex-wrap: wrap; }
+  .timeline-dot { position: absolute; left: -28px; top: 6px; width: 16px; height: 16px; border-radius: var(--r-circle); background: var(--primary); border: 3px solid var(--bg); }
+  .timeline-item h4 { font-family: var(--font-title); font-size: 14px; font-weight: 600; margin-bottom: var(--s-4); line-height: 22px; color: var(--text-strong); }  /* heading-14 */
+  .timeline-item p { font-size: 14px; color: var(--text-secondary); margin-bottom: 0; line-height: 22px; }  /* body-14 */
+  .case-links { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s-16); margin-top: var(--s-24); }
   .case-link { display: flex; align-items: center; gap: var(--s-12); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--s-16) var(--s-20); text-decoration: none; color: var(--text); transition: border-color 0.2s, box-shadow 0.2s; flex: 1; min-width: 200px; }
   .case-link:hover { border-color: var(--primary); box-shadow: var(--shadow-small); }
   .case-link-icon { font-size: 24px; flex-shrink: 0; }
-  .case-link-text h4 { font-size: 14px; font-weight: 600; margin-bottom: var(--s-2); color: var(--text-strong); }
-  .case-link-text span { font-size: 12px; color: var(--text-muted); }
+  .case-link-text h4 { font-family: var(--font-title); font-size: 14px; font-weight: 600; margin-bottom: var(--s-2); line-height: 22px; color: var(--text-strong); }  /* heading-14 */
+  .case-link-text span { font-size: 12px; line-height: 18px; color: var(--text-muted); }  /* body-12 */
   .insight-list { display: grid; gap: var(--s-16); margin-top: var(--s-20); }
   .insight { display: flex; gap: var(--s-12); align-items: flex-start; }
-  .insight-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; margin-top: 2px; }
+  .insight-icon { width: 24px; height: 24px; border-radius: var(--r-circle); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; margin-top: 2px; }
   .insight-icon.pro { background: rgba(0,181,120,0.10); color: var(--success); }
   .insight-icon.con { background: rgba(255,139,0,0.10); color: var(--warning); }
-  .insight p { font-size: 15px; color: var(--text-secondary); margin: 0; line-height: 1.6; }
-  .io-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
-  .io-card { padding: 16px; border-radius: 8px; transition: transform 0.2s, box-shadow 0.2s; }
+  .insight p { font-size: 14px; color: var(--text-secondary); margin: 0; line-height: 22px; }  /* body-14 */
+  .io-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-16); margin: var(--s-20) 0; }
+  .io-card { padding: var(--s-16); border-radius: var(--r-x-medium); transition: transform 0.2s, box-shadow 0.2s; }
   .io-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-small); }
   .io-card.input { background: rgba(73,93,255,0.04); border: 1px solid rgba(73,93,255,0.10); }
   .io-card.output { background: rgba(0,181,120,0.04); border: 1px solid rgba(0,181,120,0.12); }
-  .io-card .io-label { font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+  .io-card .io-label { font-size: 12px; font-weight: 600; line-height: 18px; margin-bottom: var(--s-8); }  /* body-12 */
   .io-card.input .io-label { color: var(--primary); }
   .io-card.output .io-label { color: var(--success); }
-  .io-card ul { font-size: 14px; color: var(--text-secondary); padding-left: 18px; line-height: 1.8; margin: 0; }
-  .sub-link { display: inline-block; margin-top: 12px; font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .io-card ul { font-size: 14px; color: var(--text-secondary); padding-left: 18px; line-height: 22px; margin: 0; }  /* body-14 */
+  .sub-link { display: inline-block; margin-top: var(--s-12); font-size: 12px; line-height: 18px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }  /* body-12 */
   .sub-link:hover { color: var(--primary); }
-  .compare-btn { display: inline-block; font-size: 14px; color: var(--primary); text-decoration: none; border: 1px solid rgba(73,93,255,0.25); background: rgba(73,93,255,0.04); padding: 10px 22px; border-radius: 8px; transition: all 0.2s; font-weight: 500; }
+  .compare-btn { display: inline-block; font-size: 14px; line-height: 22px; color: var(--primary); text-decoration: none; border: 1px solid rgba(73,93,255,0.25); background: rgba(73,93,255,0.04); padding: var(--s-10) var(--s-20); border-radius: var(--r-x-medium); transition: all 0.2s; font-weight: 500; }
   .compare-btn:hover { background: rgba(73,93,255,0.10); border-color: var(--primary); }
   .divider { height: 1px; background: var(--border); margin: var(--s-48) 0; }
-  footer { text-align: center; padding: var(--s-36) 0 0; color: var(--text-muted); font-size: 13px; }
+  footer { text-align: center; padding: var(--s-36) 0 0; color: var(--text-muted); font-size: 12px; line-height: 18px; }  /* body-12 */
   code { background: var(--bg-muted); padding: var(--s-2) var(--s-6); border-radius: var(--r-small); font-size: 14px; font-family: "SF Mono", "Fira Code", monospace; }
+
+  /* Steps (怎么用) */
+  .steps { display: flex; flex-direction: column; gap: var(--s-28); margin-top: var(--s-24); }
+  .step { display: flex; gap: var(--s-20); align-items: flex-start; padding-bottom: var(--s-28); border-bottom: 1px solid var(--border); }
+  .step:last-child { border-bottom: none; padding-bottom: 0; }
+  .step-num { width: 36px; height: 36px; border-radius: var(--r-circle); background: var(--primary-light); color: var(--primary); font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .step-body { flex: 1; min-width: 0; }
+  .step h3 { font-family: var(--font-title); font-size: 16px; font-weight: 600; line-height: 24px; margin-bottom: var(--s-6); color: var(--text-strong); }
+  .step p { font-size: 14px; line-height: 22px; color: var(--text-secondary); margin: 0; }
+  .step code { font-size: 12px; }
+
+  /* Checklist in step 3 */
+  .checklist { display: flex; flex-direction: column; gap: var(--s-6); }
+  .check-item { display: flex; align-items: center; gap: var(--s-8); font-size: 13px; line-height: 20px; color: var(--text-secondary); cursor: default; }
+  .check-box { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--border-strong); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .check-box.checked { background: var(--primary); border-color: var(--primary); }
+  .check-box.checked::after { content: '✓'; color: #fff; font-size: 11px; font-weight: 600; }
+  .check-hint { font-size: 11px; color: var(--text-muted); margin-left: var(--s-2); }
+
+  /* Prompt copy blocks */
+  .prompt-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--s-12); }
+  .prompt-label p { font-size: 14px; line-height: 22px; color: var(--text-secondary); margin: 0; }
+  .prompt-block { position: relative; background: rgba(73,93,255,0.03); border: 1px solid rgba(73,93,255,0.10); border-radius: var(--r-large); padding: var(--s-16) var(--s-20); }
+  .prompt-block pre { font-family: var(--font-body); font-size: 13px; line-height: 22px; color: var(--text); white-space: pre-wrap; word-break: break-word; margin: 0; }
+  .prompt-block .placeholder { color: var(--primary); font-weight: 500; }
+  .copy-btn { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-x-medium); padding: var(--s-4) var(--s-12); font-size: 12px; line-height: 20px; color: var(--text-muted); cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .copy-btn:hover { color: var(--primary); border-color: var(--primary); background: var(--primary-light); }
+  .copy-btn.copied { color: var(--success); border-color: var(--success); background: rgba(0,181,120,0.06); }
+  .cta-btn { display: inline-block; font-size: 16px; line-height: 24px; font-weight: 600; color: #fff; background: var(--primary); text-decoration: none; padding: var(--s-12) var(--s-28); border-radius: var(--r-x-medium); transition: background 0.2s, box-shadow 0.2s; margin-top: var(--s-24); }
+  .cta-btn:hover { background: var(--primary-hover); box-shadow: var(--shadow-medium); }
+
+  /* Sub-headings within a section */
+  .sub-heading { font-family: var(--font-title); font-size: 15px; font-weight: 600; line-height: 24px; color: var(--text-strong); margin: var(--s-36) 0 var(--s-16); }
+  .sub-heading:first-of-type { margin-top: var(--s-20); }
+
+  /* Tool tags in timeline */
+  .tool-tag { display: inline-block; font-family: var(--font-body); font-size: 11px; font-weight: 500; line-height: 18px; padding: 2px 8px; border-radius: var(--r-pill); vertical-align: middle; margin-left: var(--s-6); letter-spacing: 0.3px; }
+  .tool-tag.blue { background: rgba(59,130,246,0.10); color: #3B82F6; border: 1px solid rgba(59,130,246,0.18); }
+  .tool-tag.green { background: rgba(0,181,120,0.10); color: #00B578; border: 1px solid rgba(0,181,120,0.18); }
+  .tool-tag.purple { background: rgba(139,92,246,0.10); color: #8B5CF6; border: 1px solid rgba(139,92,246,0.18); }
+  .tool-tag.orange { background: rgba(255,139,0,0.10); color: #FF8B00; border: 1px solid rgba(255,139,0,0.18); }
+  .tool-tag.pink { background: rgba(236,72,153,0.10); color: #EC4899; border: 1px solid rgba(236,72,153,0.18); }
+
+  /* Dimension cards (能力概览) */
+  .dim-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--s-12); margin-top: var(--s-24); }
+  .dim-card { background: var(--surface); border-radius: var(--radius-sm); padding: var(--s-16); border: 1px solid var(--border); position: relative; cursor: default; }
+  .dim-card .dim-icon { font-size: 20px; margin-bottom: var(--s-6); }
+  .dim-card h4 { font-family: var(--font-title); font-size: 14px; font-weight: 600; line-height: 22px; color: var(--text-strong); margin-bottom: var(--s-4); }
+  .dim-card > p { font-size: 12px; line-height: 18px; color: var(--text-muted); margin: 0; }
+
+  /* Dimension popover */
+  .dim-popover { display: none; position: absolute; bottom: calc(100% + 14px); left: 50%; transform: translateX(-50%); width: 400px; max-width: 85vw; z-index: 100; }
+  .dim-card:hover .dim-popover,
+  .dim-card:focus-within .dim-popover { display: block; animation: popIn 0.2s ease-out; }
+  @keyframes popIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(6px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+  .dim-popover::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 7px solid transparent; border-top-color: var(--surface); filter: drop-shadow(0 1px 1px rgba(0,0,0,0.04)); }
+  .dim-popover-inner { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-x-large); box-shadow: var(--shadow-medium); overflow: hidden; }
+  .dim-popover-img { width: 100%; height: 180px; object-fit: cover; object-position: top center; display: block; border-bottom: 1px solid var(--border); }
+  .dim-popover-body { padding: var(--s-16) var(--s-20); }
+  .dim-popover-badge { display: inline-flex; align-items: center; gap: var(--s-4); font-family: var(--font-title); font-size: 11px; font-weight: 500; line-height: 18px; padding: 2px var(--s-8); border-radius: var(--r-pill); margin-bottom: var(--s-8); }
+  .dim-popover-badge.crit { background: rgba(241,34,52,0.08); color: var(--danger); border: 1px solid rgba(241,34,52,0.15); }
+  .dim-popover-badge.med { background: rgba(255,139,0,0.08); color: var(--warning); border: 1px solid rgba(255,139,0,0.15); }
+  .dim-popover-badge.info { background: var(--bg-muted); color: var(--text-secondary); border: 1px solid var(--border); }
+  .dim-popover-title { font-family: var(--font-title); font-size: 14px; font-weight: 600; line-height: 22px; color: var(--text-strong); margin-bottom: var(--s-4); }
+  .dim-popover-desc { font-size: 12px; line-height: 18px; color: var(--text-muted); margin: 0; }
+  .dim-popover-link { display: flex; align-items: center; gap: var(--s-4); font-size: 12px; line-height: 18px; color: var(--primary); text-decoration: none; margin-top: var(--s-12); padding-top: var(--s-12); border-top: 1px solid var(--border); font-weight: 500; transition: gap 0.2s; }
+  .dim-popover-link:hover { gap: var(--s-8); }
+
+  /* Doc preview (深度定位) */
+  .doc-preview { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-top: var(--s-20); transition: box-shadow 0.2s; }
+  .doc-preview:hover { box-shadow: var(--shadow-medium); }
+  .doc-header { padding: var(--s-20) var(--s-24) var(--s-12); border-bottom: 1px solid var(--border); }
+  .doc-header h4 { font-family: var(--font-title); font-size: 16px; font-weight: 600; line-height: 24px; color: var(--text-strong); margin-bottom: var(--s-4); }
+  .doc-header > p { font-size: 13px; line-height: 20px; color: var(--text-muted); margin: 0; }
+  .doc-stat-bar { display: flex; gap: var(--s-16); margin-top: var(--s-12); flex-wrap: wrap; }
+  .doc-stat { font-size: 12px; line-height: 18px; color: var(--text-secondary); display: flex; align-items: center; gap: var(--s-4); }
+  .doc-stat strong { color: var(--text-strong); font-weight: 600; font-size: 16px; }
+  .doc-stat .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .doc-stat .dot.green { background: var(--success); }
+  .doc-stat .dot.orange { background: var(--warning); }
+  .doc-table-wrap { padding: 0 var(--s-24); max-height: 320px; overflow-y: auto; }
+  .doc-table-wrap table { width: 100%; border-collapse: collapse; font-size: 12px; line-height: 18px; }
+  .doc-table-wrap th { text-align: left; font-weight: 600; color: var(--text-muted); font-size: 11px; padding: var(--s-8) var(--s-6); border-bottom: 1px solid var(--border-medium); white-space: nowrap; position: sticky; top: 0; background: var(--surface); }
+  .doc-table-wrap td { padding: var(--s-8) var(--s-6); border-bottom: 1px solid var(--border); color: var(--text-secondary); vertical-align: top; }
+  .doc-table-wrap tr:last-child td { border-bottom: none; }
+  .doc-table-wrap td:first-child { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .doc-table-wrap code { font-size: 11px; padding: 1px 4px; }
+  .doc-footer { padding: var(--s-12) var(--s-24); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .doc-footer span { font-size: 12px; line-height: 18px; color: var(--text-muted); }
+  .doc-cat { display: flex; gap: var(--s-16); }
+  .doc-cat span { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: var(--s-4); }
+  .doc-cat span::before { content: ''; width: 8px; height: 8px; border-radius: 2px; }
+  .doc-cat .c1::before { background: var(--primary); }
+  .doc-cat .c2::before { background: var(--warning); }
+  .doc-cat .c3::before { background: var(--success); }
+
+  /* Collapsible (技术实现) */
+  details { margin-top: var(--s-20); }
+  details summary { font-size: 14px; line-height: 22px; color: var(--text-muted); cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: var(--s-4); transition: color 0.2s; }
+  details summary:hover { color: var(--primary); }
+  details summary::before { content: '▸'; font-size: 12px; transition: transform 0.2s; }
+  details[open] summary::before { transform: rotate(90deg); }
+  details summary::-webkit-details-marker { display: none; }
+  details .detail-body { margin-top: var(--s-16); }
+
+  @media (max-width: 640px) {
+    .step { flex-direction: column; gap: var(--s-12); }
+    .dim-grid { grid-template-columns: repeat(2, 1fr); }
+  }
 </style>
 </head>
 <body>
@@ -124,40 +258,20 @@
 
   <a href="https://kwchenxi.github.io" class="back">&larr; 返回 Hoho 的 AI 实验室</a>
 
-  <div class="hero" style="display:flex;align-items:center;justify-content:space-between;gap:24px;">
+  <!-- Hero -->
+  <div class="hero">
+    <img src="assets/lingee-mascot.png" alt="" class="hero-mascot">
     <div>
-      <h1 style="background:linear-gradient(135deg,#2563FF 0%,#7858F9 55%,#FF9FF0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">用 AI 做 UI 走查</h1>
-    </div>
-    <img src="assets/lingee-mascot.png" alt="Lingee" style="width:120px;height:auto;flex-shrink:0;filter:drop-shadow(0 8px 24px rgba(80,80,220,0.15));">
-  </div>
-
-  <div class="section">
-    <span class="section-label">01 / 思路</span>
-    <h2>如何让 AI 走查桌面端、移动端？<br>以及没有设计稿的细节？</h2>
-    <p>让 AI 接管原本需要人工逐页完成的走查：打开应用、截图、对照规范、记录问题，同时覆盖视觉还原、响应式、暗黑模式、无障碍等 11 个维度。</p>
-    <div class="io-grid">
-      <div class="io-card input">
-        <div class="io-label">输入</div>
-        <ul>
-          <li>APP 访问权限（桌面端或网页）</li>
-          <li>设计规范站地址（AI 读取规范数值作为基准）</li>
-          <li>Figma 设计稿链接（可选，用于设计还原对比）</li>
-        </ul>
-      </div>
-      <div class="io-card output">
-        <div class="io-label">输出</div>
-        <ul>
-          <li>设计走查报告</li>
-          <li>按优先级排列的问题清单</li>
-          <li>文件级定位（哪个文件、哪个值要改）</li>
-        </ul>
-      </div>
+      <h1 style="background:linear-gradient(135deg,#2563FF 0%,#7858F9 55%,#FF9FF0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">用 AI 做体验走查</h1>
+      <p style="font-size:14px;line-height:22px;color:var(--text-secondary);margin-top:var(--s-8);">让 AI 给产品做个设计走查。</p>
     </div>
   </div>
 
+  <!-- 01 / 走查效果示例 -->
   <div class="section">
-    <span class="section-label">02 / 实际案例</span>
-    <h2><img src="assets/lingee-logo.png" alt="" style="width:28px;height:28px;vertical-align:middle;margin-right:6px;">金蝶灵基 &middot; 走查报告</h2>
+    <span class="section-label">01 / 走查效果示例</span>
+    <h2><img src="assets/lingee-logo.png" alt="" style="width:28px;height:28px;vertical-align:middle;margin-right:var(--s-6);">金蝶灵基 &middot; 走查报告</h2>
+        <h3 class="sub-heading">📄 走查报告</h3>
     <div class="case-links">
       <a href="lingji-note-walkthrough.html" class="case-link">
         <div class="case-link-icon">&#x1F4DD;</div>
@@ -174,89 +288,321 @@
         </div>
       </a>
     </div>
-    <a href="lingji-token-report.html" class="sub-link">🎨 Token 扫描说明 — 全应用扫描原理和数据</a>
+
+        <h3 class="sub-heading">📄 有源代码的走查报告</h3>
+    <p style="font-size:14px;line-height:22px;color:var(--text-secondary);margin-bottom:var(--s-16);">当 AI 同时拥有代码访问权限，可以将问题<strong style="color:var(--text);">精准定位到状态变量和文件</strong>，输出开发可直接使用的修复方案。</p>
+    <div class="case-links">
+      <a href="lingji-calendar-popup-policy.html" class="case-link">
+        <div class="case-link-icon">&#x1F50D;</div>
+        <div class="case-link-text">
+          <h4>日历模块 弹窗关闭策略</h4>
+          <span>34 个弹窗全量清单 · 状态变量级定位 · Tab 切换关闭/保留策略 · 修复方案</span>
+        </div>
+      </a>
+    </div>
+
   </div>
 
+  <!-- 02 / 怎么用 -->
   <div class="section">
-    <span class="section-label">03 / 流程</span>
+    <span class="section-label">02 / 怎么用</span>
+    <h2>三步开始</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="prompt-label">
+            <h3 style="margin:0;">下载</h3>
+            <a href="https://github.com/kwchenxi/ai-ui-check" class="cta-btn" target="_blank" style="margin:0;font-size:13px;padding:var(--s-6) var(--s-16);">&rarr; 下载 Skill</a>
+          </div>
+          <p>从 GitHub 下载 Skill 文件，放到 AI 工具目录。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>让 AI 读取 Skill</h3>
+          <div class="prompt-label">
+            <p>提示词参考：</p>
+            <button class="copy-btn" onclick="copyPrompt(this)">复制</button>
+          </div>
+          <div class="prompt-block">
+            <pre>请读取 .qoder/skills/ai-check-tool/SKILL.md，理解这个走查工具的完整能力和使用方式，然后告诉我已准备就绪。</pre>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>和 AI 描述需求</h3>
+          <div class="prompt-label">
+            <p>提示词参考：</p>
+            <button class="copy-btn" onclick="copyPrompt(this)">复制</button>
+          </div>
+          <div class="prompt-block">
+            <pre>帮我走查一下灵基日历这个模块。
+
+设计规范在这里：https://lingee.design（选填）
+组件库地址：https://components.lingee.com（选填）
+Figma 设计稿：https://figma.com/file/xxx（选填）
+
+重点看看窗口缩放有没有问题、颜色间距有没有按规范来。
+如果有代码的话也帮我扫一下，看看有没有硬编码没走 Token 的。</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 / 能力概览 -->
+  <div class="section">
+    <span class="section-label">03 / 能力概览</span>
+    <h2>覆盖 11 个体验维度</h2>
+    <div class="dim-grid">
+      <div class="dim-card" tabindex="0">
+        <div class="dim-icon">📐</div>
+        <h4>响应式布局</h4>
+        <p>多窗口尺寸测试，发现截断、溢出、列数不降等问题</p>
+        <div class="dim-popover"><div class="dim-popover-inner">
+          <img class="dim-popover-img" src="screenshots/note/note-02-minwindow.png" alt="">
+          <div class="dim-popover-body">
+            <span class="dim-popover-badge crit">严重</span>
+            <div class="dim-popover-title">按钮文字在最小窗口完全消失</div>
+            <p class="dim-popover-desc">窗口 ≈800px · 发起速记按钮仅显示图标</p>
+            <a href="lingji-note-walkthrough.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+          </div>
+        </div></div>
+      </div>
+      <div class="dim-card" tabindex="0">
+        <div class="dim-icon">📏</div>
+        <h4>规范对照</h4>
+        <p>逐条校验字体、间距、圆角是否符合设计规范</p>
+        <div class="dim-popover"><div class="dim-popover-inner">
+          <img class="dim-popover-img" src="lingji-rescan-images/03-meeting-list.png" alt="">
+          <div class="dim-popover-body">
+            <span class="dim-popover-badge med">中等</span>
+            <div class="dim-popover-title">84 处硬编码色值违反底层颜色规则</div>
+            <p class="dim-popover-desc">19 处圆角偏差 · 33 处字号不在标准列表</p>
+            <a href="lingji-rescan-report.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+          </div>
+        </div></div>
+      </div>
+      <div class="dim-card" tabindex="0">
+        <div class="dim-icon">🔲</div>
+        <h4>极限边界</h4>
+        <p>超长文本、空状态、极端窗口宽度下的表现</p>
+        <div class="dim-popover"><div class="dim-popover-inner">
+          <img class="dim-popover-img" src="screenshots/note/note-04-search.png" alt="">
+          <div class="dim-popover-body">
+            <span class="dim-popover-badge med">中等</span>
+            <div class="dim-popover-title">搜索 placeholder 文案不完整</div>
+            <p class="dim-popover-desc">缺失"内容、参与人"提示 · 日期列截断</p>
+            <a href="lingji-note-walkthrough.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+          </div>
+        </div></div>
+      </div>
+      <div class="dim-card" tabindex="0">
+        <div class="dim-icon">🌙</div>
+        <h4>暗黑模式</h4>
+        <p>检查暗色主题下的颜色、对比度、可读性</p>
+        <div class="dim-popover"><div class="dim-popover-inner">
+          <div class="dim-popover-body">
+            <span class="dim-popover-badge info">检查项</span>
+            <div class="dim-popover-title">检查暗色主题下的颜色适配</div>
+            <p class="dim-popover-desc">切换暗黑模式后，检查硬编码色值在深色背景下的对比度与可读性</p>
+          </div>
+        </div></div>
+      </div>
+      <div class="dim-card" tabindex="0">
+        <div class="dim-icon">📭</div>
+        <h4>空状态</h4>
+        <p>无数据、无网络、加载中等空场景的展示是否完整</p>
+        <div class="dim-popover"><div class="dim-popover-inner">
+          <img class="dim-popover-img" src="screenshots/note/figma-empty.png" alt="">
+          <div class="dim-popover-body">
+            <span class="dim-popover-badge med">中等</span>
+            <div class="dim-popover-title">空状态图标与 Figma 设计稿不一致</div>
+            <p class="dim-popover-desc">设计稿"暂无速记文件" · 实际"未找到相关速记文件"</p>
+            <a href="lingji-note-walkthrough.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+          </div>
+        </div></div>
+      </div>
+      <div class="dim-card" tabindex="0">
+        <div class="dim-icon">⌨️</div>
+        <h4>焦点 &amp; 键盘</h4>
+        <p>Tab 导航、焦点可见性、键盘操作可达性</p>
+        <div class="dim-popover"><div class="dim-popover-inner">
+          <img class="dim-popover-img" src="screenshots/note/note-04-search.png" alt="">
+          <div class="dim-popover-body">
+            <span class="dim-popover-badge med">中等</span>
+            <div class="dim-popover-title">搜索框聚焦时无视觉反馈</div>
+            <p class="dim-popover-desc">规范要求 #495DFF 描边 · 实际无高亮边框</p>
+            <a href="lingji-note-walkthrough.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+          </div>
+        </div></div>
+      </div>
+      <div class="dim-card" tabindex="0">
+        <div class="dim-icon">🌐</div>
+        <h4>国际化</h4>
+        <p>多语言文本长度变化对布局的影响</p>
+        <div class="dim-popover"><div class="dim-popover-inner">
+          <div class="dim-popover-body">
+            <span class="dim-popover-badge info">检查项</span>
+            <div class="dim-popover-title">检查多语言文本膨胀对布局的影响</div>
+            <p class="dim-popover-desc">中文翻译为英文后文本膨胀 30–80%，检查按钮截断、Tab 溢出、卡片破损</p>
+          </div>
+        </div></div>
+      </div>
+      <div class="dim-card" tabindex="0">
+        <div class="dim-icon">♿</div>
+        <h4>无障碍</h4>
+        <p>对比度、替代文本、ARIA 属性检查</p>
+        <div class="dim-popover"><div class="dim-popover-inner">
+          <div class="dim-popover-body">
+            <span class="dim-popover-badge info">检查项</span>
+            <div class="dim-popover-title">检查无障碍体验是否达标</div>
+            <p class="dim-popover-desc">检查 alt 文本、aria-label、焦点环可见性、Tab 导航顺序与屏幕阅读器兼容性</p>
+          </div>
+        </div></div>
+      </div>
+      <div class="dim-card" tabindex="0">
+        <div class="dim-icon">🔗</div>
+        <h4>Token 绑定</h4>
+        <p>代码扫描，检测硬编码值是否应改用设计变量</p>
+        <div class="dim-popover"><div class="dim-popover-inner">
+          <img class="dim-popover-img" src="lingji-rescan-images/07-chat-detail.png" alt="">
+          <div class="dim-popover-body">
+            <span class="dim-popover-badge crit">严重</span>
+            <div class="dim-popover-title">521 处硬编码色值未使用 Token 变量</div>
+            <p class="dim-popover-desc">322 处 SVG 填色 · 33 处 Tailwind 任意值</p>
+            <a href="lingji-rescan-report.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+          </div>
+        </div></div>
+      </div>
+      <div class="dim-card" tabindex="0">
+        <div class="dim-icon">🧩</div>
+        <h4>Variant 完整性</h4>
+        <p>组件变体是否覆盖所有设计稿定义的状态</p>
+        <div class="dim-popover"><div class="dim-popover-inner">
+          <img class="dim-popover-img" src="screenshots/note/note-05-create.png" alt="">
+          <div class="dim-popover-body">
+            <span class="dim-popover-badge crit">严重</span>
+            <div class="dim-popover-title">筛选 Tab 缺失四个标签</div>
+            <p class="dim-popover-desc">"最近/我的/共享/收藏"未实现 · 发起录音无确认</p>
+            <a href="lingji-note-walkthrough.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+          </div>
+        </div></div>
+      </div>
+      <div class="dim-card" tabindex="0">
+        <div class="dim-icon">🔄</div>
+        <h4>跨页面一致性</h4>
+        <p>同类组件在不同页面的表现是否统一</p>
+        <div class="dim-popover"><div class="dim-popover-inner">
+          <img class="dim-popover-img" src="lingji-rescan-images/figma-available-rooms.png" alt="">
+          <div class="dim-popover-body">
+            <span class="dim-popover-badge med">中等</span>
+            <div class="dim-popover-title">导航标签设计稿 4 个实际只有 3 个</div>
+            <p class="dim-popover-desc">缺少"任务"标签 · 会议室名称格式不一致</p>
+            <a href="lingji-rescan-report.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 / 技术实现 -->
+  <div class="section">
+    <span class="section-label">04 / 技术实现</span>
     <h2>从授权应用到输出报告</h2>
     <div class="timeline">
       <div class="timeline-item">
         <div class="timeline-dot"></div>
-        <h4>读取设计规范 <span style="font-size:11px;font-weight:400;color:#495DFF;background:rgba(73,93,255,0.08);padding:2px 8px;border-radius:10px;margin-left:6px;">Browser Agent</span></h4>
+        <h4>读取设计规范 <span class="tool-tag blue">Browser Agent</span></h4>
         <p>AI 访问设计规范站，提取间距、字号、圆角、按钮尺寸等数值作为走查基准。</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
-        <h4>代码扫描 <span style="font-size:11px;font-weight:400;color:#00B578;background:rgba(0,181,120,0.08);padding:2px 8px;border-radius:10px;margin-left:6px;">asar extract + token-scan</span></h4>
+        <h4>代码扫描 <span class="tool-tag green">asar extract + token-scan</span></h4>
         <p>解包应用代码，批量检查颜色、圆角、字号是否使用了设计变量，按模块统计覆盖率。可与截图并行。</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
-        <h4>界面截图 &amp; 交互 <span style="font-size:11px;font-weight:400;color:#FF8B00;background:rgba(255,139,0,0.08);padding:2px 8px;border-radius:10px;margin-left:6px;">Computer Use</span></h4>
+        <h4>界面截图 &amp; 交互 <span class="tool-tag purple">Computer Use</span></h4>
         <p>AI 操控桌面打开应用，截取默认窗口、窄窗口、全屏等多种状态，并进行基础交互操作（点击、输入、下拉等）截图取证。</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
-        <h4>Figma 设计稿对比 <span style="font-size:11px;font-weight:400;color:#8F40FF;background:rgba(143,64,255,0.08);padding:2px 8px;border-radius:10px;margin-left:6px;">Figma API</span> <span style="font-size:11px;color:rgba(0,0,0,0.35);">可选</span></h4>
+        <h4>Figma 设计稿对比 <span class="tool-tag orange">Figma API</span> <span style="font-size:11px;color:rgba(0,0,0,0.35);margin-left:var(--s-4);">可选</span></h4>
         <p>如果提供了 Figma 链接，通过 API 拉取设计稿截图，与实际页面逐项对比差异。</p>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
-        <h4>输出走查报告 <span style="font-size:11px;font-weight:400;color:rgba(0,0,0,0.45);background:rgba(0,0,0,0.04);padding:2px 8px;border-radius:10px;margin-left:6px;">HTML</span></h4>
+        <h4>输出走查报告 <span class="tool-tag pink">HTML</span></h4>
         <p>将所有发现按严重/中等/轻微分级，生成带 Tab 切换的 HTML 报告，包含文件级定位。</p>
       </div>
     </div>
   </div>
 
+  <!-- 05 / 优势与局限 -->
   <div class="section">
-    <span class="section-label">04 / 思考</span>
-    <h2>AI 走查的边界在哪里</h2>
-    <p>多轮测试下来，有几个比较明确的结论：</p>
+    <span class="section-label">05 / 优势与局限</span>
+    <h2>当前工具的优势与局限</h2>
     <div class="insight-list">
       <div class="insight">
         <div class="insight-icon pro">&check;</div>
-        <p><strong>响应式 &amp; 布局问题发现率很高。</strong>AI 可以系统地测试多种窗口尺寸，不遗漏截断、溢出、列数不降等问题。这类问题人工走查经常漏。</p>
+        <p><strong>响应式 &amp; 布局问题发现率很高。</strong>AI 系统地测试多种窗口尺寸，不遗漏截断、溢出等问题，人工走查经常漏。</p>
       </div>
       <div class="insight">
         <div class="insight-icon pro">&check;</div>
-        <p><strong>规范偏差检查很稳定。</strong>只要规范数值明确，AI 就能准确判断实际实现是否偏离，不受主观影响。</p>
+        <p><strong>规范偏差检查稳定可复现。</strong>逐条对照 Token 校验，不受主观影响。</p>
       </div>
       <div class="insight">
         <div class="insight-icon pro">&check;</div>
-        <p><strong>代码扫描能发现人眼看不到的问题。</strong>通过解包代码，可以批量找出所有没用设计变量的地方，按模块拆分，精准定位哪些业务需要改进。这类问题人工走查根本发现不了。</p>
+        <p><strong>代码扫描发现人眼看不到的问题。</strong>批量找出未绑定设计变量的硬编码，精准定位到模块。</p>
       </div>
       <div class="insight">
         <div class="insight-icon pro">&check;</div>
-        <p><strong>Figma 对比让设计还原可量化。</strong>直接拿设计稿和实现截图对比，自动发现组件命名、状态缺失、布局差异等问题，比人工逐像素对比高效得多。</p>
-      </div>
-      <div class="insight">
-        <div class="insight-icon pro">&check;</div>
-        <p><strong>回归验证很高效。</strong>代码修复后重新跑一遍，自动生成新的问题清单，之前发现的问题是否还在一目了然。</p>
+        <p><strong>回归验证高效。</strong>修复后重跑一遍，之前的问题是否还在一目了然。</p>
       </div>
       <div class="insight">
         <div class="insight-icon con">&triangle;</div>
-        <p><strong>视觉美感判断还做不了。</strong>颜色搭配是否和谐、留白是否舒适、视觉层次是否清晰 &mdash; 这些需要设计直觉的问题，AI 目前只能给出&ldquo;符合/不符合规范&rdquo;的二元判断。</p>
-      </div>
-      <div class="insight">
-        <div class="insight-icon con">&triangle;</div>
-        <p><strong>交互逻辑深度不足。</strong>对于需要多步骤、多状态联动的复杂业务逻辑（如审批流程），AI 只能测试表层 UI，无法理解业务流程是否正确。</p>
+        <p><strong>视觉美感和深层业务逻辑仍需人工判断。</strong>颜色搭配、复杂多步骤流程等需要设计直觉的领域，AI 目前作为辅助。</p>
       </div>
     </div>
-    <p style="margin-top: 20px; font-size: 14px; color: var(--text-secondary); line-height: 1.8;">
+    <p style="margin-top: var(--s-20); font-size: 14px; color: var(--text-secondary); line-height: 22px;">
       <strong style="color: var(--text-strong);">下一步方向：AI 走查 + 人工审核。</strong>
-      AI 负责批量扫描布局、代码规范性问题和设计还原度，人工聚焦在设计意图和业务逻辑的验证上 &mdash; 两者结合，效率可提升数倍。
+      AI 负责批量扫描，人工聚焦设计意图和业务逻辑 &mdash; 两者结合，效率可提升数倍。
     </p>
   </div>
 
-  <div class="section" style="text-align: center; padding: 24px 0;">
-    <a href="project-comparison.html" class="compare-btn">&rarr; 新旧方案对比：Design Review vs AICheck</a>
+  <!-- 06 / AI 走查 vs 传统走查 -->
+  <div class="section">
+    <span class="section-label">06 / AI 走查 vs 传统走查</span>
+    <h2>纯视觉走查工具对比</h2>
+    <p>AI 走查和传统 Design Review 不是替代关系，而是互补。了解两者的定位和适用场景，选择更高效的走查方式。</p>
+    <div style="margin-top: var(--s-20); text-align: center;">
+      <a href="project-comparison.html" class="compare-btn">&rarr; 查看对比详情：Design Review vs AICheck</a>
+    </div>
   </div>
 
   <footer>
-    Hoho &middot; 用 AI 做 UI 走查 &middot; 2026
+    Hoho &middot; 用 AI 做体验走查 &middot; 2026
   </footer>
 
 </div>
+<script>
+function copyPrompt(btn) {
+  var pre = btn.closest('.prompt-label').nextElementSibling.querySelector('pre');
+  var text = pre.textContent || pre.innerText;
+  navigator.clipboard.writeText(text).then(function() {
+    btn.textContent = '已复制';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = '复制';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+</script>
 </body>
 </html>

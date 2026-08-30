@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>金蝶灵基 — Token 合同审计报告</title>
+<link rel="stylesheet" href="walkthrough-v2.css">
+<style>
+  .contract-section { margin: 32px 0; }
+  .contract-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 20px 0; }
+  .contract-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 16px; }
+  .contract-card .file { font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: rgba(0,0,0,0.45); margin-bottom: 4px; }
+  .contract-card .mode { font-size: 13px; font-weight: 600; color: #495DFF; margin-bottom: 8px; }
+  .contract-card .desc { font-size: 13px; color: rgba(0,0,0,0.65); line-height: 1.6; }
+  .rule-box { background: rgba(73,93,255,0.04); border-left: 3px solid #495DFF; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; line-height: 1.7; }
+  .rule-box strong { color: #495DFF; }
+  .violation-list { padding-left: 20px; margin: 12px 0; font-size: 14px; line-height: 1.8; color: rgba(0,0,0,0.65); }
+  .violation-list li { margin-bottom: 6px; }
+  .violation-list code { font-size: 12px; background: rgba(0,0,0,0.04); padding: 1px 4px; border-radius: 3px; }
+  .compliance-bar { height: 8px; background: rgba(0,0,0,0.04); border-radius: 4px; overflow: hidden; margin: 8px 0 4px; }
+  .compliance-fill { height: 100%; border-radius: 4px; }
+  .compliance-fill.good { background: #00B578; }
+  .compliance-fill.warn { background: #FF8B00; }
+  .compliance-fill.bad { background: #F12234; }
+  .contract-status { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .status-pending { background: rgba(255,139,0,0.1); color: #FF8B00; }
+  .status-block { background: rgba(241,34,52,0.1); color: #F12234; }
+  .status-match { background: rgba(0,181,120,0.1); color: #00B578; }
+  .contract-note { background: rgba(255,139,0,0.06); border-left: 3px solid #FF8B00; padding: 10px 14px; border-radius: 0 6px 6px 0; margin: 12px 0; font-size: 13px; color: rgba(0,0,0,0.65); line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div style="margin-bottom:16px;"><a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:rgba(0,0,0,0.45);text-decoration:none;font-size:13px;">&larr; 返回首页</a></div>
+
+  <header>
+    <h1>金蝶灵基 — Token 合同审计报告</h1>
+    <div class="meta">
+      <span>审计框架：Lingee §3.8 Token 合同</span>
+      <span>代码基线：v0.1.3（Electron / app.asar）</span>
+      <span>扫描时间：2026-08-11</span>
+      <span>状态：<span class="contract-status status-pending">registered · audit pending</span></span>
+    </div>
+  </header>
+
+  <!-- 0. 这是什么 -->
+  <section>
+    <h2>这是什么？</h2>
+    <p style="font-size: 15px; color: rgba(0,0,0,0.65); line-height: 1.7;">《Lingee 通用页面生成与验收规范》§3.8 定义了一套 <strong>Token 合同</strong>：七份 JSON 文件是设计系统的机器可读事实源，配套有颜色依赖方向、alias 规则、消费边界、审计与发布条件。这份报告把 <a href="lingji-token-report.html" style="color:#495DFF;">上一份 Token 扫描</a> 的原始数据，重新按合同框架对照检查，看灵基 v0.1.3 的代码实际用法与合同要求之间的距离。</p>
+    <p style="font-size: 15px; color: rgba(0,0,0,0.65); line-height: 1.7; margin-top: 12px;">合同当前整体状态为 <span class="contract-status status-pending">registered_alias_audit_pending</span>：七文件身份已登记，但未完成 alias 全图、跨层消费、直接值与命名迁移审计，也未固定 SHA-256。</p>
+  </section>
+
+  <!-- 1. 七文件体系 -->
+  <section>
+    <h2>1. Token 合同的七份文件</h2>
+    <p style="font-size: 14px; color: rgba(0,0,0,0.65); line-height: 1.7; margin-bottom: 16px;">按 §3.8.1，下列七份工作区 JSON 是当前 Token 合同的机器可读事实源。文件名和 mode 大小写是身份的一部分，禁止规范化或按"看起来相同"替换。</p>
+    <div class="contract-grid">
+      <div class="contract-card">
+        <div class="file">color.tokens.json</div>
+        <div class="mode">mode = color</div>
+        <div class="desc">全局色板（primitive）。实现层禁止直接消费，只能经语义层 alias 引用。</div>
+      </div>
+      <div class="contract-card">
+        <div class="file">light.tokens.json</div>
+        <div class="mode">mode = Light</div>
+        <div class="desc">Light 主题语义色板：前景、边框、背景、阴影。</div>
+      </div>
+      <div class="contract-card">
+        <div class="file">dark.tokens.json</div>
+        <div class="mode">mode = dark</div>
+        <div class="desc">Dark 主题语义色板，与 Light 各自独立 baseline。</div>
+      </div>
+      <div class="contract-card">
+        <div class="file">components.json</div>
+        <div class="mode">mode = Mode 1</div>
+        <div class="desc">34 个组件命名空间：变体、颜色职责、状态。</div>
+      </div>
+      <div class="contract-card">
+        <div class="file">typography.json</div>
+        <div class="mode">mode = kwork</div>
+        <div class="desc">31 个原子 Token：family / weight / size / line-height。</div>
+      </div>
+      <div class="contract-card">
+        <div class="file">spacing.json</div>
+        <div class="mode">mode = Mode 1</div>
+        <div class="desc">13 个 number Token，scope=<code>GAP</code>，禁止用于 padding/margin。</div>
+      </div>
+      <div class="contract-card">
+        <div class="file">radius.json</div>
+        <div class="mode">mode = light</div>
+        <div class="desc">11 个圆角 Token，含 <code>circle / pill</code> 特殊值。</div>
+      </div>
+    </div>
+    <div class="contract-note">
+      <strong>对照扫描：</strong>上一份扫描只统计了"代码里有没有用 <code>var(--lg-*)</code>"，未区分 primitive / semantic / component 三层。本次审计把 521 处硬编码色值按层重新归类（详见 §3）。
+    </div>
+  </section>
+
+  <!-- 2. 颜色依赖方向 -->
+  <section>
+    <h2>2. 颜色依赖方向与消费边界</h2>
+    <div class="rule-box">
+      唯一允许的方向（§3.8.2）：<br>
+      <code>全局色板（primitive） → 语义色板 → 组件色板 → 组件实现</code><br>
+      <code>全局色板（primitive） → 语义色板 → 非组件实现</code><br><br>
+      <strong>硬规则：</strong>组件实现只能消费自身命名空间的 Token；非组件页面只能消费语义 Token；全局色板永远不作为 DOM/CSS/SVG 实现入口。
+    </div>
+
+    <h3 style="font-size: 16px; margin-top: 24px;">代码实际用法 vs 合同要求</h3>
+    <div class="contract-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+      <div class="contract-card">
+        <div class="mode" style="color: #00B578;">4,603 次</div>
+        <div class="desc">正确使用 Token 变量<br><code>var(--lg-*-color-*)</code></div>
+        <div class="compliance-bar"><div class="compliance-fill good" style="width:89%"></div></div>
+        <div class="desc" style="font-size: 11px;">覆盖率 89.3%</div>
+      </div>
+      <div class="contract-card">
+        <div class="mode" style="color: #F12234;">521 处</div>
+        <div class="desc">直接写了 HEX 色值<br><strong>合同判定：违反 §3.8.2</strong></div>
+        <div class="compliance-bar"><div class="compliance-fill bad" style="width:10%"></div></div>
+      </div>
+      <div class="contract-card">
+        <div class="mode" style="color: #FF8B00;">33 处</div>
+        <div class="desc">Tailwind arbitrary value<br><code>.text-[#495DFF]</code></div>
+        <div class="compliance-bar"><div class="compliance-fill warn" style="width:40%"></div></div>
+      </div>
+      <div class="contract-card">
+        <div class="mode" style="color: rgba(0,0,0,0.28);">322 处</div>
+        <div class="desc">SVG 图标填色<br>单独分类，仍需进入 audit</div>
+        <div class="compliance-bar"><div class="compliance-fill warn" style="width:30%"></div></div>
+      </div>
+    </div>
+
+    <h3 style="font-size: 16px; margin-top: 24px;">典型违规点（按合同归类）</h3>
+    <ul class="violation-list">
+      <li><strong>登录页（login.css）</strong>：按钮、链接直接写 <code>#495DFF</code>——属于"非组件页面元素直接消费全局色板"，违反 §3.8.2 硬规则 3。</li>
+      <li><strong>小程序窗口 / WebView（miniapp.css、imageViewer.css）</strong>：大量使用 iOS 蓝 <code>#007AFF</code> 而非灵基主色——属于"使用合同外色值"，违反 §3.8.2 硬规则 1。</li>
+      <li><strong>Toast / Checkbox / Spinner（JS 内联）</strong>：在 JS 字符串中硬编码色值——属于"经非声明路径消费"，违反 §3.8.2 硬规则 4。</li>
+      <li><strong>Tailwind <code>.text-[#495DFF]</code></strong>：绕开 Token 系统直接写色值——合同不承认这种表达，必须迁移到对应 semantic/component Token。</li>
+    </ul>
+  </section>
+
+  <!-- 3. 主题色对照 -->
+  <section>
+    <h2>3. 主题色身份对照</h2>
+    <div class="contract-note">
+      <strong>身份说明：</strong>灵基 v0.1.3 实际代码使用 <code>#495DFF</code> 作为主色（对应代码中 <code>--lg-primary-600</code>）。新规范 §3.8.4 登记的 <code>primary.500 = #6D80FF</code>，可能与 <code>primary-600</code> 是同一色阶的不同档位，也可能代表产品后续的品牌色调整。在 Design System owner 裁决前，本报告按"代码事实 + 合同登记"两条线并列呈现，不擅自合并或替换。
+    </div>
+    <table style="width:100%; border-collapse:collapse; margin-top: 16px; font-size: 13px;">
+      <thead>
+        <tr style="background:rgba(0,0,0,0.03); text-align:left;">
+          <th style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">来源</th>
+          <th style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">Token path</th>
+          <th style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">HEX</th>
+          <th style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">状态</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">v0.1.3 代码</td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);"><code>--lg-primary-600</code></td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);"><span style="display:inline-block;width:14px;height:14px;background:#495DFF;border-radius:3px;vertical-align:middle;margin-right:6px;"></span><code>#495DFF</code></td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);"><span class="contract-status status-match">code-fact</span></td>
+        </tr>
+        <tr>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">规范 §3.8.4</td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);"><code>primary.500</code></td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);"><span style="display:inline-block;width:14px;height:14px;background:#6D80FF;border-radius:3px;vertical-align:middle;margin-right:6px;"></span><code>#6D80FF</code></td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);"><span class="contract-status status-pending">registered</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size: 13px; color: rgba(0,0,0,0.45); margin-top: 12px;">按 §3.8.3 规则：相同 HEX 不代表相同 Token；同值 Token 仍保留各自 path、Variable ID、mode 和语义。裁决前禁止按值去重或反向匹配。</p>
+  </section>
+
+  <!-- 4. Typography -->
+  <section>
+    <h2>4. Typography 合同审计（§3.8.7）</h2>
+    <p style="font-size: 14px; color: rgba(0,0,0,0.65); line-height: 1.7; margin-bottom: 12px;">合同登记 31 个原子 Token：12 个 size（10/12/14/16/18/20/24/28/32/36/48/72）、3 个 family、4 个 weight、12 个 line-height。复合角色白名单 10 条（heading-36/24/20/18/16/14、body-16/14/12/10）。</p>
+
+    <h3 style="font-size: 16px; margin-top: 20px;">扫描数据对照</h3>
+    <div class="contract-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="contract-card">
+        <div class="mode" style="color: #FF8B00;">122 处</div>
+        <div class="desc">字号未用 Token<br><code>font-size: 13px</code> 等</div>
+        <div class="compliance-bar"><div class="compliance-fill warn" style="width:25%"></div></div>
+      </div>
+      <div class="contract-card">
+        <div class="mode" style="color: #00B578;">367 处</div>
+        <div class="desc">硬编码但值匹配 Token<br><strong>合同判定：仍未合规</strong></div>
+        <div class="compliance-bar"><div class="compliance-fill good" style="width:75%"></div></div>
+      </div>
+    </div>
+    <div class="rule-box">
+      §3.8.7.4 强调：相同值不证明绑定。<code>font-size: 14px</code> 即使与 <code>font-size.small-14</code> 数值相同，source-map 也只能写 <code>resolved-value-match</code>，不得写 <code>bound</code>。367 处"值匹配"的下一步是：逐个核对是否经 Variable ID 绑定，不能自动视为合规。
+    </div>
+    <div class="contract-note">
+      <strong>heading-16 / heading-14 冲突：</strong>Figma 标签写 <code>Medium</code>，样本节点却是 <code>Semibold 600</code>；本地 <code>typography.json</code> 又没有 <code>weight.medium</code>。这三方冲突必须由 Design System owner 裁决。在裁决前，代码中任何"看似 medium"的字号都保持 <span class="contract-status status-block">block</span>，不能默认用 semibold 替代。
+    </div>
+  </section>
+
+  <!-- 5. Spacing -->
+  <section>
+    <h2>5. Spacing 合同审计（§3.8.8）</h2>
+    <p style="font-size: 14px; color: rgba(0,0,0,0.65); line-height: 1.7; margin-bottom: 12px;">合同登记 13 个 number Token，全部 scope=<code>GAP</code>。Figma 规范 12 条 hook，与本地 12 条能按 px 值匹配；<code>0-5x-large = 24</code> 是 Figma 覆盖缺口。</p>
+
+    <div class="rule-box">
+      <strong>硬规则（§3.8.8.3 第 6–7 条）：</strong>spacing Token 只允许在"页面/组件 source-map 证明目标属性为 gap 且身份绑定成立"时消费。禁止自动用于 padding、margin、页面 gutter、定位偏移、width/height。
+    </div>
+
+    <h3 style="font-size: 16px; margin-top: 20px;">当前代码风险</h3>
+    <p style="font-size: 14px; color: rgba(0,0,0,0.65); line-height: 1.7;">上一份扫描未单独统计 spacing Token 使用情况。按合同要求，以下场景需要补扫并进入 <code>token-audit.json</code>：</p>
+    <ul class="violation-list">
+      <li>所有 <code>padding: 16px</code> / <code>margin: 24px</code> / <code>gap: 12px</code> 的硬编码——即使值匹配 Token，scope 只授权 <code>gap</code>，padding/margin 属于合同外使用。</li>
+      <li>所有 <code>width / height</code> 用 spacing number 的地方——合同明确禁止。</li>
+      <li>命名冲突：<code>spacing-1.5x-small ↔ 1-5x-small</code>、<code>spacing-0.5x-small ↔ 0-5x-small</code>、<code>--sl-spacing-medium ↔ medium</code>。禁止自动 normalize，需 Design System owner 裁决。</li>
+    </ul>
+  </section>
+
+  <!-- 6. Radius -->
+  <section>
+    <h2>6. Radius 合同审计（§3.8.9）</h2>
+
+    <div class="contract-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="contract-card">
+        <div class="mode" style="color: #FF8B00;">109 处</div>
+        <div class="desc">圆角未用 Token<br><code>border-radius: 14px</code> 等</div>
+        <div class="compliance-bar"><div class="compliance-fill warn" style="width:26%"></div></div>
+      </div>
+      <div class="contract-card">
+        <div class="mode" style="color: #00B578;">310 处</div>
+        <div class="desc">硬编码但值匹配 Token<br>需逐个核对 Variable ID 绑定</div>
+        <div class="compliance-bar"><div class="compliance-fill good" style="width:74%"></div></div>
+      </div>
+    </div>
+
+    <h3 style="font-size: 16px; margin-top: 20px;">合同特殊项</h3>
+    <ul class="violation-list">
+      <li><strong>radius-circle vs radius-pill：</strong>合同明确 <code>circle = 50%H</code>（仅当 width=height 时产生正圆）、<code>pill = 999px</code>（长条形）。本地 JSON 两者都解析为 999，但 Variable ID 不同，不能互换。当前 <code>radius-circle</code> 合同状态 <span class="contract-status status-block">block</span>，所有代码里的"正圆"实现（如头像、图标容器）需验证是否满足 <code>width = height</code> 形状不变量。</li>
+      <li><strong>4 项 metadata defect：</strong><code>small / medium / large / x-large</code> 的 <code>$description="边框宽度"</code> 与文件类型、scope、Figma 圆角表冲突——必须版本化描述修复，不得复制到生成文档。</li>
+      <li><strong>scope 例外：</strong><code>4x-large</code> scope=<code>ALL_SCOPES</code>，比其他 Token 更宽；消费审计仍只能允许其用于 radius 属性，不能因 scope 宽泛绕过语义。</li>
+      <li><strong>0 圆角缺口：</strong>两份来源都没有 0 圆角 Token，确认不能用最小 4 替代 0，也不能伪造 <code>radius-none</code>。代码里的 <code>border-radius: 0</code> 保持"合同外使用"，不进 Token 审计。</li>
+    </ul>
+  </section>
+
+  <!-- 7. 整体合规度 -->
+  <section>
+    <h2>7. 整体合规度</h2>
+    <table style="width:100%; border-collapse:collapse; font-size: 14px;">
+      <thead>
+        <tr style="background:rgba(0,0,0,0.03); text-align:left;">
+          <th style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">合同维度</th>
+          <th style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">合规度</th>
+          <th style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">状态</th>
+          <th style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">主要缺口</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">颜色 Token 覆盖</td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">89.3%</td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);"><span class="contract-status status-match">value-match</span></td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">521 处硬编码 + 322 处 SVG + 33 处 Tailwind</td>
+        </tr>
+        <tr>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">颜色依赖方向</td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">—</td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);"><span class="contract-status status-pending">pending audit</span></td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">需按 primitive/semantic/component 三层重新归类</td>
+        </tr>
+        <tr>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">Typography</td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">75%（值匹配）</td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);"><span class="contract-status status-pending">binding-pending</span></td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">122 处硬编码 + heading-16/14 weight 冲突</td>
+        </tr>
+        <tr>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">Spacing</td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">—</td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);"><span class="contract-status status-pending">pending</span></td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">scope=GAP 未被校验；需补扫 padding/margin</td>
+        </tr>
+        <tr>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">Radius</td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">74%（值匹配）</td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);"><span class="contract-status status-pending">binding-pending</span></td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">109 处硬编码 + circle conflict + 4 项描述 defect</td>
+        </tr>
+        <tr>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">Shadow / Transition</td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">—</td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);"><span class="contract-status status-match">in-use</span></td>
+          <td style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.06);">66 次 Shadow + 60 次 Transition 已使用 Token</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 8. 下一步 -->
+  <section>
+    <h2>8. 升级到 <code>bound</code> 的必要条件</h2>
+    <p style="font-size: 14px; color: rgba(0,0,0,0.65); line-height: 1.7; margin-bottom: 12px;">按 §3.8.10 与 §3.8.7/8/9 升级条件，当前 pending 状态升到 bound 需要：</p>
+    <ol style="padding-left: 20px; font-size: 14px; color: rgba(0,0,0,0.65); line-height: 1.8;">
+      <li>固定七份 JSON 的真实 immutable version（不是 URL 参数 <code>t=...</code>）。</li>
+      <li>保存 Figma live read 的 raw response 与 SHA-256 hash。</li>
+      <li>取得每条 Token 的稳定 <code>Variable ID</code> 与 alias chain，关闭 cycle / unresolved / 跨层反向引用。</li>
+      <li>关闭命名冲突（spacing 3 个、radius description 4 个、typography 2 个）。</li>
+      <li>关闭 <code>radius-circle</code> blocker：选择裁决方案并版本化。</li>
+      <li>对主色身份（<code>primary.500 #6D80FF</code> vs <code>--lg-primary-600 #495DFF</code>）给出 Design System owner 裁决。</li>
+      <li>把所有硬编码与合同外使用登记进 <code>token-audit.json</code>，含 owner、原因、影响、审批、关闭策略。</li>
+      <li>mapping <code>unresolved/conflict = 0</code>。</li>
+    </ol>
+  </section>
+
+  <!-- 相关报告 -->
+  <section style="margin-top: 48px;">
+    <h2>相关走查报告</h2>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+      <a href="lingji-token-report.html" class="report-link" style="flex: 1; min-width: 200px; margin-top: 0; display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; padding: 16px 20px; text-decoration: none; color: inherit;">
+        <div style="font-size:24px;">&#x1F4CA;</div>
+        <div>
+          <h4 style="font-size: 15px; font-weight: 600; margin-bottom: 2px;">Token 扫描（原始数据）</h4>
+          <span style="font-size: 13px; color: rgba(0,0,0,0.45);">v0.1.3 · 521 处硬编码 · 覆盖率 89.3%</span>
+        </div>
+      </a>
+      <a href="lingji-rescan-report.html" class="report-link" style="flex: 1; min-width: 200px; margin-top: 0; display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; padding: 16px 20px; text-decoration: none; color: inherit;">
+        <div style="font-size:24px;">&#x1F4CB;</div>
+        <div>
+          <h4 style="font-size: 15px; font-weight: 600; margin-bottom: 2px;">会议室+对话 · UI 走查</h4>
+          <span style="font-size: 13px; color: rgba(0,0,0,0.45);">v0.1.3 · 11 个问题 · 评分 68 分</span>
+        </div>
+      </a>
+      <a href="lingji-note-walkthrough.html" class="report-link" style="flex: 1; min-width: 200px; margin-top: 0; display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; padding: 16px 20px; text-decoration: none; color: inherit;">
+        <div style="font-size:24px;">&#x1F4DD;</div>
+        <div>
+          <h4 style="font-size: 15px; font-weight: 600; margin-bottom: 2px;">AI 速记 · UI 走查</h4>
+          <span style="font-size: 13px; color: rgba(0,0,0,0.45);">v0.1.3 · 16 个问题 · 评分 58 分</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <footer style="text-align: center; padding: 48px 0 0; color: rgba(0,0,0,0.28); font-size: 12px;">
+    金蝶灵基 &middot; Lingee §3.8 Token 合同审计 &middot; 2026
+  </footer>
+
+</div>
+</body>
+</html>
