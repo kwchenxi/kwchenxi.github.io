@@ -313,9 +313,9 @@
         <div class="step-body">
           <div class="prompt-label">
             <h3 style="margin:0;">下载</h3>
-            <a href="https://github.com/kwchenxi/ai-ui-check" class="cta-btn" target="_blank" style="margin:0;font-size:13px;padding:var(--s-6) var(--s-16);">&rarr; 下载 Skill</a>
+            <a href="https://github.com/kwchenxi/ai-check-tool" class="cta-btn" target="_blank" style="margin:0;font-size:13px;padding:var(--s-6) var(--s-16);">&rarr; 下载 Skill</a>
           </div>
-          <p>从 GitHub 下载 Skill 文件，放到 AI 工具目录。</p>
+          <p>从 GitHub 下载 Skill 文件，放到 AI 工具目录（<code>.qoder/skills/</code> 或 <code>.claude/commands/</code>）。</p>
         </div>
       </div>
       <div class="step">
@@ -336,18 +336,20 @@
         <div class="step-body">
           <h3>和 AI 描述需求</h3>
           <div class="prompt-label">
-            <p>提示词参考：</p>
+            <p>复制这段，删掉没有的项即可：</p>
             <button class="copy-btn" onclick="copyPrompt(this)">复制</button>
           </div>
           <div class="prompt-block">
             <pre>帮我走查一下灵基日历这个模块。
 
-设计规范在这里：https://lingee.design（选填）
-组件库地址：https://components.lingee.com（选填）
-Figma 设计稿：https://figma.com/file/xxx（选填）
+设计规范：https://lingee.design
+组件库（选填）：https://components.lingee.com
+Figma 设计稿（选填）：https://figma.com/file/xxx
+项目代码位置（选填）：当前目录
+asar 路径（选填）：/path/to/app.asar（Electron 项目可填）
 
-重点看看窗口缩放有没有问题、颜色间距有没有按规范来。
-如果有代码的话也帮我扫一下，看看有没有硬编码没走 Token 的。</pre>
+重点页面（选填）：会议首页、列表页
+重点维度（选填）：窗口缩放、颜色间距、Token 硬编码</pre>
           </div>
         </div>
       </div>
@@ -364,12 +366,12 @@ Figma 设计稿：https://figma.com/file/xxx（选填）
         <h4>响应式布局</h4>
         <p>多窗口尺寸测试，发现截断、溢出、列数不降等问题</p>
         <div class="dim-popover"><div class="dim-popover-inner">
-          <img class="dim-popover-img" src="screenshots/note/note-02-minwindow.png" alt="">
+          <img class="dim-popover-img" src="lingji-rescan-images/05-meeting-narrow.png" alt="">
           <div class="dim-popover-body">
-            <span class="dim-popover-badge crit">严重</span>
-            <div class="dim-popover-title">按钮文字在最小窗口完全消失</div>
-            <p class="dim-popover-desc">窗口 ≈800px · 发起速记按钮仅显示图标</p>
-            <a href="lingji-note-walkthrough.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+            <span class="dim-popover-badge med">中等</span>
+            <div class="dim-popover-title">窄窗口下会议室卡片内容截断</div>
+            <p class="dim-popover-desc">窗口缩小后文字挤压，部分信息无法正常阅读</p>
+            <a href="lingji-rescan-report.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
           </div>
         </div></div>
       </div>
@@ -392,12 +394,12 @@ Figma 设计稿：https://figma.com/file/xxx（选填）
         <h4>极限边界</h4>
         <p>超长文本、空状态、极端窗口宽度下的表现</p>
         <div class="dim-popover"><div class="dim-popover-inner">
-          <img class="dim-popover-img" src="screenshots/note/note-04-search.png" alt="">
+          <img class="dim-popover-img" src="lingji-rescan-images/03-meeting-list.png" alt="">
           <div class="dim-popover-body">
-            <span class="dim-popover-badge med">中等</span>
-            <div class="dim-popover-title">搜索 placeholder 文案不完整</div>
-            <p class="dim-popover-desc">缺失"内容、参与人"提示 · 日期列截断</p>
-            <a href="lingji-note-walkthrough.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+            <span class="dim-popover-badge info">轻微</span>
+            <div class="dim-popover-title">筛选器文字截断</div>
+            <p class="dim-popover-desc">"全部区域"和"全部标签"显示为"全..."</p>
+            <a href="lingji-rescan-report.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
           </div>
         </div></div>
       </div>
@@ -484,12 +486,12 @@ Figma 设计稿：https://figma.com/file/xxx（选填）
         <h4>Variant 完整性</h4>
         <p>组件变体是否覆盖所有设计稿定义的状态</p>
         <div class="dim-popover"><div class="dim-popover-inner">
-          <img class="dim-popover-img" src="screenshots/note/note-05-create.png" alt="">
+          <img class="dim-popover-img" src="lingji-rescan-images/figma-available-rooms.png" alt="">
           <div class="dim-popover-body">
-            <span class="dim-popover-badge crit">严重</span>
-            <div class="dim-popover-title">筛选 Tab 缺失四个标签</div>
-            <p class="dim-popover-desc">"最近/我的/共享/收藏"未实现 · 发起录音无确认</p>
-            <a href="lingji-note-walkthrough.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+            <span class="dim-popover-badge med">中等</span>
+            <div class="dim-popover-title">会议室卡片缺少"已停用"状态</div>
+            <p class="dim-popover-desc">设计稿有灰色"已停用"标签，实际界面中未见</p>
+            <a href="lingji-rescan-report.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
           </div>
         </div></div>
       </div>
@@ -592,7 +594,12 @@ Figma 设计稿：https://figma.com/file/xxx（选填）
 </div>
 <script>
 function copyPrompt(btn) {
-  var pre = btn.closest('.prompt-label').nextElementSibling.querySelector('pre');
+  var container = btn.closest('.prompt-label') || btn.closest('p');
+  var block = container.previousElementSibling;
+  while (block && !block.classList.contains('prompt-block')) {
+    block = block.previousElementSibling;
+  }
+  var pre = block.querySelector('pre');
   var text = pre.textContent || pre.innerText;
   navigator.clipboard.writeText(text).then(function() {
     btn.textContent = '已复制';
