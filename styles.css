@@ -270,6 +270,15 @@
             font-weight: 400;
         }
 
+        /* 项目创建日期（显示在标题下方，取代副标题） */
+        .project-date {
+            font-size: 11px;
+            line-height: 1;
+            color: rgba(0, 0, 0, 0.22);
+            margin-top: var(--spacing-2xs);
+            font-variant-numeric: tabular-nums;
+        }
+
         .project-description {
             color: var(--text-secondary);
             margin-bottom: var(--spacing-sm);
