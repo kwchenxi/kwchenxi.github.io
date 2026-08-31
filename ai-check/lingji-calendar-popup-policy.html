@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>日历模块弹窗清单与 Tab 切换关闭策略</title>
+<title>日历弹窗体验问题与修复策略</title>
 <link rel="stylesheet" href="walkthrough-v2.css">
 <style>
   .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 16px 0; }
@@ -45,6 +45,13 @@
   .mechanism-box p { font-size: 13px; color: rgba(0,0,0,0.65); line-height: 1.7; margin: 8px 0 0; }
   .principle-box { background: rgba(73,93,255,0.03); border: 1px solid rgba(73,93,255,0.10); border-radius: 8px; padding: 14px 18px; margin: 16px 0; font-size: 14px; line-height: 22px; }
   .principle-box strong { color: #495DFF; }
+  .finding-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 8px; padding: 14px 16px; margin: 10px 0; }
+  .finding-card .finding-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+  .finding-card .finding-title { font-size: 14px; font-weight: 600; color: rgba(0,0,0,0.82); }
+  .finding-card .finding-detail { font-size: 13px; color: rgba(0,0,0,0.65); line-height: 1.7; }
+  .finding-card .finding-detail code { background: rgba(0,0,0,0.04); padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+  .change-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+  .change-badge.critical { background: rgba(241,34,52,0.1); color: #F12234; }
 </style>
 </head>
 <body>
@@ -53,11 +60,23 @@
   <div style="margin-bottom:16px;"><a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:rgba(0,0,0,0.45);text-decoration:none;font-size:13px;">&larr; 返回首页</a></div>
 
   <header>
-    <h1><img src="assets/lingee-logo.png" alt="" style="width:32px;height:32px;vertical-align:middle;margin-right:8px;border-radius:50%;">日历模块弹窗完整清单与 Tab 切换关闭策略</h1>
-    <div class="meta">
-      梳理范围：calendar 项目 Lingee 品牌桌面端 · 分类依据：切换外层 Tab 后弹窗是否应自动关闭
-    </div>
+    <h1><img src="assets/lingee-logo.png" alt="" style="width:32px;height:32px;vertical-align:middle;margin-right:8px;border-radius:50%;">日历弹窗体验问题与修复策略</h1>
   </header>
+
+  <!-- ====== 走查发现的问题 ====== -->
+  <div class="policy-section" style="margin-top:20px;">
+    <h3>走查发现的问题</h3>
+
+    <div class="finding-card">
+      <div class="finding-header">
+        <span class="change-badge critical">严重</span>
+        <span class="finding-title">日历 ↔ 会议切 Tab 后，弹窗遗留不收起</span>
+      </div>
+      <div class="finding-detail">
+        在日历模块打开 Popover / 对话框后，切到「会议」或「AI速记」再切回来，弹窗仍停留在打开状态。基于项目代码定位到的弹窗清单与关闭策略见下方。
+      </div>
+    </div>
+  </div>
 
   <!-- 统计概览 -->
   <div class="stat-grid">

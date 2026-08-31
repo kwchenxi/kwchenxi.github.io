@@ -89,10 +89,9 @@
   .back { display: inline-flex; align-items: center; gap: var(--s-6); color: var(--text-secondary); text-decoration: none; font-size: 14px; line-height: 22px; margin-bottom: var(--s-12); transition: color 0.2s; }
   .back:hover { color: var(--primary); }
   .hero { margin-bottom: var(--s-36); position: relative; overflow: hidden; }
-  .hero-mascot { position: absolute; top: -20px; right: -20px; width: 140px; height: auto; opacity: 0.12; pointer-events: none; filter: drop-shadow(0 8px 24px rgba(80,80,220,0.15)); }
   .hero h1 { font-family: var(--font-title); font-size: 36px; font-weight: 600; line-height: 54px; letter-spacing: -0.01em; margin-bottom: var(--s-12); color: var(--text-strong); }  /* heading-36 */
   .hero .meta { color: var(--text-muted); font-size: 14px; line-height: 22px; }  /* body-14 */
-  .section { margin-bottom: var(--s-48); }
+  .section { margin-bottom: var(--s-72); padding-top: var(--s-12); border-top: 1px solid var(--border); }
   .section-label { display: inline-block; font-size: 12px; font-weight: 600; line-height: 18px; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: var(--s-8); }  /* body-12 */
   .section h2 { font-family: var(--font-title); font-size: 24px; font-weight: 600; margin-bottom: var(--s-20); line-height: 36px; color: var(--text-strong); }  /* heading-24 */
   .section p { font-size: 16px; color: var(--text-secondary); margin-bottom: var(--s-16); line-height: 24px; }  /* body-16 */
@@ -260,7 +259,6 @@
 
   <!-- Hero -->
   <div class="hero">
-    <img src="assets/lingee-mascot.png" alt="" class="hero-mascot">
     <div>
       <h1 style="background:linear-gradient(135deg,#2563FF 0%,#7858F9 55%,#FF9FF0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">用 AI 做体验走查</h1>
       <p style="font-size:14px;line-height:22px;color:var(--text-secondary);margin-top:var(--s-8);">让 AI 给产品做个设计走查。</p>
@@ -277,14 +275,12 @@
         <div class="case-link-icon">&#x1F4DD;</div>
         <div class="case-link-text">
           <h4>AI速记 走查报告</h4>
-          <span>16 个问题 · 代码扫描 479 处硬编码 · Figma 还原对比 · 选择器级定位</span>
         </div>
       </a>
       <a href="lingji-rescan-report.html" class="case-link">
         <div class="case-link-icon">&#x1F4CB;</div>
         <div class="case-link-text">
           <h4>会议室+对话模块 走查报告</h4>
-          <span>11 个问题 · 代码扫描 521 处硬编码 · Figma 还原对比 · 文件级详情</span>
         </div>
       </a>
     </div>
@@ -296,7 +292,6 @@
         <div class="case-link-icon">&#x1F50D;</div>
         <div class="case-link-text">
           <h4>日历模块 弹窗关闭策略</h4>
-          <span>34 个弹窗全量清单 · 状态变量级定位 · Tab 切换关闭/保留策略 · 修复方案</span>
         </div>
       </a>
     </div>
@@ -313,7 +308,7 @@
         <div class="step-body">
           <div class="prompt-label">
             <h3 style="margin:0;">下载</h3>
-            <a href="https://github.com/kwchenxi/ai-check-tool" class="cta-btn" target="_blank" style="margin:0;font-size:13px;padding:var(--s-6) var(--s-16);">&rarr; 下载 Skill</a>
+            <a href="https://github.com/kwchenxi/ai-ui-check" class="cta-btn" target="_blank" style="margin:0;font-size:13px;padding:var(--s-6) var(--s-16);">&rarr; 下载 Skill</a>
           </div>
           <p>从 GitHub 下载 Skill 文件，放到 AI 工具目录（<code>.qoder/skills/</code> 或 <code>.claude/commands/</code>）。</p>
         </div>
@@ -327,7 +322,7 @@
             <button class="copy-btn" onclick="copyPrompt(this)">复制</button>
           </div>
           <div class="prompt-block">
-            <pre>请读取 .qoder/skills/ai-check-tool/SKILL.md，理解这个走查工具的完整能力和使用方式，然后告诉我已准备就绪。</pre>
+            <pre>请找到并读取 ai-check-tool 的 SKILL.md，理解这个走查工具的完整能力和使用方式，然后告诉我已准备就绪。</pre>
           </div>
         </div>
       </div>
@@ -336,16 +331,16 @@
         <div class="step-body">
           <h3>和 AI 描述需求</h3>
           <div class="prompt-label">
-            <p>复制这段，删掉没有的项即可：</p>
+            <p>提示词参考：</p>
             <button class="copy-btn" onclick="copyPrompt(this)">复制</button>
           </div>
           <div class="prompt-block">
             <pre>帮我走查一下灵基日历这个模块。
 
-设计规范：https://lingee.design
-组件库（选填）：https://components.lingee.com
+设计规范：XXXX.md
+组件库（选填）：https://components.XXXX
 Figma 设计稿（选填）：https://figma.com/file/xxx
-项目代码位置（选填）：当前目录
+项目代码位置（选填）：XXXX
 asar 路径（选填）：/path/to/app.asar（Electron 项目可填）
 
 重点页面（选填）：会议首页、列表页
