@@ -280,12 +280,12 @@
       <a href="lingji-rescan-report.html" class="case-link">
         <div class="case-link-icon">&#x1F4CB;</div>
         <div class="case-link-text">
-          <h4>会议室+对话模块 走查报告</h4>
+          <h4>会议室模块 走查报告</h4>
         </div>
       </a>
     </div>
 
-        <h3 class="sub-heading">📄 有源代码的走查报告</h3>
+        <h3 class="sub-heading">📄 <span style="text-decoration:underline;text-decoration-color:var(--primary);text-underline-offset:4px;text-decoration-thickness:2px;">有源代码</span>的走查报告</h3>
     <p style="font-size:14px;line-height:22px;color:var(--text-secondary);margin-bottom:var(--s-16);">当 AI 同时拥有代码访问权限，可以将问题<strong style="color:var(--text);">精准定位到状态变量和文件</strong>，输出开发可直接使用的修复方案。</p>
     <div class="case-links">
       <a href="lingji-calendar-popup-policy.html" class="case-link">
@@ -310,7 +310,7 @@
             <h3 style="margin:0;">下载</h3>
             <a href="https://github.com/kwchenxi/ai-ui-check" class="cta-btn" target="_blank" style="margin:0;font-size:13px;padding:var(--s-6) var(--s-16);">&rarr; 下载 Skill</a>
           </div>
-          <p>从 GitHub 下载 Skill 文件，放到 AI 工具目录（<code>.qoder/skills/</code> 或 <code>.claude/commands/</code>）。</p>
+          <p>从 GitHub 下载 Skill 文件，放到你的项目目录里。</p>
         </div>
       </div>
       <div class="step">
@@ -322,7 +322,7 @@
             <button class="copy-btn" onclick="copyPrompt(this)">复制</button>
           </div>
           <div class="prompt-block">
-            <pre>请找到并读取 ai-check-tool 的 SKILL.md，理解这个走查工具的完整能力和使用方式，然后告诉我已准备就绪。</pre>
+            <pre>请读取当前目录下的 SKILL.md，理解这个走查工具的完整能力和使用方式，然后告诉我已准备就绪。</pre>
           </div>
         </div>
       </div>
@@ -472,7 +472,7 @@ asar 路径（选填）：/path/to/app.asar（Electron 项目可填）
             <span class="dim-popover-badge crit">严重</span>
             <div class="dim-popover-title">521 处硬编码色值未使用 Token 变量</div>
             <p class="dim-popover-desc">322 处 SVG 填色 · 33 处 Tailwind 任意值</p>
-            <a href="lingji-rescan-report.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+            <a href="lingji-token-report.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
           </div>
         </div></div>
       </div>
