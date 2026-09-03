@@ -3,19 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>日历弹窗体验问题与修复策略</title>
+<title>日历弹窗 BUG 修复建议（AI 源码分析）</title>
 <link rel="stylesheet" href="walkthrough-v2.css">
 <style>
-  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 16px 0; }
-  .stat-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 8px; padding: 14px 16px; text-align: center; transition: box-shadow 0.2s, border-color 0.2s; }
-  .stat-card[onclick] { cursor: pointer; }
-  .stat-card[onclick]:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: rgba(0,0,0,0.15); }
-  .stat-card .num { font-size: 28px; font-weight: 700; line-height: 1.2; }
-  .stat-card .lbl { font-size: 12px; color: rgba(0,0,0,0.45); margin-top: 2px; }
-  .stat-card .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
-  .stat-card .dot.green { background: #00B578; }
-  .stat-card .dot.orange { background: #FF8B00; }
-  .stat-card .dot.gray { background: rgba(0,0,0,0.28); }
   .policy-section { margin: 28px 0; }
   .policy-section h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
   .policy-section h3 .count { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
@@ -59,17 +49,17 @@
 <body>
 <div class="container">
 
-  <div style="margin-bottom:16px;"><a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:rgba(0,0,0,0.45);text-decoration:none;font-size:13px;">&larr; 返回首页</a></div>
+  <div style="margin-bottom:16px;"><a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:rgba(0,0,0,0.45);text-decoration:none;font-size:13px;">&larr; 返回走查工具介绍页</a></div>
 
   <header>
-    <h1><img src="assets/lingee-logo.png" alt="" style="width:32px;height:32px;vertical-align:middle;margin-right:8px;border-radius:50%;">日历弹窗体验问题与修复策略</h1>
+    <h1><img src="assets/lingee-logo.png" alt="" style="width:32px;height:32px;vertical-align:middle;margin-right:8px;border-radius:50%;">日历弹窗 BUG 修复建议（AI 源码分析）</h1>
   </header>
 
   <!-- ====== 走查发现的问题 ====== -->
   <div class="policy-section" style="margin-top:20px;">
     <h3>走查发现的问题</h3>
 
-    <div class="finding-card">
+    <div class="finding-card" id="calendar-tab-popover">
       <div class="finding-header">
         <span class="change-badge critical">严重</span>
         <span class="finding-title">日历 ↔ 会议切 Tab 后，弹窗遗留不收起</span>
@@ -84,31 +74,8 @@
   </div>
 
   <div class="principle-box">
-    <strong>核心原则：</strong>含用户正在编辑的数据 → 不关闭；无编辑数据 → 可关闭。
+    <strong>该 BUG 修复核心原则：</strong>含用户正在编辑的数据 → 不关闭；无编辑数据 → 可关闭。
   </div>
-
-  <!-- 统计概览 -->
-  <div class="stat-grid">
-    <div class="stat-card" onclick="jumpTo('sec-close')">
-      <div class="num" style="color:rgba(0,0,0,0.82);">34</div>
-      <div class="lbl">弹窗总数</div>
-    </div>
-    <div class="stat-card" onclick="jumpTo('sec-close')">
-      <div class="num" style="color:#00B578;">23</div>
-      <div class="lbl"><span class="dot green"></span>Tab 切换时关闭</div>
-    </div>
-    <div class="stat-card" onclick="jumpTo('sec-keep')">
-      <div class="num" style="color:#FF8B00;">8</div>
-      <div class="lbl"><span class="dot orange"></span>不应关闭</div>
-    </div>
-    <div class="stat-card" onclick="jumpTo('sec-special')">
-      <div class="num" style="color:rgba(0,0,0,0.45);">3</div>
-      <div class="lbl"><span class="dot gray"></span>特殊情况</div>
-    </div>
-  </div>
-  <script>
-    function jumpTo(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
-  </script>
 
   <!-- ====== 一、应关闭 ====== -->
   <div class="policy-section" id="sec-close">
@@ -187,13 +154,12 @@
 
   <!-- ====== 三、特殊情况 ====== -->
   <div class="policy-section" id="sec-special">
-    <h3>三、特殊情况 <span class="count special">3 个</span></h3>
+    <h3>三、特殊情况 <span class="count special">2 个</span></h3>
     <table class="keep-table">
       <thead><tr><th>#</th><th>弹窗名称</th><th>当前行为</th><th>建议</th></tr></thead>
       <tbody>
-        <tr><td>1</td><td class="name">EventPanel 查看模式</td><td>切 Tab 后关闭</td><td>✅ 可以关闭 — 仅展示详情，无编辑数据</td></tr>
-        <tr><td>2</td><td class="name">EventPanel 编辑模式</td><td>切 Tab 后保留</td><td>❌ 不能关闭 — 含表单数据</td></tr>
-        <tr><td>3</td><td class="name">安全验证二维码对话框</td><td>切 Tab 后保留</td><td>❌ 不建议关闭 — 正在进行安全校验流程</td></tr>
+        <tr><td>1</td><td class="name">EventPanel 查看模式</td><td>切 Tab 后关闭</td><td>可以关闭 — 仅展示详情，无编辑数据</td></tr>
+        <tr><td>2</td><td class="name">安全验证二维码对话框</td><td>切 Tab 后保留</td><td>不建议关闭 — 正在进行安全校验流程</td></tr>
       </tbody>
     </table>
   </div>
@@ -201,7 +167,6 @@
   <!-- ====== 四、Tab 切换感知机制 ====== -->
   <div class="policy-section">
     <h3>四、Tab 切换感知机制</h3>
-    <p style="font-size:13px;color:rgba(0,0,0,0.65);margin:0 0 12px;">calendar 项目通过以下方式感知外层 Tab 切换：</p>
     <div class="mechanism-box">
       <pre><code>// 监听页面重新出现（从其他 Tab 切回日历）
 subscribeQingEvent("appear", () => {
@@ -219,8 +184,8 @@ subscribeQingEvent("disappear", () => {
   </div>
 
   <!-- ====== 五、状态管理架构 ====== -->
-  <div class="policy-section">
-    <h3>五、状态管理架构</h3>
+  <details class="policy-section">
+    <summary style="font-size:16px;font-weight:600;cursor:pointer;">五、状态管理架构（展开查看）</summary>
     <table class="arch-table">
       <thead><tr><th>管理层级</th><th>管理的弹窗</th><th>文件</th></tr></thead>
       <tbody>
@@ -233,10 +198,10 @@ subscribeQingEvent("disappear", () => {
         <tr><td><code>useOpenQingDialog</code></td><td>外部宿主弹窗（AI 速记、会议室等）</td><td><code>hooks/useOpenQingDialog.ts</code></td></tr>
       </tbody>
     </table>
-  </div>
+  </details>
 
   <div style="text-align:center;padding:32px 0 16px;color:rgba(0,0,0,0.28);font-size:12px;">
-    <a href="index.html" style="color:rgba(0,0,0,0.45);text-decoration:none;">&larr; 返回走查展示页</a>
+    <a href="index.html" style="color:rgba(0,0,0,0.45);text-decoration:none;">&larr; 返回走查工具介绍页</a>
   </div>
 
 </div>

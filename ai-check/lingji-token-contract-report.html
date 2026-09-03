@@ -3,39 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>金蝶灵基 — Token 合同审计报告</title>
+<title>Lingee — Token 合同审计报告</title>
 <link rel="stylesheet" href="walkthrough-v2.css">
 <style>
-  .contract-section { margin: 32px 0; }
-  .contract-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 20px 0; }
-  .contract-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 16px; }
-  .contract-card .file { font-family: "SF Mono", Menlo, monospace; font-size: 12px; color: rgba(0,0,0,0.45); margin-bottom: 4px; }
-  .contract-card .mode { font-size: 13px; font-weight: 600; color: #495DFF; margin-bottom: 8px; }
-  .contract-card .desc { font-size: 13px; color: rgba(0,0,0,0.65); line-height: 1.6; }
+  .contract-sources { margin: 16px 0; border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; background: #fff; }
+  .contract-sources summary { padding: 12px 16px; cursor: pointer; font-size: 14px; font-weight: 600; color: rgba(0,0,0,0.82); }
+  .contract-sources ul { columns: 2; gap: 24px; margin: 0; padding: 0 20px 16px 36px; font-size: 13px; color: rgba(0,0,0,0.65); line-height: 1.7; }
+  .contract-sources li { break-inside: avoid; margin-bottom: 6px; }
+  .contract-sources code { font-size: 12px; background: rgba(0,0,0,0.04); padding: 1px 4px; border-radius: 3px; }
   .rule-box { background: rgba(73,93,255,0.04); border-left: 3px solid #495DFF; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 14px; line-height: 1.7; }
   .rule-box strong { color: #495DFF; }
   .violation-list { padding-left: 20px; margin: 12px 0; font-size: 14px; line-height: 1.8; color: rgba(0,0,0,0.65); }
   .violation-list li { margin-bottom: 6px; }
   .violation-list code { font-size: 12px; background: rgba(0,0,0,0.04); padding: 1px 4px; border-radius: 3px; }
-  .compliance-bar { height: 8px; background: rgba(0,0,0,0.04); border-radius: 4px; overflow: hidden; margin: 8px 0 4px; }
-  .compliance-fill { height: 100%; border-radius: 4px; }
-  .compliance-fill.good { background: #00B578; }
-  .compliance-fill.warn { background: #FF8B00; }
-  .compliance-fill.bad { background: #F12234; }
   .contract-status { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
   .status-pending { background: rgba(255,139,0,0.1); color: #FF8B00; }
   .status-block { background: rgba(241,34,52,0.1); color: #F12234; }
   .status-match { background: rgba(0,181,120,0.1); color: #00B578; }
   .contract-note { background: rgba(255,139,0,0.06); border-left: 3px solid #FF8B00; padding: 10px 14px; border-radius: 0 6px 6px 0; margin: 12px 0; font-size: 13px; color: rgba(0,0,0,0.65); line-height: 1.6; }
+  @media (max-width: 640px) { .contract-sources ul { columns: 1; } }
 </style>
 </head>
 <body>
 <div class="container">
 
-  <div style="margin-bottom:16px;"><a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:rgba(0,0,0,0.45);text-decoration:none;font-size:13px;">&larr; 返回首页</a></div>
+  <div style="margin-bottom:16px;"><a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:rgba(0,0,0,0.45);text-decoration:none;font-size:13px;">&larr; 返回走查工具介绍页</a></div>
 
   <header>
-    <h1>金蝶灵基 — Token 合同审计报告</h1>
+    <h1>Lingee — Token 合同审计报告</h1>
     <div class="meta">
       <span>审计框架：Lingee §3.8 Token 合同</span>
       <span>代码基线：v0.1.3（Electron / app.asar）</span>
@@ -44,57 +39,27 @@
     </div>
   </header>
 
-  <!-- 0. 这是什么 -->
   <section>
-    <h2>这是什么？</h2>
-    <p style="font-size: 15px; color: rgba(0,0,0,0.65); line-height: 1.7;">《Lingee 通用页面生成与验收规范》§3.8 定义了一套 <strong>Token 合同</strong>：七份 JSON 文件是设计系统的机器可读事实源，配套有颜色依赖方向、alias 规则、消费边界、审计与发布条件。这份报告把 <a href="lingji-token-report.html" style="color:#495DFF;">上一份 Token 扫描</a> 的原始数据，重新按合同框架对照检查，看灵基 v0.1.3 的代码实际用法与合同要求之间的距离。</p>
-    <p style="font-size: 15px; color: rgba(0,0,0,0.65); line-height: 1.7; margin-top: 12px;">合同当前整体状态为 <span class="contract-status status-pending">registered_alias_audit_pending</span>：七文件身份已登记，但未完成 alias 全图、跨层消费、直接值与命名迁移审计，也未固定 SHA-256。</p>
+    <h2>审计结论</h2>
+    <p style="font-size: 15px; color: rgba(0,0,0,0.65); line-height: 1.7;">本报告按 Lingee §3.8 Token 合同复核 <a href="lingji-token-report.html" style="color:#495DFF;">扫描数据</a> 的消费边界与绑定条件。当前状态为 <span class="contract-status status-pending">registered_alias_audit_pending</span>：七个事实源已登记，但 alias 全图、跨层消费、直接值与命名迁移审计及 SHA-256 尚未完成。</p>
   </section>
 
   <!-- 1. 七文件体系 -->
   <section>
     <h2>1. Token 合同的七份文件</h2>
-    <p style="font-size: 14px; color: rgba(0,0,0,0.65); line-height: 1.7; margin-bottom: 16px;">按 §3.8.1，下列七份工作区 JSON 是当前 Token 合同的机器可读事实源。文件名和 mode 大小写是身份的一部分，禁止规范化或按"看起来相同"替换。</p>
-    <div class="contract-grid">
-      <div class="contract-card">
-        <div class="file">color.tokens.json</div>
-        <div class="mode">mode = color</div>
-        <div class="desc">全局色板（primitive）。实现层禁止直接消费，只能经语义层 alias 引用。</div>
-      </div>
-      <div class="contract-card">
-        <div class="file">light.tokens.json</div>
-        <div class="mode">mode = Light</div>
-        <div class="desc">Light 主题语义色板：前景、边框、背景、阴影。</div>
-      </div>
-      <div class="contract-card">
-        <div class="file">dark.tokens.json</div>
-        <div class="mode">mode = dark</div>
-        <div class="desc">Dark 主题语义色板，与 Light 各自独立 baseline。</div>
-      </div>
-      <div class="contract-card">
-        <div class="file">components.json</div>
-        <div class="mode">mode = Mode 1</div>
-        <div class="desc">34 个组件命名空间：变体、颜色职责、状态。</div>
-      </div>
-      <div class="contract-card">
-        <div class="file">typography.json</div>
-        <div class="mode">mode = kwork</div>
-        <div class="desc">31 个原子 Token：family / weight / size / line-height。</div>
-      </div>
-      <div class="contract-card">
-        <div class="file">spacing.json</div>
-        <div class="mode">mode = Mode 1</div>
-        <div class="desc">13 个 number Token，scope=<code>GAP</code>，禁止用于 padding/margin。</div>
-      </div>
-      <div class="contract-card">
-        <div class="file">radius.json</div>
-        <div class="mode">mode = light</div>
-        <div class="desc">11 个圆角 Token，含 <code>circle / pill</code> 特殊值。</div>
-      </div>
-    </div>
-    <div class="contract-note">
-      <strong>对照扫描：</strong>上一份扫描只统计了"代码里有没有用 <code>var(--lg-*)</code>"，未区分 primitive / semantic / component 三层。本次审计把 521 处硬编码色值按层重新归类（详见 §3）。
-    </div>
+    <p style="font-size: 14px; color: rgba(0,0,0,0.65); line-height: 1.7;">§3.8.1 将七份工作区 JSON 定义为机器可读事实源；文件名与 mode 大小写均为身份的一部分，禁止规范化或按“看起来相同”替换。</p>
+    <details class="contract-sources">
+      <summary>展开查看七个事实源及约束</summary>
+      <ul>
+        <li><code>color.tokens.json</code> · mode=color：primitive，只能经语义层 alias 消费。</li>
+        <li><code>light.tokens.json</code> · mode=Light：Light 主题语义色板。</li>
+        <li><code>dark.tokens.json</code> · mode=dark：Dark 主题语义色板。</li>
+        <li><code>components.json</code> · mode=Mode 1：34 个组件命名空间。</li>
+        <li><code>typography.json</code> · mode=kwork：31 个原子 Token。</li>
+        <li><code>spacing.json</code> · mode=Mode 1：13 个 number Token，仅限 <code>GAP</code>。</li>
+        <li><code>radius.json</code> · mode=light：11 个圆角 Token，含 <code>circle / pill</code>。</li>
+      </ul>
+    </details>
   </section>
 
   <!-- 2. 颜色依赖方向 -->
@@ -105,31 +70,6 @@
       <code>全局色板（primitive） → 语义色板 → 组件色板 → 组件实现</code><br>
       <code>全局色板（primitive） → 语义色板 → 非组件实现</code><br><br>
       <strong>硬规则：</strong>组件实现只能消费自身命名空间的 Token；非组件页面只能消费语义 Token；全局色板永远不作为 DOM/CSS/SVG 实现入口。
-    </div>
-
-    <h3 style="font-size: 16px; margin-top: 24px;">代码实际用法 vs 合同要求</h3>
-    <div class="contract-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
-      <div class="contract-card">
-        <div class="mode" style="color: #00B578;">4,603 次</div>
-        <div class="desc">正确使用 Token 变量<br><code>var(--lg-*-color-*)</code></div>
-        <div class="compliance-bar"><div class="compliance-fill good" style="width:89%"></div></div>
-        <div class="desc" style="font-size: 11px;">覆盖率 89.3%</div>
-      </div>
-      <div class="contract-card">
-        <div class="mode" style="color: #F12234;">521 处</div>
-        <div class="desc">直接写了 HEX 色值<br><strong>合同判定：违反 §3.8.2</strong></div>
-        <div class="compliance-bar"><div class="compliance-fill bad" style="width:10%"></div></div>
-      </div>
-      <div class="contract-card">
-        <div class="mode" style="color: #FF8B00;">33 处</div>
-        <div class="desc">Tailwind arbitrary value<br><code>.text-[#495DFF]</code></div>
-        <div class="compliance-bar"><div class="compliance-fill warn" style="width:40%"></div></div>
-      </div>
-      <div class="contract-card">
-        <div class="mode" style="color: rgba(0,0,0,0.28);">322 处</div>
-        <div class="desc">SVG 图标填色<br>单独分类，仍需进入 audit</div>
-        <div class="compliance-bar"><div class="compliance-fill warn" style="width:30%"></div></div>
-      </div>
     </div>
 
     <h3 style="font-size: 16px; margin-top: 24px;">典型违规点（按合同归类）</h3>
@@ -179,21 +119,8 @@
     <h2>4. Typography 合同审计（§3.8.7）</h2>
     <p style="font-size: 14px; color: rgba(0,0,0,0.65); line-height: 1.7; margin-bottom: 12px;">合同登记 31 个原子 Token：12 个 size（10/12/14/16/18/20/24/28/32/36/48/72）、3 个 family、4 个 weight、12 个 line-height。复合角色白名单 10 条（heading-36/24/20/18/16/14、body-16/14/12/10）。</p>
 
-    <h3 style="font-size: 16px; margin-top: 20px;">扫描数据对照</h3>
-    <div class="contract-grid" style="grid-template-columns: 1fr 1fr;">
-      <div class="contract-card">
-        <div class="mode" style="color: #FF8B00;">122 处</div>
-        <div class="desc">字号未用 Token<br><code>font-size: 13px</code> 等</div>
-        <div class="compliance-bar"><div class="compliance-fill warn" style="width:25%"></div></div>
-      </div>
-      <div class="contract-card">
-        <div class="mode" style="color: #00B578;">367 处</div>
-        <div class="desc">硬编码但值匹配 Token<br><strong>合同判定：仍未合规</strong></div>
-        <div class="compliance-bar"><div class="compliance-fill good" style="width:75%"></div></div>
-      </div>
-    </div>
     <div class="rule-box">
-      §3.8.7.4 强调：相同值不证明绑定。<code>font-size: 14px</code> 即使与 <code>font-size.small-14</code> 数值相同，source-map 也只能写 <code>resolved-value-match</code>，不得写 <code>bound</code>。367 处"值匹配"的下一步是：逐个核对是否经 Variable ID 绑定，不能自动视为合规。
+      §3.8.7.4 强调：相同值不证明绑定。<code>font-size: 14px</code> 即使与 <code>font-size.small-14</code> 数值相同，source-map 也只能写 <code>resolved-value-match</code>，不得写 <code>bound</code>；需逐项核对是否经 Variable ID 绑定。
     </div>
     <div class="contract-note">
       <strong>heading-16 / heading-14 冲突：</strong>Figma 标签写 <code>Medium</code>，样本节点却是 <code>Semibold 600</code>；本地 <code>typography.json</code> 又没有 <code>weight.medium</code>。这三方冲突必须由 Design System owner 裁决。在裁决前，代码中任何"看似 medium"的字号都保持 <span class="contract-status status-block">block</span>，不能默认用 semibold 替代。
@@ -221,19 +148,6 @@
   <!-- 6. Radius -->
   <section>
     <h2>6. Radius 合同审计（§3.8.9）</h2>
-
-    <div class="contract-grid" style="grid-template-columns: 1fr 1fr;">
-      <div class="contract-card">
-        <div class="mode" style="color: #FF8B00;">109 处</div>
-        <div class="desc">圆角未用 Token<br><code>border-radius: 14px</code> 等</div>
-        <div class="compliance-bar"><div class="compliance-fill warn" style="width:26%"></div></div>
-      </div>
-      <div class="contract-card">
-        <div class="mode" style="color: #00B578;">310 处</div>
-        <div class="desc">硬编码但值匹配 Token<br>需逐个核对 Variable ID 绑定</div>
-        <div class="compliance-bar"><div class="compliance-fill good" style="width:74%"></div></div>
-      </div>
-    </div>
 
     <h3 style="font-size: 16px; margin-top: 20px;">合同特殊项</h3>
     <ul class="violation-list">
@@ -316,33 +230,15 @@
   <!-- 相关报告 -->
   <section style="margin-top: 48px;">
     <h2>相关走查报告</h2>
-    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-      <a href="lingji-token-report.html" class="report-link" style="flex: 1; min-width: 200px; margin-top: 0; display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; padding: 16px 20px; text-decoration: none; color: inherit;">
-        <div style="font-size:24px;">&#x1F4CA;</div>
-        <div>
-          <h4 style="font-size: 15px; font-weight: 600; margin-bottom: 2px;">Token 扫描（原始数据）</h4>
-          <span style="font-size: 13px; color: rgba(0,0,0,0.45);">v0.1.3 · 521 处硬编码 · 覆盖率 89.3%</span>
-        </div>
-      </a>
-      <a href="lingji-rescan-report.html" class="report-link" style="flex: 1; min-width: 200px; margin-top: 0; display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; padding: 16px 20px; text-decoration: none; color: inherit;">
-        <div style="font-size:24px;">&#x1F4CB;</div>
-        <div>
-          <h4 style="font-size: 15px; font-weight: 600; margin-bottom: 2px;">会议室模块 · UI 走查</h4>
-          <span style="font-size: 13px; color: rgba(0,0,0,0.45);">v0.1.3 · 13 个问题 · 评分 73 分</span>
-        </div>
-      </a>
-      <a href="lingji-note-walkthrough.html" class="report-link" style="flex: 1; min-width: 200px; margin-top: 0; display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; padding: 16px 20px; text-decoration: none; color: inherit;">
-        <div style="font-size:24px;">&#x1F4DD;</div>
-        <div>
-          <h4 style="font-size: 15px; font-weight: 600; margin-bottom: 2px;">AI 速记 · UI 走查</h4>
-          <span style="font-size: 13px; color: rgba(0,0,0,0.45);">v0.1.3 · 16 个问题 · 评分 58 分</span>
-        </div>
-      </a>
-    </div>
+    <p style="font-size: 14px; color: rgba(0,0,0,0.65); line-height: 1.8;">
+      <a href="lingji-token-report.html" style="color:#495DFF;">Token 扫描</a>（521 处硬编码，覆盖率 89.3%） ·
+      <a href="lingji-rescan-report.html" style="color:#495DFF;">会议室模块 UI 走查</a>（14 个问题，73 分） ·
+      <a href="lingji-note-walkthrough.html" style="color:#495DFF;">AI 速记 UI 走查</a>（14 个问题，58 分）
+    </p>
   </section>
 
   <footer style="text-align: center; padding: 48px 0 0; color: rgba(0,0,0,0.28); font-size: 12px;">
-    金蝶灵基 &middot; Lingee §3.8 Token 合同审计 &middot; 2026
+    Lingee §3.8 Token 合同审计 &middot; 2026
   </footer>
 
 </div>

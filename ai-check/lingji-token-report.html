@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>金蝶灵基 — Design Token 扫描报告</title>
+<title>Lingee — Design Token 扫描报告</title>
 <link rel="stylesheet" href="walkthrough-v2.css">
 <style>
   .stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin: 24px 0; }
@@ -11,11 +11,6 @@
   .stat-card .num { font-size: 32px; font-weight: 700; }
   .stat-card .label { font-size: 13px; color: rgba(0,0,0,0.45); margin-top: 6px; line-height: 1.5; }
   .stat-card code { font-size: 12px; background: rgba(0,0,0,0.04); padding: 1px 4px; border-radius: 3px; }
-  .step { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 20px; }
-  .step-num { width: 28px; height: 28px; border-radius: 50%; background: #495DFF; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0; }
-  .step-content h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-  .step-content p { font-size: 14px; color: rgba(0,0,0,0.65); margin: 0; line-height: 1.6; }
-  .step-content code { font-size: 13px; background: rgba(0,0,0,0.04); padding: 1px 4px; border-radius: 3px; }
   .note { background: rgba(255,139,0,0.06); border-left: 3px solid #FF8B00; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 24px 0; font-size: 14px; color: rgba(0,0,0,0.65); }
   .report-link { display: flex; align-items: center; gap: 12px; background: var(--surface, #fff); border: 1px solid var(--border, rgba(0,0,0,0.08)); border-radius: 8px; padding: 16px 20px; text-decoration: none; color: inherit; transition: border-color 0.2s, box-shadow 0.2s; margin-top: 24px; }
   .report-link:hover { border-color: #495DFF; box-shadow: 0 2px 8px rgba(73,93,255,0.1); }
@@ -27,10 +22,10 @@
 <body>
 <div class="container">
 
-  <div style="margin-bottom:16px;"><a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:rgba(0,0,0,0.45);text-decoration:none;font-size:13px;">&larr; 返回首页</a></div>
+  <div style="margin-bottom:16px;"><a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:rgba(0,0,0,0.45);text-decoration:none;font-size:13px;">&larr; 返回走查工具介绍页</a></div>
 
   <header>
-    <h1>金蝶灵基 — Design Token 扫描报告</h1>
+    <h1>Lingee — Design Token 扫描报告</h1>
     <div class="meta">
       <span>扫描范围：全应用（app.asar 解包）</span>
       <span>扫描时间：2026-08-11</span>
@@ -38,44 +33,9 @@
     </div>
   </header>
 
-  <!-- 这个技术是什么 -->
   <section>
-    <h2>这是什么？</h2>
-    <p style="font-size: 15px; color: rgba(0,0,0,0.65); line-height: 1.7; margin-bottom: 16px;">设计系统都会定义一套<strong>Token 变量</strong>：比如主色叫 <code>--lg-primary-600</code>，值是 <code>#495DFF</code>。开发写代码时应该用变量而不是直接写色值——这样哪天品牌色换了，改一个变量全局生效，不用挨个文件去找。</p>
-    <p style="font-size: 15px; color: rgba(0,0,0,0.65); line-height: 1.7;">但实际项目中，难免有人图方便直接写 <code>background: #495DFF</code>。以前只能靠 code review 人肉找，现在可以让 AI 自动扫描。</p>
-  </section>
-
-  <!-- 怎么扫的 -->
-  <section>
-    <h2>怎么扫的？</h2>
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-content">
-        <h4>解包应用</h4>
-        <p>灵基是 Electron 应用，前端代码打包在 <code>app.asar</code> 里（就在 <code>/Applications/金蝶灵基.app/Contents/Resources/</code> 下面）。用 Electron 官方工具解包，得到所有 CSS 和 JS 文件。</p>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-content">
-        <h4>正则扫描</h4>
-        <p>用正则匹配所有 CSS/JS 文件，统计两类东西：<br>
-        &bull; <strong>Token 用法</strong>：<code>var(--lg-primary-600)</code>、<code>var(--lg-r-x-medium)</code> 等<br>
-        &bull; <strong>硬编码</strong>：直接写的 <code>#495DFF</code>、<code>border-radius: 8px</code>、<code>font-size: 14px</code></p>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-content">
-        <h4>分类过滤</h4>
-        <p>不是所有硬编码都是问题。工具会自动分类：<br>
-        &bull; <strong>Token 定义</strong>（<code>--lg-primary-600: #495DFF</code>）→ 正常<br>
-        &bull; <strong>CSS fallback</strong>（<code>var(--lg-primary-600, #495dff)</code>）→ 正常<br>
-        &bull; <strong>Tailwind 编译产物</strong> → 低风险<br>
-        &bull; <strong>SVG 图标填色</strong> → 单独分类<br>
-        &bull; <strong>真正的硬编码</strong> → 需要关注</p>
-      </div>
-    </div>
+    <h2>扫描范围与方法</h2>
+    <p style="font-size: 15px; color: rgba(0,0,0,0.65); line-height: 1.7;">扫描解包后的全应用 CSS 与 JS，统计 <code>var(--lg-*)</code> 引用及直接写入的色值、圆角和字号。Token 定义与 CSS fallback 不计入问题；Tailwind arbitrary value 和 SVG 填色单独分类，其余硬编码进入待处理清单。</p>
   </section>
 
   <!-- 扫描结果 -->
@@ -163,36 +123,13 @@
     </div>
   </a>
 
-  <!-- 相关报告 -->
   <section style="margin-top: 48px;">
-    <h2>相关走查报告</h2>
-    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-      <a href="lingji-token-contract-report.html" class="report-link" style="flex: 1; min-width: 200px; margin-top: 0;">
-        <div class="icon">&#x1F4DC;</div>
-        <div>
-          <h4>Token 合同审计</h4>
-          <span>按 Lingee §3.8 合同框架重新归类 · 七文件体系</span>
-        </div>
-      </a>
-      <a href="lingji-note-walkthrough.html" class="report-link" style="flex: 1; min-width: 200px; margin-top: 0;">
-        <div class="icon">&#x1F4DD;</div>
-        <div>
-          <h4>AI速记 · UI 走查</h4>
-          <span>v0.1.3 · 16 个问题 · 评分 58 分</span>
-        </div>
-      </a>
-      <a href="lingji-rescan-report.html" class="report-link" style="flex: 1; min-width: 200px; margin-top: 0;">
-        <div class="icon">&#x1F4CB;</div>
-        <div>
-          <h4>会议室模块 · UI 走查</h4>
-          <span>v0.1.3 · 13 个问题 · 评分 73 分</span>
-        </div>
-      </a>
-    </div>
+    <h2>相关报告</h2>
+    <p style="font-size:14px;line-height:1.8;"><a href="lingji-token-contract-report.html" style="color:#495DFF;">Token 合同审计</a> · <a href="lingji-note-walkthrough.html" style="color:#495DFF;">AI速记 UI 走查（14 个问题，58 分）</a> · <a href="lingji-rescan-report.html" style="color:#495DFF;">会议室 UI 走查（14 个问题，73 分）</a></p>
   </section>
 
   <footer style="text-align: center; padding: 48px 0 0; color: rgba(0,0,0,0.28); font-size: 12px;">
-    金蝶灵基 &middot; AI 走查 &middot; 2026
+    Lingee &middot; AI 走查 &middot; 2026
   </footer>
 
 </div>

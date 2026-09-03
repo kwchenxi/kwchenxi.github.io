@@ -92,6 +92,7 @@
   .hero h1 { font-family: var(--font-title); font-size: 36px; font-weight: 600; line-height: 54px; letter-spacing: -0.01em; margin-bottom: var(--s-12); color: var(--text-strong); }  /* heading-36 */
   .hero .meta { color: var(--text-muted); font-size: 14px; line-height: 22px; }  /* body-14 */
   .section { margin-bottom: var(--s-72); padding-top: var(--s-12); border-top: 1px solid var(--border); }
+  .hero + .section, .section.no-divider { border-top: none; }
   .section-label { display: inline-block; font-size: 12px; font-weight: 600; line-height: 18px; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: var(--s-8); }  /* body-12 */
   .section h2 { font-family: var(--font-title); font-size: 24px; font-weight: 600; margin-bottom: var(--s-20); line-height: 36px; color: var(--text-strong); }  /* heading-24 */
   .section p { font-size: 16px; color: var(--text-secondary); margin-bottom: var(--s-16); line-height: 24px; }  /* body-16 */
@@ -141,8 +142,8 @@
 
   /* Steps (怎么用) */
   .steps { display: flex; flex-direction: column; gap: var(--s-28); margin-top: var(--s-24); }
-  .step { display: flex; gap: var(--s-20); align-items: flex-start; padding-bottom: var(--s-28); border-bottom: 1px solid var(--border); }
-  .step:last-child { border-bottom: none; padding-bottom: 0; }
+  .step { display: flex; gap: var(--s-20); align-items: flex-start; padding-bottom: var(--s-28); }
+  .step:last-child { padding-bottom: 0; }
   .step-num { width: 36px; height: 36px; border-radius: var(--r-circle); background: var(--primary-light); color: var(--primary); font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
   .step-body { flex: 1; min-width: 0; }
   .step h3 { font-family: var(--font-title); font-size: 16px; font-weight: 600; line-height: 24px; margin-bottom: var(--s-6); color: var(--text-strong); }
@@ -261,37 +262,36 @@
   <div class="hero">
     <div>
       <h1 style="background:linear-gradient(135deg,#2563FF 0%,#7858F9 55%,#FF9FF0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">用 AI 做体验走查</h1>
-      <p style="font-size:14px;line-height:22px;color:var(--text-secondary);margin-top:var(--s-8);">让 AI 给产品做个设计走查。</p>
     </div>
   </div>
 
   <!-- 01 / 走查效果示例 -->
   <div class="section">
-    <span class="section-label">01 / 走查效果示例</span>
-    <h2><img src="assets/lingee-logo.png" alt="" style="width:28px;height:28px;vertical-align:middle;margin-right:var(--s-6);">金蝶灵基 &middot; 走查报告</h2>
-        <h3 class="sub-heading">📄 走查报告</h3>
+    <span class="section-label">01 / 走查效果</span>
+    <h2><img src="assets/lingee-logo.png" alt="" style="width:28px;height:28px;vertical-align:middle;margin-right:var(--s-6);">Lingee &middot; 走查报告</h2>
+        <h3 class="sub-heading">走查报告示例</h3>
     <div class="case-links">
+      <a href="lingji-rescan-report.html" class="case-link">
+        <div class="case-link-icon">&#x1F4CB;</div>
+        <div class="case-link-text">
+          <h4>会议 走查报告</h4>
+        </div>
+      </a>
       <a href="lingji-note-walkthrough.html" class="case-link">
         <div class="case-link-icon">&#x1F4DD;</div>
         <div class="case-link-text">
           <h4>AI速记 走查报告</h4>
         </div>
       </a>
-      <a href="lingji-rescan-report.html" class="case-link">
-        <div class="case-link-icon">&#x1F4CB;</div>
-        <div class="case-link-text">
-          <h4>会议室模块 走查报告</h4>
-        </div>
-      </a>
     </div>
 
-        <h3 class="sub-heading">📄 <span style="text-decoration:underline;text-decoration-color:var(--primary);text-underline-offset:4px;text-decoration-thickness:2px;">有源代码</span>的走查报告</h3>
+        <h3 class="sub-heading">有<span style="text-decoration:underline;text-decoration-color:var(--primary);text-underline-offset:4px;text-decoration-thickness:2px;">源代码</span>后，可对接<span style="text-decoration:underline;text-decoration-color:var(--primary);text-underline-offset:4px;text-decoration-thickness:2px;">给开发</span>的方案</h3>
     <p style="font-size:14px;line-height:22px;color:var(--text-secondary);margin-bottom:var(--s-16);">当 AI 同时拥有代码访问权限，可以将问题<strong style="color:var(--text);">精准定位到状态变量和文件</strong>，输出开发可直接使用的修复方案。</p>
     <div class="case-links">
       <a href="lingji-calendar-popup-policy.html" class="case-link">
         <div class="case-link-icon">&#x1F50D;</div>
         <div class="case-link-text">
-          <h4>日历模块 弹窗关闭策略</h4>
+          <h4>日历弹窗 BUG 修复建议（给开发）</h4>
         </div>
       </a>
     </div>
@@ -366,7 +366,7 @@ asar 路径（选填）：/path/to/app.asar（Electron 项目可填）
             <span class="dim-popover-badge med">中等</span>
             <div class="dim-popover-title">窄窗口下会议室卡片内容截断</div>
             <p class="dim-popover-desc">窗口缩小后文字挤压，部分信息无法正常阅读</p>
-            <a href="lingji-rescan-report.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+            <a href="lingji-rescan-report.html#tab-design" class="dim-popover-link">查看报告示例 <span>&rarr;</span></a>
           </div>
         </div></div>
       </div>
@@ -380,7 +380,7 @@ asar 路径（选填）：/path/to/app.asar（Electron 项目可填）
             <span class="dim-popover-badge med">中等</span>
             <div class="dim-popover-title">84 处硬编码色值违反底层颜色规则</div>
             <p class="dim-popover-desc">19 处圆角偏差 · 33 处字号不在标准列表</p>
-            <a href="lingji-rescan-report.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+            <a href="lingji-rescan-report.html#detail-colors" class="dim-popover-link">查看报告示例 <span>&rarr;</span></a>
           </div>
         </div></div>
       </div>
@@ -394,7 +394,7 @@ asar 路径（选填）：/path/to/app.asar（Electron 项目可填）
             <span class="dim-popover-badge info">轻微</span>
             <div class="dim-popover-title">筛选器文字截断</div>
             <p class="dim-popover-desc">"全部区域"和"全部标签"显示为"全..."</p>
-            <a href="lingji-rescan-report.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+            <a href="lingji-rescan-report.html#tab-overview" class="dim-popover-link">查看报告示例 <span>&rarr;</span></a>
           </div>
         </div></div>
       </div>
@@ -420,7 +420,7 @@ asar 路径（选填）：/path/to/app.asar（Electron 项目可填）
             <span class="dim-popover-badge med">中等</span>
             <div class="dim-popover-title">空状态图标与 Figma 设计稿不一致</div>
             <p class="dim-popover-desc">设计稿"暂无速记文件" · 实际"未找到相关速记文件"</p>
-            <a href="lingji-note-walkthrough.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+            <a href="lingji-note-walkthrough.html#tab-figma" class="dim-popover-link">查看报告示例 <span>&rarr;</span></a>
           </div>
         </div></div>
       </div>
@@ -434,7 +434,7 @@ asar 路径（选填）：/path/to/app.asar（Electron 项目可填）
             <span class="dim-popover-badge med">中等</span>
             <div class="dim-popover-title">搜索框聚焦时无视觉反馈</div>
             <p class="dim-popover-desc">规范要求 #495DFF 描边 · 实际无高亮边框</p>
-            <a href="lingji-note-walkthrough.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+            <a href="lingji-note-walkthrough.html#tab-figma" class="dim-popover-link">查看报告示例 <span>&rarr;</span></a>
           </div>
         </div></div>
       </div>
@@ -472,7 +472,7 @@ asar 路径（选填）：/path/to/app.asar（Electron 项目可填）
             <span class="dim-popover-badge crit">严重</span>
             <div class="dim-popover-title">521 处硬编码色值未使用 Token 变量</div>
             <p class="dim-popover-desc">322 处 SVG 填色 · 33 处 Tailwind 任意值</p>
-            <a href="lingji-token-report.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+            <a href="lingji-token-report.html" class="dim-popover-link">查看报告示例 <span>&rarr;</span></a>
           </div>
         </div></div>
       </div>
@@ -486,7 +486,7 @@ asar 路径（选填）：/path/to/app.asar（Electron 项目可填）
             <span class="dim-popover-badge med">中等</span>
             <div class="dim-popover-title">会议室卡片缺少"已停用"状态</div>
             <p class="dim-popover-desc">设计稿有灰色"已停用"标签，实际界面中未见</p>
-            <a href="lingji-rescan-report.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+            <a href="lingji-rescan-report.html#tab-design" class="dim-popover-link">查看报告示例 <span>&rarr;</span></a>
           </div>
         </div></div>
       </div>
@@ -500,7 +500,7 @@ asar 路径（选填）：/path/to/app.asar（Electron 项目可填）
             <span class="dim-popover-badge med">中等</span>
             <div class="dim-popover-title">导航标签设计稿 4 个实际只有 3 个</div>
             <p class="dim-popover-desc">缺少"任务"标签 · 会议室名称格式不一致</p>
-            <a href="lingji-rescan-report.html" class="dim-popover-link">查看完整报告 <span>&rarr;</span></a>
+            <a href="lingji-rescan-report.html#tab-design" class="dim-popover-link">查看报告示例 <span>&rarr;</span></a>
           </div>
         </div></div>
       </div>
@@ -546,6 +546,10 @@ asar 路径（选填）：/path/to/app.asar（Electron 项目可填）
     <h2>当前工具的优势与局限</h2>
     <div class="insight-list">
       <div class="insight">
+        <div class="insight-icon con">&triangle;</div>
+        <p><strong>核心能力依赖代码访问权限。</strong>代码级定位和修复方案需要源码权限才能输出，但设计师通常没有项目代码库的读取权限，需要开发团队配合授权。</p>
+      </div>
+      <div class="insight">
         <div class="insight-icon pro">&check;</div>
         <p><strong>响应式 &amp; 布局问题发现率很高。</strong>AI 系统地测试多种窗口尺寸，不遗漏截断、溢出等问题，人工走查经常漏。</p>
       </div>
@@ -566,19 +570,15 @@ asar 路径（选填）：/path/to/app.asar（Electron 项目可填）
         <p><strong>视觉美感和深层业务逻辑仍需人工判断。</strong>颜色搭配、复杂多步骤流程等需要设计直觉的领域，AI 目前作为辅助。</p>
       </div>
     </div>
-    <p style="margin-top: var(--s-20); font-size: 14px; color: var(--text-secondary); line-height: 22px;">
-      <strong style="color: var(--text-strong);">下一步方向：AI 走查 + 人工审核。</strong>
-      AI 负责批量扫描，人工聚焦设计意图和业务逻辑 &mdash; 两者结合，效率可提升数倍。
-    </p>
   </div>
 
-  <!-- 06 / AI 走查 vs 传统走查 -->
+  <!-- 06 / 纯视觉走查工具 -->
   <div class="section">
-    <span class="section-label">06 / AI 走查 vs 传统走查</span>
-    <h2>纯视觉走查工具对比</h2>
-    <p>AI 走查和传统 Design Review 不是替代关系，而是互补。了解两者的定位和适用场景，选择更高效的走查方式。</p>
+    <span class="section-label">06 / 纯视觉走查工具</span>
+    <h2>纯视觉走查工具</h2>
+    <p>AI 走查和纯视觉像素对比工具不是替代关系，而是互补。了解两者的定位和适用场景，选择更高效的走查方式。</p>
     <div style="margin-top: var(--s-20); text-align: center;">
-      <a href="project-comparison.html" class="compare-btn">&rarr; 查看对比详情：Design Review vs AICheck</a>
+      <a href="project-comparison.html" class="compare-btn">&rarr; 查看对比详情：Design Review vs AI 走查</a>
     </div>
   </div>
 

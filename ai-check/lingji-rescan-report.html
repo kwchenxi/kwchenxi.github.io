@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>金蝶灵基 — 会议室模块 走查报告（规范视角）</title>
+<title>Lingee — 会议室模块 走查报告（规范视角）</title>
 <link rel="stylesheet" href="walkthrough-v2.css">
 <style>
   .compare-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
@@ -43,17 +43,15 @@
   .tab-btn .badge.gray { background: rgba(0,0,0,0.06); color: rgba(0,0,0,0.45); }
   .tab-panel { display: none; padding-top: 24px; }
   .tab-panel.active { display: block; }
-  .contract-summary-box { background: rgba(73,93,255,0.03); border: 1px solid rgba(73,93,255,0.08); border-radius: 10px; padding: 20px; margin: 20px 0; font-size: 13px; line-height: 1.8; color: rgba(0,0,0,0.65); }
-  .contract-summary-box strong { color: #495DFF; }
 </style>
 </head>
 <body>
 <div class="container">
 
-  <div style="margin-bottom:16px;"><a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:rgba(0,0,0,0.45);text-decoration:none;font-size:13px;">&larr; 返回首页</a></div>
+  <div style="margin-bottom:16px;"><a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:rgba(0,0,0,0.45);text-decoration:none;font-size:13px;">&larr; 返回走查工具介绍页</a></div>
 
   <header>
-    <h1><img src="assets/lingee-logo.png" alt="" style="width:32px;height:32px;vertical-align:middle;margin-right:8px;">金蝶灵基 — 会议室模块 走查报告</h1>
+    <h1><img src="assets/lingee-logo.png" alt="" style="width:32px;height:32px;vertical-align:middle;margin-right:8px;">Lingee — 会议 走查报告</h1>
     <div class="meta">
       <span>走查时间：2026-08-10 14:50</span>
       <span>版本：v0.1.3</span>
@@ -62,12 +60,6 @@
       <span>参照规范：Lingee 设计规范 §3.8</span>
     </div>
   </header>
-
-  <!-- 规范视角说明 -->
-  <div class="contract-summary-box">
-    <strong>规范视角说明</strong><br>
-    本报告按 Lingee 设计规范 §3.8 的变量使用规则审视会议室模块。规范定义了颜色、字号、圆角、间距的<strong>强制规则</strong>——如底层颜色不能直接写进代码、字号只能用规定的 12 个值、圆角区分正圆和胶囊形等。覆盖率视角评分约 78（B），规范视角评分 73（B），差异主要来自"颜色引用方式"维度——84 处硬编码色值和 98 处 SVG 图标直接填色在规范下属于强制规则违规。
-  </div>
 
   <!-- ====== SCORE DASHBOARD ====== -->
   <div class="score-dashboard">
@@ -78,9 +70,9 @@
         <span class="grade">B · 良好</span>
       </div>
       <div class="score-summary-text">
-        <p>会议室模块共发现 <strong>13</strong> 个问题（2 严重 / 5 中等 / 6 轻微）。颜色变量覆盖率 92.2%，但仍有 84 处硬编码色值和 98 处 SVG 图标直接填色违反规范强制规则。设计还原发现 6 处与 Figma 设计稿的差异。</p>
+        <p>会议室模块共发现 <strong>14</strong> 个问题（3 严重 / 5 中等 / 6 轻微）。颜色变量覆盖率 92.2%，但仍有 84 处硬编码色值和 98 处 SVG 图标直接填色违反规范强制规则。设计还原发现 6 处与 Figma 设计稿的差异。</p>
         <div class="issue-counts">
-          <span class="issue-count"><span class="dot dot-critical"></span>2 严重</span>
+          <span class="issue-count"><span class="dot dot-critical"></span>3 严重</span>
           <span class="issue-count"><span class="dot dot-major"></span>5 中等</span>
           <span class="issue-count"><span class="dot dot-minor"></span>6 轻微</span>
           <span class="issue-count" style="color:var(--text-muted)">2 未覆盖维度</span>
@@ -88,27 +80,27 @@
       </div>
     </div>
     <div class="dim-scores">
-      <div class="dim-score-card">
+      <div class="dim-score-card" style="cursor:pointer" onclick="switchTab('code')">
         <div class="dim-name">颜色变量使用率 <span class="dim-level">§3.8.2</span></div>
         <div class="dim-bar"><div class="dim-bar-fill fill-A" style="width:92%"></div></div>
         <div class="dim-value" style="color:#00B578">92</div>
       </div>
-      <div class="dim-score-card">
+      <div class="dim-score-card" style="cursor:pointer" onclick="switchTab('code','detail-colors')">
         <div class="dim-name">颜色引用符合规范 <span class="dim-level">§3.8.2</span></div>
         <div class="dim-bar"><div class="dim-bar-fill fill-C" style="width:70%"></div></div>
         <div class="dim-value" style="color:#d97706">70</div>
       </div>
-      <div class="dim-score-card">
+      <div class="dim-score-card" style="cursor:pointer" onclick="switchTab('design')">
         <div class="dim-name">设计还原度 <span class="dim-level">Figma</span></div>
         <div class="dim-bar"><div class="dim-bar-fill fill-C" style="width:60%"></div></div>
         <div class="dim-value" style="color:#d97706">60</div>
       </div>
-      <div class="dim-score-card">
+      <div class="dim-score-card" style="cursor:pointer" onclick="switchTab('code','detail-radius')">
         <div class="dim-name">圆角符合规范 <span class="dim-level">§3.8.9</span></div>
         <div class="dim-bar"><div class="dim-bar-fill fill-B" style="width:78%"></div></div>
         <div class="dim-value" style="color:#3b82f6">78</div>
       </div>
-      <div class="dim-score-card">
+      <div class="dim-score-card" style="cursor:pointer" onclick="switchTab('code','detail-fontsize')">
         <div class="dim-name">字号符合规范 <span class="dim-level">§3.8.7</span></div>
         <div class="dim-bar"><div class="dim-bar-fill fill-B" style="width:80%"></div></div>
         <div class="dim-value" style="color:#3b82f6">80</div>
@@ -126,34 +118,9 @@
     </div>
   </div>
 
-  <!-- 状态卡片 -->
-  <div class="stat-grid">
-    <div class="stat-card" onclick="switchTab('code','detail-colors')">
-      <div class="num" style="color:#00B578;">92.2%</div>
-      <div class="lbl">颜色变量覆盖率</div>
-      <div class="grade" style="color:#00B578;">A 级</div>
-    </div>
-    <div class="stat-card" onclick="switchTab('code','detail-colors')">
-      <div class="num" style="color:#F12234;">84</div>
-      <div class="lbl">写死色值 §3.8.2</div>
-    </div>
-    <div class="stat-card" onclick="switchTab('code','detail-radius')">
-      <div class="num" style="color:#FF8B00;">19</div>
-      <div class="lbl">圆角偏差 §3.8.9</div>
-    </div>
-    <div class="stat-card" onclick="switchTab('code','detail-fontsize')">
-      <div class="num" style="color:#FF8B00;">33</div>
-      <div class="lbl">字号偏差 §3.8.7</div>
-    </div>
-    <div class="stat-card">
-      <div class="num">98</div>
-      <div class="lbl">SVG 填色 §3.8.2</div>
-    </div>
-  </div>
-
   <!-- Tab 栏 -->
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('overview')">问题清单 <span class="badge red">13</span></button>
+    <button class="tab-btn active" onclick="switchTab('overview')">问题清单 <span class="badge red">14</span></button>
     <button class="tab-btn" onclick="switchTab('code')">代码扫描</button>
     <button class="tab-btn" onclick="switchTab('design')">设计还原 <span class="badge blue">6</span></button>
     <button class="tab-btn" onclick="switchTab('pending')">待验证 <span class="badge gray">8</span></button>
@@ -162,29 +129,43 @@
   <!-- Tab 1: 问题清单 -->
   <div id="tab-overview" class="tab-panel active">
     <h2>问题清单</h2>
-    <p style="font-size: 14px; color: rgba(0,0,0,0.45); margin-bottom: 16px;">共 13 个问题：2 严重 / 5 中等 / 6 轻微，按规范规则分组排列。</p>
+
+    <!-- 跨模块交互 -->
+    <div class="clause-group">
+      <h3>跨模块交互</h3>
+      <table class="compare-table">
+        <thead><tr><th style="width:40px">#</th><th>问题</th><th>详情</th><th style="width:80px">严重度</th></tr></thead>
+        <tbody>
+          <tr style="background:rgba(241,34,52,0.03)">
+            <td>1</td>
+            <td><strong>日历 ↔ 会议切 Tab 后，弹窗遗留不收起</strong></td>
+            <td>在日历模块打开 Popover / 对话框后，切到「会议」或「AI速记」再切回来，弹窗仍停留在打开状态，可能造成界面遮挡或错位。<a href="lingji-calendar-popup-policy.html#calendar-tab-popover" style="color:#495DFF;font-weight:600;text-decoration:none;">查看修复方案</a></td>
+            <td><span class="change-badge critical">严重</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- §3.8.2 颜色引用规则 -->
     <div class="clause-group">
       <h3>§3.8.2 颜色引用规则 <span class="contract-ref">强制规则 4：底层颜色不能直接写进代码</span></h3>
-      <p class="clause-desc">颜色必须按这个顺序引用：底层颜色 → 中间变量 → 组件变量 → 代码。跳层直接用底层颜色是强制规则违规。</p>
       <table class="compare-table">
         <thead><tr><th style="width:40px">#</th><th>问题</th><th>规范视角分析</th><th style="width:80px">严重度</th></tr></thead>
         <tbody>
           <tr style="background:rgba(241,34,52,0.03)">
-            <td>1</td>
+            <td>2</td>
             <td><strong>84 处硬编码色值</strong></td>
             <td>会议模块覆盖率 92.2%，仍有 84 处直接写 HEX/RGBA 色值，没有通过设计变量引用。§3.8.2 强制规则 4 明确禁止。覆盖率视角看"92.2% 已接入"，规范视角看"7.8% 强制违规"。</td>
             <td><span class="change-badge critical">严重</span></td>
           </tr>
           <tr style="background:rgba(241,34,52,0.03)">
-            <td>2</td>
+            <td>3</td>
             <td><strong>98 处 SVG 图标直接填色</strong></td>
             <td>SVG 图标颜色属性直接写色值（98 处）。规范 §3.8.2 强制规则 4 规定 SVG 也属于"代码直接使用"，需通过组件变量引用颜色。</td>
             <td><span class="change-badge critical">严重</span></td>
           </tr>
           <tr>
-            <td>3</td>
+            <td>4</td>
             <td><strong>卡片背景色与设计稿不一致</strong></td>
             <td>设计稿卡片用淡紫/灰色背景，实际是纯白背景。可能涉及背景颜色变量引用缺失。</td>
             <td><span class="change-badge info">轻微</span></td>
@@ -196,18 +177,17 @@
     <!-- §3.8.9 圆角规范 -->
     <div class="clause-group">
       <h3>§3.8.9 圆角规范 <span class="contract-ref">circle=正圆 vs pill=胶囊形</span></h3>
-      <p class="clause-desc">circle 和 pill 含义不同：circle 用于正圆形（需宽高相等），pill 用于胶囊形（长条按钮等）。规范规定两者不能混用。</p>
       <table class="compare-table">
         <thead><tr><th style="width:40px">#</th><th>问题</th><th>规范视角分析</th><th style="width:80px">严重度</th></tr></thead>
         <tbody>
           <tr>
-            <td>4</td>
+            <td>5</td>
             <td><strong>19 处圆角值与规范不匹配</strong></td>
             <td>圆角值偏离规范定义的 11 个标准值（如 14px、10px、22px、2px 等非标准值）。规范要求通过圆角变量引用，这些是直接写死且值不对的情况。</td>
             <td><span class="change-badge warning">中等</span></td>
           </tr>
           <tr>
-            <td>5</td>
+            <td>6</td>
             <td><strong>圆角值对了但没用变量</strong></td>
             <td>部分圆角值与某个标准值一致，但直接写死。规范 §3.8.2 强制规则 5：值相同不代表引用正确。</td>
             <td><span class="change-badge info">轻微</span></td>
@@ -219,18 +199,17 @@
     <!-- §3.8.7 字号规范 -->
     <div class="clause-group">
       <h3>§3.8.7 字号规范 <span class="contract-ref">12 个标准值：10/12/14/16/18/20/24/28/32/36/48/72</span></h3>
-      <p class="clause-desc">字号只允许使用这 12 个值，其他值（如 13px、11px、30px）不在标准值列表内。</p>
       <table class="compare-table">
         <thead><tr><th style="width:40px">#</th><th>问题</th><th>规范视角分析</th><th style="width:80px">严重度</th></tr></thead>
         <tbody>
           <tr>
-            <td>6</td>
+            <td>7</td>
             <td><strong>33 处字号不在允许列表</strong></td>
             <td>出现 13px（26 处）、11px（1 处）等非标准值。§3.8.7.4 规则 1：字号只能从 12 个标准值中选取，不允许任意值。</td>
             <td><span class="change-badge warning">中等</span></td>
           </tr>
           <tr>
-            <td>7</td>
+            <td>8</td>
             <td><strong>字号值对了但没用变量</strong></td>
             <td>部分字号值与某个标准值一致（如 14px），但代码中直接写死而非引用变量。规范要求通过变量引用，值相同不等于已正确引用。</td>
             <td><span class="change-badge info">轻微</span></td>
@@ -246,37 +225,37 @@
         <thead><tr><th style="width:40px">#</th><th>问题</th><th>详情</th><th style="width:80px">严重度</th></tr></thead>
         <tbody>
           <tr>
-            <td>8</td>
+            <td>9</td>
             <td><strong>窄窗口下卡片内容截断</strong></td>
             <td>会议室列表窗口缩小后，卡片内容挤压，部分文字被截断，无法正常阅读。</td>
             <td><span class="change-badge warning">中等</span></td>
           </tr>
           <tr>
-            <td>9</td>
+            <td>10</td>
             <td><strong>会议室卡片名称与设计稿不一致</strong></td>
             <td>设计稿用"青松阁 · 国际交流中心"（主题名+描述），实际用"云亭学 (B801)"（简单名+编号）。</td>
             <td><span class="change-badge warning">中等</span></td>
           </tr>
           <tr>
-            <td>10</td>
+            <td>11</td>
             <td><strong>位置描述与设计稿不一致</strong></td>
             <td>设计稿写"总部B栋9楼（东侧电梯往前80米...）"，实际只显示"B8南"区域码。</td>
             <td><span class="change-badge warning">中等</span></td>
           </tr>
           <tr>
-            <td>11</td>
+            <td>12</td>
             <td><strong>缺少"已停用"状态</strong></td>
             <td>设计稿中卡片有灰色"已停用"标签，实际界面中未见此状态。</td>
             <td><span class="change-badge warning">中等</span></td>
           </tr>
           <tr>
-            <td>12</td>
+            <td>13</td>
             <td><strong>筛选器文字截断</strong></td>
             <td>"全部区域"和"全部标签"两个下拉框显示为"全..."，文字被截断。</td>
             <td><span class="change-badge info">轻微</span></td>
           </tr>
           <tr>
-            <td>13</td>
+            <td>14</td>
             <td><strong>导航栏缺少“任务”标签</strong></td>
             <td>设计稿有 日历/会议/任务/AI速记 四个标签，实际只有三个（无"任务"）。</td>
             <td><span class="change-badge info">轻微</span></td>
@@ -289,9 +268,6 @@
   <!-- Tab 2: 代码扫描 -->
   <div id="tab-code" class="tab-panel">
     <h2>会议室模块代码扫描</h2>
-    <p style="font-size: 14px; color: rgba(0,0,0,0.65); margin-bottom: 8px;">
-      通过解包应用代码，检查会议室模块的颜色、圆角、字号是否使用了设计系统的变量。覆盖率 92.2%，规范视角下更关键的是引用方式是否符合规范。
-    </p>
     <table class="compare-table">
       <thead>
         <tr><th>指标</th><th>用了变量</th><th>写死色值</th><th>SVG 填色</th><th>圆角偏差</th><th>字号偏差</th><th>覆盖率</th></tr>
@@ -301,17 +277,6 @@
           <td><strong>会议模块</strong></td><td>1,064</td><td>84</td><td>98</td><td>19</td><td>33</td>
           <td>92.2% <span class="change-badge ok">A</span></td>
         </tr>
-      </tbody>
-    </table>
-
-    <h3 style="font-size: 16px; margin: 24px 0 12px;">圆角 &amp; 字号（规范视角）</h3>
-    <table class="compare-table">
-      <thead><tr><th>分类</th><th>数量</th><th>规范分析</th></tr></thead>
-      <tbody>
-        <tr><td>圆角值不匹配 §3.8.9</td><td>19 处</td><td>值偏离规范定义的 11 个标准值（如 14px、10px、22px、2px）。需改为对应圆角变量。</td></tr>
-        <tr><td>圆角值对了但没用变量</td><td>—</td><td>值与某个标准值一致，但直接写死。§3.8.2 强制规则 5：值相同不代表引用正确。</td></tr>
-        <tr><td>字号不在允许列表 §3.8.7</td><td>33 处</td><td>出现 13px（26 处）、11px（1 处）等不在 12 个标准值中的字号。</td></tr>
-        <tr><td>字号值对了但没用变量</td><td>—</td><td>值与某个标准值一致，但未引用变量。规范要求通过变量引用。</td></tr>
       </tbody>
     </table>
 
@@ -346,13 +311,6 @@
       </tbody>
     </table>
 
-    <div style="margin-top: 16px; padding: 12px 16px; background: rgba(73,93,255,0.04); border-radius: 8px; font-size: 13px; color: rgba(0,0,0,0.65); line-height: 1.7;">
-      <strong style="color:#495DFF;">规范视角的修复优先级</strong><br>
-      1. 84 处硬编码色值 — 违反 §3.8.2 强制规则 4，需改为通过中间变量引用<br>
-      2. 98 处 SVG 直接填色 — 同样违反 §3.8.2，SVG 图标颜色需改用组件变量<br>
-      3. 33 处非标准字号（13px/11px）— 不在 §3.8.7 的 12 个标准值中，需映射到规范允许的标准值<br>
-      4. 19 处圆角偏差 — 值不对，需改为规范定义的标准值并引用变量
-    </div>
   </div>
 
   <!-- Tab 3: 设计还原 -->
@@ -378,7 +336,6 @@
     </div>
 
     <h2 style="margin-top: 40px;">设计稿还原对比</h2>
-    <p style="font-size: 14px; color: rgba(0,0,0,0.65); margin-bottom: 16px;">截图均为"当前时间段可用"视图，对比 Figma 设计稿与实际实现的差异。</p>
     <div class="screenshot-pair">
       <div>
         <img src="lingji-rescan-images/figma-available-rooms.png" alt="Figma 设计稿">
@@ -390,19 +347,6 @@
       </div>
     </div>
 
-    <table class="compare-table">
-      <thead>
-        <tr><th>差异项</th><th>设计稿</th><th>实际实现</th><th>严重度</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><strong>房间名称格式</strong></td><td>"青松阁 · 国际交流中心"（主题名 + 描述）</td><td>"云亭学 (B801)"（简单名 + 编号）</td><td><span class="change-badge warning">中等</span></td></tr>
-        <tr><td><strong>位置描述详细度</strong></td><td>"总部B栋9楼（东侧电梯往前80米...）"</td><td>"B8南"（简短区域码）</td><td><span class="change-badge warning">中等</span></td></tr>
-        <tr><td><strong>"已停用"状态</strong></td><td>卡片有灰色"已停用"标签</td><td>未见"已停用"状态</td><td><span class="change-badge warning">中等</span></td></tr>
-        <tr><td><strong>筛选器文字截断</strong></td><td>"全部区域" + "全部标签" 完整显示</td><td>两个"全..."下拉框（文字截断）</td><td><span class="change-badge info">轻微</span></td></tr>
-        <tr><td><strong>卡片背景色</strong></td><td>卡片淡紫/灰色背景</td><td>卡片纯白背景</td><td><span class="change-badge info">轻微</span></td></tr>
-        <tr><td><strong>导航标签</strong></td><td>日历 / 会议 / 任务 / AI速记</td><td>日历 / 会议 / AI速记（无"任务"标签）</td><td><span class="change-badge info">轻微</span></td></tr>
-      </tbody>
-    </table>
     <div style="margin-top: 16px; padding: 12px 16px; background: rgba(255,139,0,0.06); border-radius: 8px; font-size: 13px; color: rgba(0,0,0,0.65); line-height: 1.7;">
       <strong style="color:#FF8B00;">待对比："全部会议室"视图</strong><br>
       Figma 中"全部会议室"视图包含 08-23 时时间轴（色块标记已预订时段），尚未截图对比该视图的实现情况。
@@ -425,10 +369,6 @@
     </ul>
   </div>
 
-  <footer style="text-align: center; padding: 48px 0 0; color: rgba(0,0,0,0.28); font-size: 12px;">
-    金蝶灵基 v0.1.3 会议室模块走查报告（规范视角）· AI 走查 · 2026
-  </footer>
-
 </div>
 
 <script>
@@ -448,6 +388,20 @@ function switchTab(tabId, scrollTo) {
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 50);
   }
+}
+
+const hash = window.location.hash.slice(1);
+if (hash === 'detail-colors') {
+  switchTab('code');
+  window.addEventListener('load', () => {
+    requestAnimationFrame(() => {
+      const target = document.getElementById(hash);
+      if (target) target.scrollIntoView({ block: 'start' });
+    });
+  });
+} else if (hash.startsWith('tab-')) {
+  const tabId = hash.slice(4);
+  if (document.getElementById('tab-' + tabId)) switchTab(tabId);
 }
 </script>
 </body>

@@ -60,6 +60,7 @@
   .cmp-table td:nth-child(2) { color: var(--text-secondary); }
   .cmp-table td:nth-child(3) { color: var(--text-secondary); }
   .cmp-table tr:hover td { background: rgba(73,93,255,0.02); }
+  .cmp-table .section-row td { width: auto; white-space: normal; background: rgba(0,0,0,0.03); color: var(--text-muted); font-size: 13px; font-weight: 600; }
 
   /* Dimension grid */
   .dim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
@@ -127,11 +128,13 @@
         <div class="tool-name">Design Review</div>
         <div class="question">&ldquo;这张图和设计稿差多少？&rdquo;</div>
         <p>聚焦视觉还原度。给两张图 &mdash; 线上截图和设计稿 &mdash; 得到精确的像素差异数据，快速定位&ldquo;哪里对不上&rdquo;。</p>
+        <a href="https://design-review-roan.vercel.app/" target="_blank" style="display:inline-block;margin-top:12px;font-size:13px;color:#3b82f6;text-decoration:none;font-weight:500;">&#x1F310; 在线试用 &rarr;</a>
       </div>
       <div class="pos-card b">
         <div class="tool-name">AICheck</div>
         <div class="question">&ldquo;这个产品的体验质量怎么样？&rdquo;</div>
         <p>全维度体验走查。不只是视觉还原，还覆盖响应式、暗黑模式、空状态、无障碍、Token 规范、代码质量等 11 个维度，输出可执行的改进清单。</p>
+        <a href="https://github.com/kwchenxi/ai-ui-check" target="_blank" style="display:inline-block;margin-top:12px;font-size:13px;color:#3b82f6;text-decoration:none;font-weight:500;">&#x1F4E6; 下载 Skill &rarr;</a>
       </div>
     </div>
   </div>
@@ -237,9 +240,6 @@
         <div class="out-item"><strong>Token 覆盖率</strong> &mdash; 设计系统落地数据</div>
       </a>
     </div>
-    <p style="font-size: 14px; color: var(--text-muted); margin-top: 12px;">
-      Design Review 的报告适合&ldquo;一眼看出差异&rdquo;；AICheck 的报告适合&ldquo;拿着改&rdquo; &mdash; 开发可以直接按报告定位到具体文件和代码行。
-    </p>
   </div>
 
   <div class="divider"></div>
@@ -250,7 +250,7 @@
     <p>以下是技术层面的对比，帮助理解两者的能力边界。</p>
 
     <details class="tech-details">
-      <summary>展开查看技术细节</summary>
+      <summary>展开查看技术与流程细节</summary>
       <table class="cmp-table">
         <thead><tr><th>维度</th><th>Design Review</th><th>AICheck</th></tr></thead>
         <tbody>
@@ -261,12 +261,7 @@
           <tr><td>AI 角色</td><td>可选辅助（OpenAI / Claude / DeepSeek）</td><td>核心引擎（AI 就是走查员）</td></tr>
           <tr><td>在线工具</td><td>有（Vercel 部署，拖图即出报告）</td><td>无（GitHub Pages 展示静态报告）</td></tr>
           <tr><td>工程化</td><td>完整 npm 包，有 CLI + Web + Claude Code Skill</td><td>脚本集合 + Skill（Qoder / Claude Code）</td></tr>
-        </tbody>
-      </table>
-
-      <table class="cmp-table" style="margin-top: 24px;">
-        <thead><tr><th>工作流</th><th>Design Review</th><th>AICheck</th></tr></thead>
-        <tbody>
+          <tr class="section-row"><td colspan="3">工作流</td></tr>
           <tr><td>1. 输入</td><td>人工提供 2 张截图或 URL</td><td>配置文件 + 一句话触发</td></tr>
           <tr><td>2. 截图</td><td>Puppeteer 自动截（仅网页）</td><td>Computer Use 操控应用（含移动端投屏） / Playwright 驱动 Web 或 Electron</td></tr>
           <tr><td>3. 对比</td><td>像素算法量化差异 + 可选 AI</td><td>AI 看截图判断问题</td></tr>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>金蝶灵基 — Token 扫描原始数据</title>
+<title>Lingee — Token 扫描原始数据</title>
 <style>
   :root { --primary: #495DFF; --bg: #F7F7F8; --surface: #FFF; --text: rgba(0,0,0,0.82); --muted: rgba(0,0,0,0.45); --border: rgba(0,0,0,0.08); --success: #00B578; --danger: #F12234; --warning: #FF8B00; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -34,13 +34,12 @@
   .token-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--bg); border-radius: 8px; }
   .token-item .name { font-size: 13px; font-weight: 500; }
   .token-item .count { font-size: 18px; font-weight: 700; color: var(--primary); }
-  .section-label { font-size: 12px; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
 </style>
 </head>
 <body>
 <div class="container">
-  <div style="margin-bottom:16px;"><a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;font-size:13px;">&larr; 返回首页</a></div>
-  <h1>金蝶灵基 — Token 扫描原始数据</h1>
+  <div style="margin-bottom:16px;"><a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;font-size:13px;">&larr; 返回走查工具介绍页</a></div>
+  <h1>Lingee — Token 扫描原始数据</h1>
   <div class="meta">扫描时间：2026-08-11 09:06:17 &middot; 扫描文件：146 个 &middot; 目录：./extracted</div>
 
   <div class="card">
@@ -55,11 +54,7 @@
       <div class="stat"><div class="num" style="color:var(--warning)">109</div><div class="label">非 Token 圆角</div></div>
       <div class="stat"><div class="num" style="color:var(--warning)">122</div><div class="label">非 Token 字号</div></div>
     </div>
-  </div>
-
-  <div class="card">
-    <div class="section-label">Token 使用分布</div>
-    <h2>各类 Token 使用次数</h2>
+    <h2 style="margin-top:24px;">Token 使用分布</h2>
     <div class="token-grid">
       <div class="token-item"><span class="name">color</span><span class="count">4,603</span></div>
       <div class="token-item"><span class="name">spacing</span><span class="count">0</span></div>
@@ -72,7 +67,6 @@
 
   
   <div class="card">
-    <div class="section-label">需要修复</div>
     <h2>硬编码颜色（521 处）</h2>
     <table>
       <tr><th>色值</th><th>文件</th></tr>
@@ -92,7 +86,6 @@
 
   
   <div class="card">
-    <div class="section-label">低风险</div>
     <h2>Tailwind Arbitrary 色值（33 处）</h2>
     <table>
       <tr><th>色值</th><th>文件</th></tr>
@@ -112,7 +105,6 @@
 
   
   <div class="card">
-    <div class="section-label">圆角偏差</div>
     <h2>非 Token 圆角值（109 处）</h2>
     <table>
       <tr><th>值</th><th>文件</th></tr>
@@ -132,13 +124,6 @@
 
   
   <div class="card">
-    <h2>硬编码圆角但匹配 Token（310 处）</h2>
-    <p style="font-size:13px;color:var(--muted)">这些值虽然匹配 Token 数值，但直接写了 px 而非用 <code>var(--lg-r-*)</code>，建议统一改用 Token。</p>
-  </div>
-
-  
-  <div class="card">
-    <div class="section-label">字号偏差</div>
     <h2>非 Token 字号值（122 处）</h2>
     <table>
       <tr><th>值</th><th>文件</th></tr>
