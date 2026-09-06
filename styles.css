@@ -235,6 +235,11 @@
         }
 
         .project-icon {
+            display: none;
+        }
+
+        /* 仅"我喜欢的AI产品"区块保留图标 */
+        #fav-ai-products .project-icon {
             width: 40px;
             height: 40px;
             border-radius: 8px;
@@ -332,6 +337,7 @@
             transform: translateX(4px);
         }
 
+
         .footer {
             text-align: center;
             padding: 20px 0;
@@ -339,41 +345,6 @@
             border-top: 1px solid var(--border);
         }
 
-        /* 展开/收起按钮样式 */
-        .toggle-more-btn {
-            display: block;
-            margin: 0 auto var(--spacing-2xl);
-            padding: var(--spacing-xs) var(--spacing-xl);
-            background: var(--surface);
-            color: var(--text-secondary);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-pill);
-            font-size: 14px;
-            font-weight: 400;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            box-shadow: var(--shadow-sm);
-        }
-        .toggle-more-btn:hover {
-            background: var(--primary-color);
-            color: var(--surface);
-            border-color: var(--primary-color);
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
-        }
-        .toggle-more-btn .arrow {
-            display: inline-block;
-            margin-left: 6px;
-            transition: transform var(--transition-fast);
-        }
-        .toggle-more-btn.expanded .arrow {
-            transform: rotate(180deg);
-        }
-
-        /* 实验室区域折叠：默认隐藏第7张及之后的卡片 */
-        .lab-grid.collapsed .project-card:nth-child(n+7) {
-            display: none !important;
-        }
 
         @media (max-width: 768px) {
             .container {
