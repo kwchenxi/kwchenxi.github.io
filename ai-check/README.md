@@ -118,7 +118,6 @@ ai-check/
 ├── lingji-rescan-report.html           # 会议室+对话模块 走查报告（v0.1.3）
 ├── lingji-token-report.html            # Token 扫描说明（全应用）
 ├── token-scan-data.html                # 全应用扫描数据（v0.1.3）
-├── project-comparison.html             # 新旧方案对比页
 ├── walkthrough-v2.css                  # 报告共享样式
 ├── walkthrough-template-v2.html        # 可复用报告模板
 ├── lingji-report-images/               # 走查截图

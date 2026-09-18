@@ -136,6 +136,20 @@
   .sub-link:hover { color: var(--primary); }
   .compare-btn { display: inline-block; font-size: 14px; line-height: 22px; color: var(--primary); text-decoration: none; border: 1px solid rgba(73,93,255,0.25); background: rgba(73,93,255,0.04); padding: var(--s-10) var(--s-20); border-radius: var(--r-x-medium); transition: all 0.2s; font-weight: 500; }
   .compare-btn:hover { background: rgba(73,93,255,0.10); border-color: var(--primary); }
+  .pos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-16); margin-top: var(--s-20); }
+  .pos-card { display: block; padding: var(--s-20); border-radius: var(--radius); border: 1px solid var(--border); text-decoration: none; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
+  .pos-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-small); }
+  .pos-card.a { background: rgba(0,181,120,0.03); border-color: rgba(0,181,120,0.2); }
+  .pos-card.b { background: rgba(73,93,255,0.03); border-color: rgba(73,93,255,0.2); }
+  .pos-card.a:hover { border-color: var(--success); }
+  .pos-card.b:hover { border-color: var(--primary); }
+  .pos-card .tool-name { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: var(--s-4); }
+  .pos-card h3 { font-family: var(--font-title); font-size: 17px; font-weight: 600; line-height: 26px; color: var(--text-strong); margin-bottom: var(--s-8); }
+  .pos-card.a h3 { color: var(--success); }
+  .pos-card.b h3 { color: var(--primary); }
+  .pos-card .question { font-size: 15px; font-weight: 600; color: var(--text-strong); margin-bottom: var(--s-6); }
+  .pos-card p { font-size: 14px; line-height: 22px; color: var(--text-secondary); margin: 0; }
+  .pos-card .card-link { display: inline-block; margin-top: var(--s-12); font-size: 13px; line-height: 20px; color: #3b82f6; font-weight: 500; }
   .divider { height: 1px; background: var(--border); margin: var(--s-48) 0; }
   footer { text-align: center; padding: var(--s-36) 0 0; color: var(--text-muted); font-size: 12px; line-height: 18px; }  /* body-12 */
   code { background: var(--bg-muted); padding: var(--s-2) var(--s-6); border-radius: var(--r-small); font-size: 14px; font-family: "SF Mono", "Fira Code", monospace; }
@@ -250,6 +264,7 @@
   @media (max-width: 640px) {
     .step { flex-direction: column; gap: var(--s-12); }
     .dim-grid { grid-template-columns: repeat(2, 1fr); }
+    .pos-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -572,13 +587,23 @@ asar 路径（选填）：/path/to/app.asar（Electron 项目可填）
     </div>
   </div>
 
-  <!-- 06 / 纯视觉走查工具 -->
+  <!-- 06 / 另一款工具介绍 -->
   <div class="section">
-    <span class="section-label">06 / 纯视觉走查工具</span>
-    <h2>纯视觉走查工具</h2>
-    <p>AI 走查和纯视觉像素对比工具不是替代关系，而是互补。了解两者的定位和适用场景，选择更高效的走查方式。</p>
-    <div style="margin-top: var(--s-20); text-align: center;">
-      <a href="project-comparison.html" class="compare-btn">&rarr; 查看对比详情：Design Review vs AI 走查</a>
+    <span class="section-label">06 / 另一款工具介绍</span>
+    <h2>2款走查工具对比</h2>
+    <div class="pos-grid">
+      <a class="pos-card a" href="https://design-review-roan.vercel.app/" target="_blank" rel="noopener noreferrer">
+        <div class="tool-name">Design Review</div>
+        <h3>&ldquo;这张图和设计稿差多少？&rdquo;</h3>
+        <p>聚焦视觉还原度。给两张图 &mdash; 线上截图和设计稿 &mdash; 得到精确的像素差异数据，快速定位&ldquo;哪里对不上&rdquo;。</p>
+        <span class="card-link">&#x1F310; 在线试用 &rarr;</span>
+      </a>
+      <a class="pos-card b" href="https://github.com/kwchenxi/ai-ui-check" target="_blank" rel="noopener noreferrer">
+        <div class="tool-name">AICheck</div>
+        <h3>&ldquo;这个产品的体验质量怎么样？&rdquo;</h3>
+        <p>全维度体验走查。不只是视觉还原，还覆盖响应式、暗黑模式、空状态、无障碍、Token 规范、代码质量等 11 个维度，输出可执行的改进清单。</p>
+        <span class="card-link">&#x1F4E6; 下载 Skill &rarr;</span>
+      </a>
     </div>
   </div>
 
