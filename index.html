@@ -7,222 +7,301 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Hoho的AI实验室</title>
-    <link rel="stylesheet" href="styles.css?v=8">
+    <link rel="stylesheet" href="styles.css?v=30">
 </head>
 <body>
 
     <div class="container">
-        <header class="header" style="padding: 20px 0; height: 120px; display: flex; flex-direction: column; justify-content: center;">
-            <h1 style="margin-bottom: 0px;">Hoho的AI实验室</h1>
-            <p style="margin-top: 0;">探索创意与AI的无限可能，这里是我各种有趣AI项目的集合</p>
+        <header class="header header--minimal">
+            <h1>Hoho的AI实验室</h1>
         </header>
 
         <section style="margin-bottom: 40px;">
-            <h2 style="font-size: 1.5rem; color: var(--primary-color); margin: 0 0 16px 0; font-weight: 700; line-height: 1.2;">实用小工具</h2>
-            <div class="projects-grid">
-                <div class="project-card" data-href="https://design-review-roan.vercel.app/">
-                    <div class="project-header">
-                        <div class="project-icon">✅</div>
-                        <div>
-                            <h3 class="project-title">设计稿与线上对比网站</h3>
-                            <p class="project-date">2026-04</p>
-                        </div>
-                    </div>
-                    <p class="project-description">
-                        对比 Figma 设计稿与线上页面，AI 自动评分并生成还原度报告。
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">在线工具</span>
-                        <span class="tag">Figma</span>
-                        <a href="https://design-review-roan.vercel.app/" class="project-detail-link" target="_blank">详情</a>
+            <h2 class="section-title">实用小工具</h2>
+            <div class="card-carousel">
+                <div class="card-carousel__viewport">
+                    <div class="card-carousel__track">
+                        <a class="project-card project-card--editorial editorial-card--blue" href="https://design-review-roan.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="打开设计稿与线上对比网站">
+                            <div class="editorial-card__media" aria-hidden="true">
+                                <div class="editorial-card__shape">
+                                    <div class="editorial-card__canvas">
+                                        <div class="editorial-card__panel editorial-card__panel--figma">
+                                            <span></span><span></span><span></span>
+                                        </div>
+                                        <div class="editorial-card__panel editorial-card__panel--web">
+                                            <span></span><span></span><span></span><span></span>
+                                        </div>
+                                        <div class="editorial-card__cursor"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editorial-card__content">
+                                <div class="editorial-card__text">
+                                    <div class="editorial-card__tags" aria-label="项目标签">
+                                        <span class="tag">在线工具</span>
+                                        <span class="tag">Figma</span>
+                                    </div>
+                                    <h3 class="editorial-card__title">设计稿与线上对比网站</h3>
+                                    <p class="editorial-card__description">对比 Figma 设计稿与线上页面，AI 自动评分并生成还原度报告。</p>
+                                </div>
+                                <p class="editorial-card__meta">2026-04</p>
+                            </div>
+                        </a>
+
+                        <a class="project-card project-card--editorial editorial-card--violet" href="ai-check/index.html" target="_blank" rel="noopener noreferrer" aria-label="打开产品设计走查skill">
+                            <div class="editorial-card__media" aria-hidden="true">
+                                <div class="editorial-card__shape editorial-card__shape--circle">
+                                    <div class="editorial-card__canvas editorial-card__canvas--audit">
+                                        <div class="editorial-card__panel editorial-card__panel--device">
+                                            <span></span><span></span><span></span>
+                                        </div>
+                                        <div class="editorial-card__panel editorial-card__panel--checklist">
+                                            <span></span><span></span><span></span>
+                                        </div>
+                                        <div class="editorial-card__check-badge"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editorial-card__content">
+                                <div class="editorial-card__text">
+                                    <div class="editorial-card__tags" aria-label="项目标签">
+                                        <span class="tag">体验走查</span>
+                                        <span class="tag">代码扫描</span>
+                                    </div>
+                                    <h3 class="editorial-card__title">产品设计走查skill</h3>
+                                    <p class="editorial-card__description">AI 自动完成多端截图、规范对照与设计稿走查。</p>
+                                </div>
+                                <p class="editorial-card__meta">2026-08</p>
+                            </div>
+                        </a>
+
+                        <a class="project-card project-card--editorial editorial-card--amber" href="https://github.com/kwchenxi/excel-to-dmp" target="_blank" rel="noopener noreferrer" aria-label="打开BUG自动录入研发系统skill">
+                            <div class="editorial-card__media" aria-hidden="true">
+                                <div class="editorial-card__shape editorial-card__shape--squircle">
+                                    <div class="editorial-card__canvas editorial-card__canvas--bug">
+                                        <div class="editorial-card__panel editorial-card__panel--excel">
+                                            <span></span><span></span><span></span>
+                                        </div>
+                                        <div class="editorial-card__panel editorial-card__panel--ticket">
+                                            <span></span><span></span>
+                                        </div>
+                                        <div class="editorial-card__arrow"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editorial-card__content">
+                                <div class="editorial-card__text">
+                                    <div class="editorial-card__tags" aria-label="项目标签">
+                                        <span class="tag">自动化</span>
+                                        <span class="tag">效率工具</span>
+                                        <span class="tag">缺陷管理</span>
+                                    </div>
+                                    <h3 class="editorial-card__title">BUG自动录入研发系统skill</h3>
+                                    <p class="editorial-card__description">自动将 Excel 中的 BUG 批量提单到研发系统，告别手动录入。</p>
+                                </div>
+                                <p class="editorial-card__meta">2026-07</p>
+                            </div>
+                        </a>
+
+                        <a class="project-card project-card--editorial editorial-card--mint" href="https://o-tcalculator.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="打开在线计算每月餐补">
+                            <div class="editorial-card__media" aria-hidden="true">
+                                <div class="editorial-card__shape">
+                                    <div class="editorial-card__canvas editorial-card__canvas--meal">
+                                        <div class="editorial-card__panel editorial-card__panel--calendar"></div>
+                                        <div class="editorial-card__panel editorial-card__panel--result"><span>¥</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editorial-card__content">
+                                <div class="editorial-card__text">
+                                    <div class="editorial-card__tags" aria-label="项目标签">
+                                        <span class="tag">效率工具</span>
+                                        <span class="tag">计算器</span>
+                                        <span class="tag">职场工具</span>
+                                    </div>
+                                    <h3 class="editorial-card__title">在线计算每月餐补</h3>
+                                    <p class="editorial-card__description">根据出勤表和餐补标准，快速计算报销金额。</p>
+                                </div>
+                                <p class="editorial-card__meta">2026-05</p>
+                            </div>
+                        </a>
+
+                        <a class="project-card project-card--editorial editorial-card--sky" href="hoho-lab/shop-price-helper.html" target="_blank" rel="noopener noreferrer" aria-label="打开小店商品管理">
+                            <div class="editorial-card__media" aria-hidden="true">
+                                <div class="editorial-card__shape editorial-card__shape--circle">
+                                    <div class="editorial-card__canvas editorial-card__canvas--shop">
+                                        <div class="editorial-card__panel editorial-card__panel--barcode"></div>
+                                        <div class="editorial-card__price-tag"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editorial-card__content">
+                                <div class="editorial-card__text">
+                                    <div class="editorial-card__tags" aria-label="项目标签">
+                                        <span class="tag">微信小程序</span>
+                                        <span class="tag">扫码查价</span>
+                                        <span class="tag">商品管理</span>
+                                    </div>
+                                    <h3 class="editorial-card__title">小店商品管理</h3>
+                                    <p class="editorial-card__description">为小店商家设计的商品管理小程序，扫一下条码就知道价格。</p>
+                                </div>
+                                <p class="editorial-card__meta">2026-09</p>
+                            </div>
+                        </a>
                     </div>
                 </div>
-
-                <div class="project-card" data-href="ai-check/index.html">
-                    <div class="project-header">
-                        <div class="project-icon">🔎</div>
-                        <div>
-                            <h3 class="project-title">产品设计走查skill</h3>
-                            <p class="project-date">2026-08</p>
+                <div class="card-carousel__controls">
+                    <div class="card-carousel__controls-arrows">
+                        <button class="card-carousel__btn card-carousel__btn--prev" type="button" aria-label="上一张" disabled>
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.41 16.59L10.83 12L15.41 7.41L14 6L8 12L14 18L15.41 16.59Z"/></svg>
+                        </button>
+                        <button class="card-carousel__btn card-carousel__btn--next" type="button" aria-label="下一张">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/></svg>
+                        </button>
+                    </div>
+                    <div class="card-carousel__progress-wrapper">
+                        <div class="card-carousel__progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="轮播进度" aria-valuenow="0">
+                            <div class="card-carousel__progress-indicator"></div>
                         </div>
-                    </div>
-                    <p class="project-description">
-                        AI 自动完成多端截图、规范对照与设计稿走查。
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">体验走查</span>
-                        <span class="tag">代码扫描</span>
-                        <a href="ai-check/index.html" class="project-detail-link" target="_blank">详情</a>
-                    </div>
-                </div>
-
-                <div class="project-card" data-href="https://github.com/kwchenxi/excel-to-dmp">
-                    <div class="project-header">
-                        <div class="project-icon">🐛</div>
-                        <div>
-                            <h3 class="project-title">BUG自动录入研发系统skill</h3>
-                            <p class="project-date">2026-07</p>
-                        </div>
-                    </div>
-                    <p class="project-description">
-                        自动将 Excel 中的 BUG 批量提单到研发系统，告别手动录入。
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">自动化</span>
-                        <span class="tag">效率工具</span>
-                        <span class="tag">缺陷管理</span>
-                        <a href="https://github.com/kwchenxi/excel-to-dmp" class="project-detail-link" target="_blank">详情</a>
-                    </div>
-                </div>
-
-                <div class="project-card" data-href="https://o-tcalculator.vercel.app/">
-                    <div class="project-header">
-                        <div class="project-icon">🍚</div>
-                        <div>
-                            <h3 class="project-title">在线计算每月餐补</h3>
-                            <p class="project-date">2026-05</p>
-                        </div>
-                    </div>
-                    <p class="project-description">
-                        根据出勤表和餐补标准，快速计算报销金额。
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">效率工具</span>
-                        <span class="tag">计算器</span>
-                        <span class="tag">职场工具</span>
-                        <a href="https://o-tcalculator.vercel.app/" class="project-detail-link" target="_blank">详情</a>
-                    </div>
-                </div>
-
-                <div class="project-card" data-href="hoho-lab/shop-price-helper.html">
-                    <div class="project-header">
-                        <div class="project-icon">🛒</div>
-                        <div>
-                            <h3 class="project-title">小店商品管理</h3>
-                            <p class="project-date">2026-09</p>
-                        </div>
-                    </div>
-                    <p class="project-description">
-                        为小店商家设计的商品管理小程序，扫一下条码就知道价格。
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">微信小程序</span>
-                        <span class="tag">扫码查价</span>
-                        <span class="tag">商品管理</span>
-                        <a href="hoho-lab/shop-price-helper.html" class="project-detail-link" target="_blank">详情</a>
                     </div>
                 </div>
             </div>
         </section>
 
         <section style="margin-bottom: 40px;">
-            <h2 style="font-size: 1.5rem; color: var(--primary-color); margin: 0 0 16px 0; font-weight: 700; line-height: 1.2;">2025.12 Vibe Coding 爆发的小尝试</h2>
-            <div class="projects-grid">
-                <div class="project-card" data-href="https://hoho-portfolio.vercel.app">
-                    <div class="project-header">
-                        <div class="project-icon">🚀</div>
-                        <div>
-                            <h3 class="project-title">我的作品集</h3>
-                            <p class="project-date">2026-02</p>
-                        </div>
-                    </div>
-                    <p class="project-description">
-                        展示智能日历、AIGC助手等多个 AI 驱动创新项目。
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">AI创新</span>
-                        <span class="tag">产品设计</span>
-                        <span class="tag">用户体验</span>
-                        <a href="https://hoho-portfolio.vercel.app" class="project-detail-link" target="_blank">详情</a>
+            <h2 class="section-title">Vibe Coding 小尝试与早期探索</h2>
+            <div class="card-carousel">
+                <div class="card-carousel__viewport">
+                    <div class="card-carousel__track">
+                        <a class="project-card project-card--editorial editorial-card--blue" href="https://hoho-portfolio.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="打开我的作品集">
+                            <div class="editorial-card__media" aria-hidden="true">
+                                <div class="editorial-card__shape">
+                                    <div class="editorial-card__canvas editorial-card__canvas--portfolio">
+                                        <div class="editorial-card__panel editorial-card__panel--site">
+                                            <span></span><span></span><span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editorial-card__content">
+                                <div class="editorial-card__text">
+                                    <div class="editorial-card__tags" aria-label="项目标签">
+                                        <span class="tag">AI创新</span>
+                                        <span class="tag">产品设计</span>
+                                        <span class="tag">用户体验</span>
+                                    </div>
+                                    <h3 class="editorial-card__title">我的作品集</h3>
+                                    <p class="editorial-card__description">展示智能日历、AIGC助手等多个 AI 驱动创新项目。</p>
+                                </div>
+                                <p class="editorial-card__meta">2026-02</p>
+                            </div>
+                        </a>
+
+                        <a class="project-card project-card--editorial editorial-card--mint" href="https://outdoor-guide-5cis.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="打开户外徒步线路">
+                            <div class="editorial-card__media" aria-hidden="true">
+                                <div class="editorial-card__shape editorial-card__shape--circle">
+                                    <div class="editorial-card__canvas editorial-card__canvas--hike"></div>
+                                </div>
+                            </div>
+                            <div class="editorial-card__content">
+                                <div class="editorial-card__text">
+                                    <div class="editorial-card__tags" aria-label="项目标签">
+                                        <span class="tag">户外导航</span>
+                                        <span class="tag">地理信息</span>
+                                        <span class="tag">探索工具</span>
+                                    </div>
+                                    <h3 class="editorial-card__title">户外徒步线路</h3>
+                                    <p class="editorial-card__description">为户外爱好者提供路线规划、实时定位与地理信息。</p>
+                                </div>
+                                <p class="editorial-card__meta">2025-12</p>
+                            </div>
+                        </a>
+
+                        <a class="project-card project-card--editorial editorial-card--amber" href="hoho-lab/portal_simulator.html" target="_blank" rel="noopener noreferrer" aria-label="打开高龄领导办公模拟器">
+                            <div class="editorial-card__media" aria-hidden="true">
+                                <div class="editorial-card__shape editorial-card__shape--squircle">
+                                    <div class="editorial-card__canvas editorial-card__canvas--retro"></div>
+                                </div>
+                            </div>
+                            <div class="editorial-card__content">
+                                <div class="editorial-card__text">
+                                    <div class="editorial-card__tags" aria-label="项目标签">
+                                        <span class="tag">无障碍设计</span>
+                                        <span class="tag">用户体验</span>
+                                        <span class="tag">模拟器</span>
+                                    </div>
+                                    <h3 class="editorial-card__title">高龄领导办公模拟器</h3>
+                                    <p class="editorial-card__description">模拟高龄用户办公场景中的困难，理解无障碍设计的重要性。</p>
+                                </div>
+                                <p class="editorial-card__meta">2025-06</p>
+                            </div>
+                        </a>
+
+                        <a class="project-card project-card--editorial editorial-card--violet" href="hoho-lab/mac-violin.html" target="_blank" rel="noopener noreferrer" aria-label="打开Mac风格数字小提琴">
+                            <div class="editorial-card__media" aria-hidden="true">
+                                <div class="editorial-card__shape">
+                                    <div class="editorial-card__canvas editorial-card__canvas--violin"></div>
+                                </div>
+                            </div>
+                            <div class="editorial-card__content">
+                                <div class="editorial-card__text">
+                                    <div class="editorial-card__tags" aria-label="项目标签">
+                                        <span class="tag">音乐</span>
+                                        <span class="tag">复古设计</span>
+                                        <span class="tag">交互</span>
+                                    </div>
+                                    <h3 class="editorial-card__title">Mac风格数字小提琴</h3>
+                                    <p class="editorial-card__description">复古 Mac OS 风格的数字小提琴，结合现代交互。</p>
+                                </div>
+                                <p class="editorial-card__meta">2025-08</p>
+                            </div>
+                        </a>
+
+                        <a class="project-card project-card--editorial editorial-card--sky" href="hoho-lab/stripe-bg-demo.html" target="_blank" rel="noopener noreferrer" aria-label="打开网页端暗纹bg">
+                            <div class="editorial-card__media" aria-hidden="true">
+                                <div class="editorial-card__shape editorial-card__shape--circle">
+                                    <div class="editorial-card__canvas editorial-card__canvas--stripe">
+                                        <div class="editorial-card__panel editorial-card__panel--mini">
+                                            <span></span><span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="editorial-card__content">
+                                <div class="editorial-card__text">
+                                    <div class="editorial-card__tags" aria-label="项目标签">
+                                        <span class="tag">CSS</span>
+                                        <span class="tag">背景效果</span>
+                                        <span class="tag">条纹</span>
+                                    </div>
+                                    <h3 class="editorial-card__title">网页端暗纹bg</h3>
+                                    <p class="editorial-card__description">提供多种斜条纹背景效果和可直接使用的 CSS 代码。</p>
+                                </div>
+                                <p class="editorial-card__meta">2025-05</p>
+                            </div>
+                        </a>
                     </div>
                 </div>
-
-                <div class="project-card" data-href="https://outdoor-guide-5cis.vercel.app">
-                    <div class="project-header">
-                        <div class="project-icon">⛰️</div>
-                        <div>
-                            <h3 class="project-title">户外徒步线路</h3>
-                            <p class="project-date">2025-12</p>
-                        </div>
+                <div class="card-carousel__controls">
+                    <div class="card-carousel__controls-arrows">
+                        <button class="card-carousel__btn card-carousel__btn--prev" type="button" aria-label="上一张" disabled>
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.41 16.59L10.83 12L15.41 7.41L14 6L8 12L14 18L15.41 16.59Z"/></svg>
+                        </button>
+                        <button class="card-carousel__btn card-carousel__btn--next" type="button" aria-label="下一张">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/></svg>
+                        </button>
                     </div>
-                    <p class="project-description">
-                        为户外爱好者提供路线规划、实时定位与地理信息。
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">户外导航</span>
-                        <span class="tag">地理信息</span>
-                        <span class="tag">探索工具</span>
-                        <a href="https://outdoor-guide-5cis.vercel.app" class="project-detail-link" target="_blank">详情</a>
+                    <div class="card-carousel__progress-wrapper">
+                        <div class="card-carousel__progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="轮播进度" aria-valuenow="0">
+                            <div class="card-carousel__progress-indicator"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section style="margin-bottom: 40px;">
-            <h2 style="font-size: 1.5rem; color: var(--primary-color); margin: 0 0 16px 0; font-weight: 700; line-height: 1.2;">早期探索</h2>
-            <div class="projects-grid">
-                <div class="project-card" data-href="hoho-lab/portal_simulator.html">
-                    <div class="project-header">
-                        <div class="project-icon">👴</div>
-                        <div>
-                            <h3 class="project-title">高龄领导办公模拟器</h3>
-                            <p class="project-date">2025-06</p>
-                        </div>
-                    </div>
-                    <p class="project-description">
-                        模拟高龄用户办公场景中的困难，理解无障碍设计的重要性。
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">无障碍设计</span>
-                        <span class="tag">用户体验</span>
-                        <span class="tag">模拟器</span>
-                        <a href="hoho-lab/portal_simulator.html" class="project-detail-link" target="_blank">详情</a>
-                    </div>
-                </div>
-
-                <div class="project-card" data-href="hoho-lab/mac-violin.html">
-                    <div class="project-header">
-                        <div class="project-icon">🎻</div>
-                        <div>
-                            <h3 class="project-title">Mac风格数字小提琴</h3>
-                            <p class="project-date">2025-08</p>
-                        </div>
-                    </div>
-                    <p class="project-description">
-                        复古 Mac OS 风格的数字小提琴，结合现代交互。
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">音乐</span>
-                        <span class="tag">复古设计</span>
-                        <span class="tag">交互</span>
-                        <a href="hoho-lab/mac-violin.html" class="project-detail-link" target="_blank">详情</a>
-                    </div>
-                </div>
-
-                <div class="project-card" data-href="hoho-lab/stripe-bg-demo.html">
-                    <div class="project-header">
-                        <div class="project-icon">🎨</div>
-                        <div>
-                            <h3 class="project-title">网页端暗纹bg</h3>
-                            <p class="project-date">2025-05</p>
-                        </div>
-                    </div>
-                    <p class="project-description">
-                        提供多种斜条纹背景效果和可直接使用的 CSS 代码。
-                    </p>
-                    <div class="project-tags">
-                        <span class="tag">CSS</span>
-                        <span class="tag">背景效果</span>
-                        <span class="tag">条纹</span>
-                        <a href="hoho-lab/stripe-bg-demo.html" class="project-detail-link" target="_blank">详情</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="header" style="padding: 20px 0; height: 120px; display: flex; flex-direction: column; justify-content: center; margin-top: 40px;">
-            <h1 style="margin-bottom: 5px; line-height: 1.2;">沉淀与实践</h1>
-            <p style="margin-top: 0;">我分享的AI学习笔记、深度文章与实用教程等干货</p>
+        <section class="header header--minimal" style="margin-top: 40px;">
+            <h1>沉淀与实践</h1>
         </section>
         
         <div class="container" style="margin-top: 40px;">
@@ -233,7 +312,7 @@
             <!-- AI基础概念 -->
             <section style="margin-bottom: 40px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h2 style="font-size: 1.5rem; color: var(--primary-color); margin: 0; font-weight: 700; line-height: 1.2;">How I AI</h2>
+                <h2 class="section-title section-title--inline">How I AI</h2>
                 <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=Mzg2MzU1ODIxNw==&action=getalbum&album_id=2833843896706449413#wechat_redirect" style="color: var(--secondary-color); text-decoration: none; font-size: 1rem;" target="_blank">更多 &gt;</a>
                 </div>
 
@@ -397,7 +476,7 @@
             
             <!-- 值得关注的人 -->
             <section style="margin-bottom: 40px;">
-                <h2 style="font-size: 1.5rem; color: var(--primary-color); margin: 0 0 16px 0; font-weight: 700; line-height: 1.2;">值得关注的AI专家</h2>
+                <h2 class="section-title">值得关注的AI专家</h2>
 
                 
                 <div class="projects-grid">
@@ -428,7 +507,7 @@
             
             <!-- 推荐AI产品 -->
             <section id="fav-ai-products" style="margin-bottom: 40px;">
-                <h2 style="font-size: 1.5rem; color: var(--primary-color); margin: 0 0 16px 0; font-weight: 700; line-height: 1.2;">我喜欢的AI产品</h2>
+                <h2 class="section-title">我喜欢的AI产品</h2>
                 
                 <div class="projects-grid">
                     <div class="project-card" data-href="https://aistudio.google.com/">
@@ -531,6 +610,6 @@
 
 
     </div>
-    <script src="script.js?v=4"></script>
+    <script src="script.js?v=6"></script>
 </body>
 </html>

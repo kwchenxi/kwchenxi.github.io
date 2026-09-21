@@ -47,7 +47,7 @@
             --accent-dark: #0891b2;
             --accent-light: #22d3ee;
             /* 中性色 - Lingee UI foreground 体系 */
-            --background: #f5f6f8;
+            --background: #ffffff;
             --surface: #ffffff;
             --text-primary: rgba(0, 0, 0, 0.85);
             --text-secondary: rgba(0, 0, 0, 0.65);
@@ -128,6 +128,7 @@
             color: var(--text-primary);
             line-height: 1.6;
             font-size: 14px;
+            overflow-x: clip;
         }
 
         .container {
@@ -162,6 +163,39 @@
             font-weight: 400;
         }
 
+        /* 首页标题采用 Related stories 式的简洁文字层级 */
+        .header.header--minimal {
+            background: transparent;
+            border-radius: 0;
+            box-shadow: none;
+            color: #202124;
+            margin-bottom: var(--spacing-sm);
+            padding: 36px 0 20px;
+            text-align: left;
+        }
+
+        .header.header--minimal h1 {
+            font-size: clamp(28px, 3vw, 36px);
+            font-weight: 400;
+            letter-spacing: -0.8px;
+            line-height: 1.2;
+            margin: 0;
+            text-shadow: none;
+        }
+
+        .section-title {
+            color: #202124;
+            font-size: clamp(24px, 2.5vw, 32px);
+            font-weight: 400;
+            letter-spacing: -0.6px;
+            line-height: 1.25;
+            margin: 0 0 var(--spacing-md);
+        }
+
+        .section-title--inline {
+            margin: 0;
+        }
+
         .project-card {
             background: var(--surface);
             border-radius: var(--radius-x-large);
@@ -187,7 +221,775 @@
             box-shadow: var(--shadow-md);
             border-color: var(--border-dark);
         }
-        
+
+        /* 首页首张卡片试点：借鉴 Google Related stories 的信息层级与交互节奏 */
+        .project-card.project-card--editorial {
+            --editorial-hover: linear-gradient(135deg, #fffaf1 0%, #f0faf4 50%, #e2f2ff 100%);
+            --editorial-clover-mask: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDIiIGhlaWdodD0iMTAyIiBmaWxsPSJub25lIj48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik03LjE4NSA1MC42MzJBMzAuNzgxIDMwLjc4MSAwIDAgMSAwIDMwLjgxQzAgMTMuNzk0IDEzLjcyMyAwIDMwLjY1MSAwYzcuNjYyIDAgMTQuNjY3IDIuODI2IDIwLjA0IDcuNDk3QzU2LjA1MSAyLjgyNiA2My4wNDEgMCA3MC42ODQgMGMxNi44ODkgMCAzMC41NzkgMTMuNzk0IDMwLjU3OSAzMC44MSAwIDcuNTUtMi42OTQgMTQuNDY0LTcuMTY4IDE5LjgyMmEzMC44MjUgMzAuODI1IDAgMCAxIDcuMTY4IDE5LjgyMmMwIDE3LjAxNS0xMy42OSAzMC44MDktMzAuNTc5IDMwLjgwOS03LjY0NCAwLTE0LjYzMi0yLjgyNS0xOS45OTMtNy40OTYtNS4zNzMgNC42Ny0xMi4zNzggNy40OTYtMjAuMDQgNy40OTZDMTMuNzIzIDEwMS4yNjMgMCA4Ny40NjkgMCA3MC40NTNjMC03LjU0OSAyLjcwMS0xNC40NjQgNy4xODUtMTkuODIxIi8+PC9zdmc+);
+            --editorial-circle-mask: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMTAiIGhlaWdodD0iMTEwIiBmaWxsPSJub25lIj48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik0xMDkuNDc0IDU0LjczN2MwIDMwLjIzLTI0LjUwNyA1NC43MzctNTQuNzM3IDU0LjczN1MwIDg0Ljk2NyAwIDU0LjczNyAyNC41MDcgMCA1NC43MzcgMHM1NC43MzcgMjQuNTA3IDU0LjczNyA1NC43MzciLz48L3N2Zz4=);
+            --editorial-squircle-mask: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMTAiIGhlaWdodD0iMTEwIiBmaWxsPSJub25lIj48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik0xMDkuNDc0IDU4Ljg0MmMwIDE1LjI5OCAwIDIyLjk0Ny0yLjQwMiAyOS4wMTVhMzQuMjE1IDM0LjIxNSAwIDAgMS0xOS4yMTUgMTkuMjE1Yy02LjA2OCAyLjQwMi0xMy43MTcgMi40MDItMjkuMDE1IDIuNDAyaC04LjIxYy0xNS4yOTggMC0yMi45NDcgMC0yOS4wMTUtMi40MDJBMzQuMjEzIDM0LjIxMyAwIDAgMSAyLjQwMiA4Ny44NTdDMCA4MS43OSAwIDc0LjE0IDAgNTguODQydi04LjIxYzAtMTUuMjk4IDAtMjIuOTQ3IDIuNDAyLTI5LjAxNUEzNC4yMSAzNC4yMSAwIDAgMSAyMS42MTcgMi40MDJDMjcuNjg1IDAgMzUuMzM0IDAgNTAuNjMyIDBoOC4yMUM3NC4xNCAwIDgxLjc5IDAgODcuODU3IDIuNDAyYTM0LjIxMyAzNC4yMTMgMCAwIDEgMTkuMjE1IDE5LjIxNWMyLjQwMiA2LjA2OCAyLjQwMiAxMy43MTcgMi40MDIgMjkuMDE1djguMjEiLz48L3N2Zz4=);
+            background: #f8f9fa;
+            border: 0;
+            border-radius: var(--radius-3xl);
+            box-shadow: none;
+            color: #202124;
+            min-height: 356px;
+            overflow: hidden;
+            padding: 0;
+            text-decoration: none;
+            transition: background 0.2s cubic-bezier(0.34, 0.8, 0.34, 1);
+        }
+
+        .project-card.project-card--editorial.editorial-card--blue {
+            --editorial-hover: linear-gradient(135deg, #f7faff 0%, #f0f3ff 50%, #f6f3ff 100%);
+        }
+
+        .project-card.project-card--editorial.editorial-card--violet {
+            --editorial-hover: linear-gradient(135deg, #fdf9ff 0%, #fbf2f8 50%, #fdf7fb 100%);
+        }
+
+        .project-card.project-card--editorial.editorial-card--amber {
+            --editorial-hover: linear-gradient(135deg, #fffef8 0%, #fdf9ea 50%, #fdf6ee 100%);
+        }
+
+        .project-card.project-card--editorial.editorial-card--mint {
+            --editorial-hover: linear-gradient(135deg, #f8fdf9 0%, #f0fbf4 50%, #effcf9 100%);
+        }
+
+        .project-card.project-card--editorial.editorial-card--sky {
+            --editorial-hover: linear-gradient(135deg, #f7fdfd 0%, #effbfc 50%, #f3f9fe 100%);
+        }
+
+        .project-card.project-card--editorial:hover {
+            background: var(--editorial-hover);
+            border-color: transparent;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .project-card.project-card--editorial:focus-visible {
+            outline: 2px solid #1967d2;
+            outline-offset: 2px;
+        }
+
+        .editorial-card__media {
+            align-items: center;
+            display: flex;
+            height: clamp(164px, 16vw, 208px);
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .editorial-card__shape {
+            aspect-ratio: 1;
+            height: 100%;
+            mask-image: var(--editorial-clover-mask);
+            mask-position: 50% 50%;
+            mask-repeat: no-repeat;
+            mask-size: contain;
+            max-width: 300px;
+            -webkit-mask-image: var(--editorial-clover-mask);
+            -webkit-mask-position: 50% 50%;
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-size: contain;
+            width: auto;
+        }
+
+        /* 形状轮换（参考 Related stories：四叶花 / 正圆 / 圆角方 三形循环） */
+        .editorial-card__shape--circle {
+            mask-image: var(--editorial-circle-mask);
+            -webkit-mask-image: var(--editorial-circle-mask);
+        }
+
+        .editorial-card__shape--squircle {
+            mask-image: var(--editorial-squircle-mask);
+            -webkit-mask-image: var(--editorial-squircle-mask);
+        }
+
+        .editorial-card__canvas {
+            background: linear-gradient(135deg, #dbeafe 0%, #ede9fe 100%);
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.2s cubic-bezier(0.34, 0.8, 0.34, 1);
+            width: 100%;
+        }
+
+        .project-card.project-card--editorial:hover .editorial-card__canvas {
+            transform: scale(1.03);
+        }
+
+        .editorial-card__panel {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(32, 33, 36, 0.12);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 12px;
+            position: absolute;
+        }
+
+        .editorial-card__panel span {
+            background: #c5d8fb;
+            border-radius: 999px;
+            display: block;
+            height: 6px;
+        }
+
+        .editorial-card__panel span:nth-child(2) {
+            background: #d9c7fa;
+            width: 72%;
+        }
+
+        .editorial-card__panel span:nth-child(3) {
+            background: #8ab4f8;
+            width: 48%;
+        }
+
+        .editorial-card__panel--figma {
+            left: 14%;
+            top: 15%;
+            transform: rotate(-7deg);
+            width: 44%;
+        }
+
+        .editorial-card__panel--web {
+            bottom: 15%;
+            right: 12%;
+            transform: rotate(7deg);
+            width: 48%;
+        }
+
+        .editorial-card__panel--web span:first-child {
+            background: #f9ab00;
+            width: 28%;
+        }
+
+        .editorial-card__cursor {
+            border-bottom: 14px solid transparent;
+            border-left: 10px solid #202124;
+            border-right: 10px solid transparent;
+            border-top: 14px solid #202124;
+            bottom: 18%;
+            height: 0;
+            left: 47%;
+            position: absolute;
+            transform: rotate(-28deg);
+            width: 0;
+            z-index: 1;
+        }
+
+        .editorial-card__content {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 12px;
+            padding: 20px 24px 24px;
+        }
+
+        .editorial-card__text {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .editorial-card__tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .editorial-card__tags .tag {
+            background: none;
+            border: 0;
+            color: #202124;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+            padding: 0;
+        }
+
+        .editorial-card__meta {
+            color: #202124;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.1px;
+            line-height: 1.5;
+        }
+
+        .editorial-card__title {
+            color: #202124;
+            display: -webkit-box;
+            font-size: 20px;
+            font-weight: 400;
+            letter-spacing: -0.2px;
+            line-height: 1.4;
+            margin: 0;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+        }
+
+        .editorial-card__description {
+            color: #202124;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .editorial-card__meta {
+            margin-top: auto;
+        }
+
+        /* 实用小工具分区：横向滑动轮播（参考 Google Related stories，通栏布局） */
+
+        /* 突破 1200px 容器：卡片行横跨整个窗口宽，滑动时卡片可贴到屏幕左右缘 */
+        .card-carousel__viewport {
+            margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
+            overflow-x: auto;
+            scrollbar-width: none;
+            scroll-padding-left: max(20px, calc(50vw - 580px));
+            scroll-padding-right: max(20px, calc(50vw - 580px));
+            scroll-snap-type: x mandatory;
+        }
+
+        .card-carousel__viewport::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 轨道左右留白：静止时首末卡与页面内容对齐；通栏内百分比失效，用绝对表达式。
+           左侧用外边距推移轨道；右侧用内边距——外边距不计入滚动区域，内边距随轨道边框盒延伸 */
+        .card-carousel__track {
+            align-items: stretch;
+            display: flex;
+            gap: 16px;
+            margin-left: max(20px, calc(50vw - 580px));
+            padding-right: max(20px, calc(50vw - 580px));
+            width: max-content;
+        }
+
+        .card-carousel__track > .project-card--editorial {
+            flex: 0 0 auto;
+            scroll-snap-align: start;
+            width: 300px;
+        }
+
+        /* 轮播控件：复用 Google Related stories 的 split-pill 双按钮 + 进度条，
+           位于卡片行下方、左对齐内容、宽约内容一半 */
+        .card-carousel__controls {
+            align-items: center;
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+            width: min(580px, 100%);
+        }
+
+        .card-carousel__controls-arrows {
+            align-items: center;
+            display: flex;
+            flex-shrink: 0;
+            gap: 2px;
+        }
+
+        .card-carousel__btn {
+            align-items: center;
+            background-color: #f8f9fa;
+            border: 0;
+            color: #202124;
+            cursor: pointer;
+            display: flex;
+            height: 48px;
+            justify-content: center;
+            padding: 0;
+            position: relative;
+            transition: background-color 0.2s, opacity 0.2s;
+            width: 48px;
+        }
+
+        .card-carousel__btn--prev {
+            border-radius: 48px 8px 8px 48px;
+        }
+
+        .card-carousel__btn--prev::before {
+            border-radius: 100% 0 0;
+            right: 0;
+        }
+
+        .card-carousel__btn--next {
+            border-radius: 8px 48px 48px 8px;
+        }
+
+        .card-carousel__btn--next::before {
+            border-radius: 0 100% 0 0;
+            left: 0;
+        }
+
+        .card-carousel__btn:hover:not(:disabled),
+        .card-carousel__btn:active:not(:disabled),
+        .card-carousel__btn:focus-visible:not(:disabled) {
+            background-color: #e8eaed;
+        }
+
+        .card-carousel__btn:hover:not(:disabled)::before,
+        .card-carousel__btn:active:not(:disabled)::before,
+        .card-carousel__btn:focus-visible:not(:disabled)::before {
+            background-color: rgba(0, 0, 0, 0.04);
+            bottom: 0;
+            content: "";
+            height: 20px;
+            position: absolute;
+            transition: height 0.2s, width 0.2s;
+            width: 30px;
+        }
+
+        .card-carousel__btn:focus-visible:not(:disabled) {
+            outline: 0;
+        }
+
+        .card-carousel__btn:focus-visible:not(:disabled)::after {
+            border: 2px solid #1967d2;
+            content: "";
+            inset: -2px;
+            position: absolute;
+        }
+
+        .card-carousel__btn--prev:focus-visible:not(:disabled)::after {
+            border-radius: 50px 14px 14px 50px;
+        }
+
+        .card-carousel__btn--next:focus-visible:not(:disabled)::after {
+            border-radius: 14px 50px 50px 14px;
+        }
+
+        .card-carousel__btn:disabled {
+            color: #bdc1c6;
+            cursor: not-allowed;
+        }
+
+        .card-carousel__btn svg {
+            fill: currentColor;
+            height: 24px;
+            width: 24px;
+        }
+
+        .card-carousel__progress-wrapper {
+            align-items: center;
+            display: flex;
+            flex: 1 0 0;
+            min-width: 0;
+        }
+
+        .card-carousel__progress-bar {
+            background-color: #dadce0;
+            border-radius: 8px;
+            height: 2px;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+        }
+
+        .card-carousel__progress-indicator {
+            background-color: #202124;
+            height: 100%;
+            transform: scaleX(0);
+            transform-origin: left center;
+            transition: transform 0.3s ease-out;
+            width: 100%;
+        }
+
+        /* 配图：产品设计走查（设备 + 检查清单） */
+        .editorial-card__canvas--audit {
+            background: linear-gradient(135deg, #ede9fe 0%, #fae8ff 100%);
+        }
+
+        .editorial-card__panel--device {
+            border-radius: 14px;
+            left: 16%;
+            padding: 12px;
+            top: 18%;
+            transform: rotate(-6deg);
+            width: 34%;
+        }
+
+        .editorial-card__panel--device::before {
+            background: #c7d2fe;
+            border-radius: 999px;
+            content: "";
+            display: block;
+            height: 5px;
+            margin: 0 auto 8px;
+            width: 40%;
+        }
+
+        .editorial-card__panel--checklist {
+            bottom: 16%;
+            padding: 12px;
+            right: 12%;
+            transform: rotate(5deg);
+            width: 42%;
+        }
+
+        .editorial-card__panel--checklist span:nth-child(1) {
+            background: #c4b5fd;
+            width: 88%;
+        }
+
+        .editorial-card__panel--checklist span:nth-child(2) {
+            background: #86efac;
+            width: 72%;
+        }
+
+        .editorial-card__panel--checklist span:nth-child(3) {
+            background: #ddd6fe;
+            width: 56%;
+        }
+
+        .editorial-card__check-badge {
+            align-items: center;
+            background: #22c55e;
+            border-radius: 50%;
+            bottom: 44%;
+            box-shadow: 0 6px 14px rgba(34, 197, 94, 0.4);
+            display: flex;
+            height: 34px;
+            justify-content: center;
+            position: absolute;
+            right: 40%;
+            width: 34px;
+        }
+
+        .editorial-card__check-badge::after {
+            border: solid #ffffff;
+            border-width: 0 0 3px 3px;
+            content: "";
+            height: 8px;
+            margin-top: -2px;
+            transform: rotate(-45deg);
+            width: 14px;
+        }
+
+        /* 配图：BUG 自动录入（Excel → 工单） */
+        .editorial-card__canvas--bug {
+            background: linear-gradient(135deg, #fef3c7 0%, #ffedd5 100%);
+        }
+
+        .editorial-card__panel--excel {
+            left: 12%;
+            padding: 12px;
+            top: 18%;
+            transform: rotate(-6deg);
+            width: 44%;
+        }
+
+        .editorial-card__panel--excel::before {
+            background: #34d399;
+            border-radius: 10px 10px 0 0;
+            content: "";
+            display: block;
+            height: 10px;
+            margin: -12px -12px 8px;
+        }
+
+        .editorial-card__panel--excel span:nth-child(1) {
+            background: #a7f3d0;
+            width: 100%;
+        }
+
+        .editorial-card__panel--excel span:nth-child(2) {
+            background: #fcd34d;
+            width: 80%;
+        }
+
+        .editorial-card__panel--excel span:nth-child(3) {
+            background: #fdba74;
+            width: 60%;
+        }
+
+        .editorial-card__panel--ticket {
+            bottom: 16%;
+            gap: 8px;
+            padding: 12px;
+            right: 12%;
+            transform: rotate(6deg);
+            width: 40%;
+        }
+
+        .editorial-card__panel--ticket span {
+            align-items: center;
+            background: none;
+            display: flex;
+            gap: 6px;
+            height: 8px;
+            width: 100%;
+        }
+
+        .editorial-card__panel--ticket span::before {
+            background: #f87171;
+            border-radius: 50%;
+            content: "";
+            flex: 0 0 8px;
+            height: 8px;
+        }
+
+        .editorial-card__panel--ticket span::after {
+            background: #fecaca;
+            border-radius: 999px;
+            content: "";
+            flex: 1;
+            height: 6px;
+        }
+
+        .editorial-card__arrow {
+            border: solid #f59e0b;
+            border-width: 3px 3px 0 0;
+            height: 14px;
+            left: 50%;
+            position: absolute;
+            top: 46%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            width: 14px;
+        }
+
+        /* 配图：餐补计算（日历 + 金额） */
+        .editorial-card__canvas--meal {
+            background: linear-gradient(135deg, #d1fae5 0%, #ccfbf1 100%);
+        }
+
+        .editorial-card__panel--calendar {
+            background-color: rgba(255, 255, 255, 0.92);
+            background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+            background-size: 12px 12px;
+            height: 46%;
+            left: 16%;
+            padding: 0;
+            top: 20%;
+            transform: rotate(-6deg);
+            width: 42%;
+        }
+
+        .editorial-card__panel--calendar::before {
+            background: #34d399;
+            border-radius: 10px 10px 0 0;
+            content: "";
+            display: block;
+            height: 10px;
+            width: 100%;
+        }
+
+        .editorial-card__panel--result {
+            align-items: center;
+            background: #10b981;
+            border-radius: 16px;
+            bottom: 18%;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+            display: flex;
+            height: 30%;
+            justify-content: center;
+            padding: 0;
+            right: 16%;
+            transform: rotate(6deg);
+            width: 30%;
+        }
+
+        .editorial-card__panel--result span {
+            background: none;
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 600;
+            height: auto;
+        }
+
+        /* 配图：小店商品管理（条码 + 价签） */
+        .editorial-card__canvas--shop {
+            background: linear-gradient(135deg, #cffafe 0%, #e0f2fe 100%);
+        }
+
+        .editorial-card__panel--barcode {
+            align-items: flex-end;
+            height: 34%;
+            justify-content: center;
+            left: 16%;
+            padding: 12px;
+            top: 22%;
+            transform: rotate(-6deg);
+            width: 46%;
+        }
+
+        .editorial-card__panel--barcode::before {
+            background: repeating-linear-gradient(90deg, #334155 0 2px, transparent 2px 5px, #334155 5px 6px, transparent 6px 10px, #334155 10px 13px, transparent 13px 16px);
+            content: "";
+            display: block;
+            height: 60%;
+            width: 100%;
+        }
+
+        .editorial-card__price-tag {
+            background: #f472b6;
+            border-radius: 8px;
+            bottom: 22%;
+            box-shadow: 0 8px 18px rgba(244, 114, 182, 0.4);
+            height: 26%;
+            position: absolute;
+            right: 18%;
+            transform: rotate(10deg);
+            width: 26%;
+        }
+
+        .editorial-card__price-tag::before {
+            background: #ffffff;
+            border-radius: 50%;
+            content: "";
+            height: 8px;
+            left: 6px;
+            position: absolute;
+            top: 6px;
+            width: 8px;
+        }
+
+        /* 配图：Vibe Coding 小尝试与早期探索（5 张卡，沿用同一视觉语言） */
+
+        /* 我的作品集：浏览器窗口 + 圆点 */
+        .editorial-card__canvas--portfolio {
+            background: linear-gradient(135deg, #dbeafe 0%, #ede9fe 100%);
+        }
+
+        .editorial-card__canvas--portfolio::before {
+            background: rgba(255, 255, 255, 0.94);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(32, 33, 36, 0.12);
+            content: "";
+            height: 56%;
+            left: 16%;
+            position: absolute;
+            top: 16%;
+            width: 56%;
+        }
+
+        .editorial-card__canvas--portfolio::after {
+            background: #8ab4f8;
+            border-radius: 50%;
+            bottom: 16%;
+            content: "";
+            height: 22%;
+            position: absolute;
+            right: 14%;
+            width: 22%;
+        }
+
+        .editorial-card__panel--site {
+            background: transparent;
+            box-shadow: none;
+            gap: 8px;
+            left: 22%;
+            padding: 0;
+            top: 28%;
+            transform: none;
+            width: 44%;
+        }
+
+        /* 户外徒步线路：山形 + 太阳 */
+        .editorial-card__canvas--hike {
+            background: linear-gradient(135deg, #d1fae5 0%, #dcfce7 100%);
+        }
+
+        .editorial-card__canvas--hike::before {
+            background: rgba(255, 255, 255, 0.95);
+            bottom: 8%;
+            clip-path: polygon(50% 0, 100% 100%, 0 100%);
+            content: "";
+            height: 62%;
+            left: 10%;
+            position: absolute;
+            width: 66%;
+        }
+
+        .editorial-card__canvas--hike::after {
+            background: #fbbf24;
+            border-radius: 50%;
+            content: "";
+            height: 20%;
+            opacity: 0.9;
+            position: absolute;
+            right: 14%;
+            top: 18%;
+            width: 20%;
+        }
+
+        /* 高龄领导办公模拟器：复古窗口 */
+        .editorial-card__canvas--retro {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        }
+
+        .editorial-card__canvas--retro::before {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(32, 33, 36, 0.12);
+            content: "";
+            height: 54%;
+            left: 18%;
+            position: absolute;
+            top: 24%;
+            width: 64%;
+        }
+
+        .editorial-card__canvas--retro::after {
+            background: #f59e0b;
+            border-radius: 12px 12px 0 0;
+            content: "";
+            height: 12%;
+            left: 18%;
+            position: absolute;
+            top: 24%;
+            width: 64%;
+        }
+
+        /* Mac风格数字小提琴：窗口 + 琴弦 */
+        .editorial-card__canvas--violin {
+            background: linear-gradient(135deg, #ede9fe 0%, #fae8ff 100%);
+        }
+
+        .editorial-card__canvas--violin::before {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(32, 33, 36, 0.12);
+            content: "";
+            height: 56%;
+            left: 16%;
+            position: absolute;
+            top: 22%;
+            width: 68%;
+        }
+
+        .editorial-card__canvas--violin::after {
+            background: repeating-linear-gradient(90deg, #c4b5fd 0 3px, transparent 3px 11px);
+            content: "";
+            height: 34%;
+            left: 25%;
+            position: absolute;
+            top: 34%;
+            width: 50%;
+        }
+
+        /* 网页端暗纹bg：斜条纹 + 小面板 */
+        .editorial-card__canvas--stripe {
+            background: repeating-linear-gradient(45deg, #e2e8f0 0 12px, #f8fafc 12px 24px);
+        }
+
+        .editorial-card__panel--mini {
+            right: 10%;
+            top: 16%;
+            transform: rotate(5deg);
+            width: 38%;
+        }
+
+        @media (hover: none), (max-width: 640px) {
+            .card-carousel__track > .project-card--editorial {
+                width: min(300px, 78vw);
+            }
+        }
+
         /* 确保选中文本有可见效果 */
         ::selection {
             background-color: rgba(99, 102, 241, 0.2);
