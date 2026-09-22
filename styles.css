@@ -132,9 +132,10 @@
         }
 
         .container {
-            max-width: 1200px;
+            /* 参考 blog.google 分类页容器（.uni-layout-page）：内容宽 1260 + 两侧 32 内边距，总宽 1324 */
+            max-width: 1324px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 32px;
         }
 
         .header {
@@ -444,14 +445,14 @@
 
         /* 实用小工具分区：横向滑动轮播（参考 Google Related stories，通栏布局） */
 
-        /* 突破 1200px 容器：卡片行横跨整个窗口宽，滑动时卡片可贴到屏幕左右缘 */
+        /* 突破 1324px 容器：卡片行横跨整个窗口宽，滑动时卡片可贴到屏幕左右缘 */
         .card-carousel__viewport {
             margin-left: calc(50% - 50vw);
             margin-right: calc(50% - 50vw);
             overflow-x: auto;
             scrollbar-width: none;
-            scroll-padding-left: max(20px, calc(50vw - 580px));
-            scroll-padding-right: max(20px, calc(50vw - 580px));
+            scroll-padding-left: max(32px, calc(50vw - 630px));
+            scroll-padding-right: max(32px, calc(50vw - 630px));
             scroll-snap-type: x mandatory;
         }
 
@@ -465,8 +466,8 @@
             align-items: stretch;
             display: flex;
             gap: 16px;
-            margin-left: max(20px, calc(50vw - 580px));
-            padding-right: max(20px, calc(50vw - 580px));
+            margin-left: max(32px, calc(50vw - 630px));
+            padding-right: max(32px, calc(50vw - 630px));
             width: max-content;
         }
 
@@ -483,7 +484,7 @@
             display: flex;
             gap: 24px;
             margin-top: 16px;
-            width: min(580px, 100%);
+            width: min(630px, 100%);
         }
 
         .card-carousel__controls-arrows {
@@ -597,6 +598,380 @@
             transform-origin: left center;
             transition: transform 0.3s ease-out;
             width: 100%;
+        }
+
+        /* 我喜欢的AI产品：深色 Collection 分区（参考 blog.google 首页第二屏 Collection，
+           背景渐变/文字层级/卡片尺寸与描边/配图位置均按参考站实测对齐） */
+        .collection {
+            background: linear-gradient(180deg, rgba(95, 99, 104, 0.4) 0%, rgba(32, 33, 36, 0.4) 100%), #202124;
+            box-sizing: border-box;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin: 0 calc(50% - 50vw) 40px;
+            min-height: 100vh;
+            overflow: hidden;
+            padding: 92px 0;
+            position: relative;
+        }
+
+        /* 参考站容器：--grid-max-width 1440px + grid-margin 三档留白（16 / 48 / 72） */
+        .collection__inner {
+            align-items: center;
+            box-sizing: border-box;
+            display: grid;
+            gap: 24px;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            margin: 0 auto;
+            max-width: 1440px;
+            padding: 0 16px;
+            width: 100%;
+        }
+
+        @media (min-width: 481px) {
+            .collection__inner {
+                padding: 0 48px;
+            }
+        }
+
+        .collection__content {
+            grid-column: 1 / span 4;
+        }
+
+        /* 眉行：24px 图标 + 14/28 文本，底部留白 24 */
+        .collection__eyebrow {
+            align-items: center;
+            display: grid;
+            gap: 12px;
+            grid-template-columns: 24px auto;
+            padding-bottom: 24px;
+        }
+
+        .collection__eyebrow svg {
+            fill: currentColor;
+            height: 24px;
+            width: 24px;
+        }
+
+        .collection__eyebrow-text {
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+            line-height: 28px;
+            margin: 0;
+        }
+
+        .collection__text {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-bottom: 24px;
+        }
+
+        .collection__title {
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 4;
+            display: -webkit-box;
+            font-size: 24px;
+            font-weight: 400;
+            letter-spacing: -0.5px;
+            line-height: 32px;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .collection__summary {
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 4;
+            display: -webkit-box;
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 28px;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        @media (min-width: 769px) {
+            .collection__title {
+                font-size: 32px;
+                line-height: 40px;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .collection__title {
+                font-size: 36px;
+                line-height: 44px;
+            }
+
+            /* 参考站 spacer-7 在桌面档为 120px */
+            .collection {
+                padding: 120px 0;
+            }
+        }
+
+        /* CTA：白色描边药丸按钮，hover 深灰底（参考站深色 CTA token） */
+        .collection .collection__cta {
+            border-color: #fff;
+            color: #fff;
+        }
+
+        .collection .collection__cta:hover,
+        .collection .collection__cta:active {
+            background-color: #3c4043;
+        }
+
+        /* 卡片区：右侧 8 列，可横向滑动 */
+        .collection__cards {
+            grid-column: 5 / span 8;
+            min-width: 0;
+        }
+
+        @media (min-width: 1025px) {
+            .collection__inner {
+                padding: 0 72px;
+            }
+
+            /* 桌面：卡片区不外出血，排进右侧 8 列，列间距 8px（参考站桌面三列网格） */
+            .collection .card-carousel__viewport {
+                margin-left: 0;
+                margin-right: 0;
+                scroll-padding-left: 0;
+                scroll-padding-right: 0;
+            }
+
+            .collection .card-carousel__track {
+                gap: 8px;
+                margin-left: 0;
+                padding-right: 0;
+            }
+
+            /* 卡片宽 = 卡区宽三分之一：容器宽 W=min(1440px,100vw)，内容宽 W-144，
+               卡区 = 8 列 + 7 个列间距，再减两个 8px 卡间距后三等分，化简得 (2W-360)/9
+               （1440 视口下为 280px，与参考站实测一致） */
+            .collection .collection-card {
+                width: calc((2 * min(1440px, 100vw) - 360px) / 9);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            /* 平板/移动：文案在上、卡片区在下（参考站移动 Collection 形态），卡片全出血横滑 */
+            .collection__inner {
+                gap: 0;
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .collection__content,
+            .collection__cards {
+                grid-column: 1 / -1;
+            }
+
+            .collection__cards {
+                margin-top: 36px;
+            }
+
+            /* 参考站滚动容器留 4px 上下内边距（hover 放大不被裁切） */
+            .collection .card-carousel__viewport {
+                overflow-y: hidden;
+                padding-block: 4px;
+            }
+
+            /* 移动卡片间距：参考站 ≥481 为 spacer-1-plus 12px */
+            .collection .card-carousel__track {
+                gap: 12px;
+            }
+
+            /* 移动卡片宽：参考站 calc(100vw - 16px*2) */
+            .collection .collection-card {
+                width: calc(100vw - 32px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* 参考站手机档卡片间距 = grid-margin 16px */
+            .collection .card-carousel__track {
+                gap: 16px;
+            }
+        }
+
+        @media (min-width: 481px) and (max-width: 1024px) {
+            /* 参考站 ≥481 网格留白 48px：滑块可视区两端与容器内容对齐 48px */
+            .collection .card-carousel__viewport {
+                scroll-padding-left: 48px;
+                scroll-padding-right: 48px;
+            }
+
+            .collection .card-carousel__track {
+                margin-left: 48px;
+                padding-right: 48px;
+            }
+
+            .collection .collection-card {
+                width: 334px;
+            }
+        }
+
+        /* 轮播控件：深色 token（参考站 carousel-controls 深色模式实测值） */
+        .collection .card-carousel__controls {
+            margin-top: 36px;
+        }
+
+        .collection .card-carousel__btn {
+            background-color: #80868b;
+            color: #fff;
+        }
+
+        .collection .card-carousel__btn:hover:not(:disabled),
+        .collection .card-carousel__btn:active:not(:disabled),
+        .collection .card-carousel__btn:focus-visible:not(:disabled) {
+            background-color: #5f6368;
+        }
+
+        .collection .card-carousel__btn:disabled {
+            color: #5f6368;
+        }
+
+        .collection .card-carousel__btn:focus-visible:not(:disabled)::after {
+            border-color: #aecbfa;
+        }
+
+        .collection .card-carousel__progress-bar {
+            background-color: #3c4043;
+        }
+
+        .collection .card-carousel__progress-indicator {
+            background-color: #fff;
+        }
+
+        /* 卡片：参考站 uni-simple-article-card 深色变体（24 圆角 / rgba(60,64,67,.8) 卡底 /
+           hover 变 #5f6368 / 图片 1:1 内缩 16px / hover 图片放大 1.03） */
+        .collection-card {
+            background-color: rgba(60, 64, 67, 0.8);
+            border-radius: 24px;
+            box-sizing: border-box;
+            color: #fff;
+            display: flex;
+            flex: 0 0 auto;
+            flex-direction: column;
+            overflow: hidden;
+            scroll-snap-align: start;
+            text-decoration: none;
+            transition: background-color 0.15s cubic-bezier(0.31, 0.94, 0.34, 1);
+        }
+
+        .collection-card:hover {
+            background-color: #5f6368;
+        }
+
+        .collection-card__media {
+            aspect-ratio: 1 / 1;
+            box-sizing: border-box;
+            padding: 16px;
+            width: 100%;
+        }
+
+        .collection-card__frame {
+            align-items: center;
+            aspect-ratio: 1 / 1;
+            border-radius: 24px;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .collection-card__frame span,
+        .collection-card__frame img {
+            transition: transform 0.3s cubic-bezier(0.31, 0.94, 0.34, 1);
+        }
+
+        .collection-card:hover .collection-card__frame span,
+        .collection-card:hover .collection-card__frame img {
+            transform: scale(1.03);
+        }
+
+        .collection-card__emoji {
+            font-size: 64px;
+            line-height: 1;
+        }
+
+        .collection-card__frame img {
+            border-radius: 20px;
+            height: 96px;
+            width: 96px;
+        }
+
+        .collection-card__frame--blue {
+            background: linear-gradient(135deg, #e8f0fe 0%, #d2e3fc 100%);
+        }
+
+        .collection-card__frame--amber {
+            background: linear-gradient(135deg, #fef7e0 0%, #feefc3 100%);
+        }
+
+        .collection-card__frame--green {
+            background: linear-gradient(135deg, #e6f4ea 0%, #ceead6 100%);
+        }
+
+        .collection-card__frame--purple {
+            background: linear-gradient(135deg, #f3e8fd 0%, #eadcf8 100%);
+        }
+
+        .collection-card__frame--cyan {
+            background: linear-gradient(135deg, #e4f7fb 0%, #cbf0f8 100%);
+        }
+
+        .collection-card__content {
+            box-sizing: border-box;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 12px;
+            padding: 0 16px 16px;
+            width: 100%;
+        }
+
+        .collection-card__body {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .collection-card__eyebrow {
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+            line-height: 28px;
+            margin: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* 标题预留三行高度，底部文字与卡片底对齐（参考站 __headline min-height: 84px） */
+        .collection-card__headline {
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            display: -webkit-box;
+            font-size: 20px;
+            font-weight: 400;
+            line-height: 28px;
+            margin: 0;
+            min-height: 84px;
+            overflow: hidden;
+        }
+
+        .collection-card__summary {
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            display: -webkit-box;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 22px;
+            margin: 0;
+            overflow: hidden;
         }
 
         /* 配图：产品设计走查（设备 + 检查清单） */
@@ -984,6 +1359,136 @@
             width: 38%;
         }
 
+        /* 经验沉淀（原 How I AI）分区：参考 Google Blog "All the Latest" 信息流卡片
+           结构：整卡 1px #dadce0 描边 + 8px 圆角；眉行（灰字副标题 · 蓝色分类链接）；标题与右置圆角缩略图分行 */
+        .feed-card {
+            background: #ffffff;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            display: grid;
+            padding: 16px 16px 16px 24px;
+            row-gap: 8px;
+            transition: box-shadow 0.2s;
+        }
+
+        .feed-card:hover {
+            box-shadow: 0 1px 3px rgba(54, 64, 67, 0.3), 0 4px 8px 3px rgba(54, 64, 67, 0.15);
+        }
+
+        .feed-card__eyebrow {
+            align-items: center;
+            color: #414141;
+            display: flex;
+            font-size: 14px;
+            gap: 6px;
+            letter-spacing: 0.5px;
+            min-height: 48px;
+            text-transform: uppercase;
+        }
+
+        .feed-card__date {
+            color: #5f6368;
+            font-weight: 500;
+        }
+
+        .feed-card__category {
+            color: #1a73e8;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .feed-card__overlay {
+            column-gap: 24px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            min-height: 78px;
+            text-decoration: none;
+        }
+
+        .feed-card__title {
+            color: #25272b;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 28px;
+            margin: 0;
+        }
+
+        .feed-card:hover .feed-card__title {
+            text-decoration: underline;
+        }
+
+        .feed-card__thumb {
+            align-items: center;
+            background: linear-gradient(135deg, #dbeafe 0%, #ede9fe 100%);
+            border-radius: 8px;
+            display: flex;
+            height: 78px;
+            justify-content: center;
+            margin-top: -20px;
+            overflow: hidden;
+            width: 154px;
+        }
+
+        .feed-card__thumb span {
+            font-size: 28px;
+        }
+
+        /* 3 列网格内卡片变窄，缩略图用参考站窄屏宽度；≤768px 网格转单列后恢复通栏宽度 154px */
+        @media (min-width: 769px) {
+            .feed-card__thumb {
+                width: 120px;
+            }
+        }
+
+        /* "更多文章"按钮：参考 blog.google/feed/ 底部 Explore more articles（uni-cta medium emphasis）
+           静止：透明底 + 1px #202124 描边 + 48px 药丸圆角；hover：4% 黑底、圆角 morph 到 12px */
+        .more-btn {
+            align-items: center;
+            background-color: transparent;
+            border: 1px solid #202124;
+            border-radius: 48px;
+            box-sizing: border-box;
+            color: #202124;
+            cursor: pointer;
+            display: inline-flex;
+            font-size: 18px;
+            font-weight: 400;
+            height: 48px;
+            justify-content: center;
+            min-width: 48px;
+            overflow: hidden;
+            padding: 12px 16px;
+            text-decoration: none;
+            transition: border-radius 0.3s cubic-bezier(0.27, 1.06, 0.18, 1), background-color 0.15s cubic-bezier(0.31, 0.94, 0.34, 1);
+        }
+
+        .more-btn:hover {
+            background-color: color-mix(in sRGB, #202124, transparent 96%);
+            border-radius: 12px;
+        }
+
+        .more-btn:active {
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+        }
+
+        .more-btn__label {
+            padding: 0 12px;
+        }
+
+        .more-btn__icon {
+            display: flex;
+            flex-shrink: 0;
+            height: 24px;
+            width: 24px;
+        }
+
+        .more-btn__icon svg {
+            fill: currentColor;
+            height: 100%;
+            width: 100%;
+        }
+
         @media (hover: none), (max-width: 640px) {
             .card-carousel__track > .project-card--editorial {
                 width: min(300px, 78vw);
@@ -1038,20 +1543,6 @@
 
         .project-icon {
             display: none;
-        }
-
-        /* 仅"我喜欢的AI产品"区块保留图标 */
-        #fav-ai-products .project-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 12px;
-            font-size: 1.25rem;
-            background: #f5f5f5;
-            color: #333;
         }
         
         /* 确保favicon图片正确显示 */
@@ -1150,9 +1641,23 @@
 
         @media (max-width: 768px) {
             .container {
-                padding: 0 var(--spacing-sm);
+                /* 参考站移动端网格留白 16px */
+                padding: 0 var(--spacing-md);
             }
-            
+
+            /* 通栏轮播移动端同步 16px 网格，首卡与容器内容左缘对齐 */
+            .card-carousel__viewport {
+                scroll-padding-left: var(--spacing-md);
+                scroll-padding-right: var(--spacing-md);
+            }
+
+            .card-carousel__track {
+                margin-left: var(--spacing-md);
+                padding-right: var(--spacing-md);
+            }
+
+            /* Collection 分区留白由本体 grid-margin 三档规则控制（16 / 48 / 72） */
+
             .header {
                 padding: var(--spacing-xl) var(--spacing-sm) var(--spacing-lg);
                 height: auto;

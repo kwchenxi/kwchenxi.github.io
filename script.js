@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!viewport || !track) return;
 
         const step = () => {
-            const card = track.querySelector('.project-card');
+            const card = track.querySelector('.project-card, .collection-card');
             const gap = parseFloat(getComputedStyle(track).gap) || 0;
             return card ? card.offsetWidth + gap : viewport.clientWidth;
         };
@@ -56,11 +56,38 @@ document.addEventListener('DOMContentLoaded', function() {
             if (progressBar) progressBar.setAttribute('aria-valuenow', String(Math.round(progress * 100)));
         };
 
-        if (prev) prev.addEventListener('click', () => viewport.scrollBy({ left: -step(), behavior: 'smooth' }));
-        if (next) next.addEventListener('click', () => viewport.scrollBy({ left: step(), behavior: 'smooth' }));
+        // 平滑滚动 + 兜底：个别环境（无合成器 / 内嵌浏览器）不驱动元素平滑滚动，
+        // 也不派发 scroll 事件，此时直接赋值位移并手动刷新按钮与进度条
+        const scrollByStep = (delta) => {
+            const max = viewport.scrollWidth - viewport.clientWidth;
+            const target = Math.max(0, Math.min(max, viewport.scrollLeft + delta));
+            const start = viewport.scrollLeft;
+            viewport.scrollBy({ left: delta, behavior: 'smooth' });
+            window.setTimeout(() => {
+                if (Math.abs(viewport.scrollLeft - start) < 0.5) {
+                    viewport.scrollLeft = target;
+                    update();
+                }
+            }, 200);
+        };
+
+        if (prev) prev.addEventListener('click', () => scrollByStep(-step()));
+        if (next) next.addEventListener('click', () => scrollByStep(step()));
         viewport.addEventListener('scroll', update, { passive: true });
         window.addEventListener('resize', update);
         update();
+
+        // 深色 Collection 分区的 CTA：点击翻到下一屏卡片，到底后回到起点
+        const cta = carousel.parentElement ? carousel.parentElement.querySelector('.collection__cta') : null;
+        if (cta) {
+            cta.addEventListener('click', () => {
+                if (next && next.disabled) {
+                    scrollByStep(-viewport.scrollLeft);
+                } else if (next) {
+                    next.click();
+                }
+            });
+        }
     });
 });
 
