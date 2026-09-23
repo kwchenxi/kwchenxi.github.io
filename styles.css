@@ -606,14 +606,20 @@
             background: linear-gradient(180deg, rgba(95, 99, 104, 0.4) 0%, rgba(32, 33, 36, 0.4) 100%), #202124;
             box-sizing: border-box;
             color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            margin: 0 calc(50% - 50vw) 40px;
-            min-height: 100vh;
+            margin: 0 calc(50% - 50vw);
             overflow: hidden;
             padding: 92px 0;
             position: relative;
+        }
+
+        /* 上下两部分共用黑色背景，以细分隔线区分内容；后续可继续向每个轨道添加卡片 */
+        .collection__part {
+            margin: 0;
+        }
+
+        .collection__part + .collection__part {
+            margin-top: 56px;
+            padding-top: 56px;
         }
 
         /* 参考站容器：--grid-max-width 1440px + grid-margin 三档留白（16 / 48 / 72） */
@@ -709,6 +715,11 @@
             .collection {
                 padding: 120px 0;
             }
+
+            .collection__part + .collection__part {
+                margin-top: 72px;
+                padding-top: 72px;
+            }
         }
 
         /* CTA：白色描边药丸按钮，hover 深灰底（参考站深色 CTA token） */
@@ -730,10 +741,20 @@
 
         @media (min-width: 1025px) {
             .collection__inner {
+                column-gap: 8px;
                 padding: 0 72px;
             }
 
-            /* 桌面：卡片区不外出血，排进右侧 8 列，列间距 8px（参考站桌面三列网格） */
+            /* 收紧左侧说明区，右侧扩至 9 列，首屏露出约 3.5 张卡片以提示横滑 */
+            .collection__content {
+                grid-column: 1 / span 3;
+            }
+
+            .collection__cards {
+                grid-column: 4 / span 9;
+            }
+
+            /* 桌面：卡片区不外出血，列间距 8px */
             .collection .card-carousel__viewport {
                 margin-left: 0;
                 margin-right: 0;
@@ -747,11 +768,9 @@
                 padding-right: 0;
             }
 
-            /* 卡片宽 = 卡区宽三分之一：容器宽 W=min(1440px,100vw)，内容宽 W-144，
-               卡区 = 8 列 + 7 个列间距，再减两个 8px 卡间距后三等分，化简得 (2W-360)/9
-               （1440 视口下为 280px，与参考站实测一致） */
+            /* 卡片略缩窄：1440px 视口下为 272px，配合 9 列卡片区露出约 3.5 张 */
             .collection .collection-card {
-                width: calc((2 * min(1440px, 100vw) - 360px) / 9);
+                width: calc((2 * min(1440px, 100vw) - 432px) / 9);
             }
         }
 
@@ -812,11 +831,14 @@
             }
         }
 
-        /* 轮播控件：深色 token（参考站 carousel-controls 深色模式实测值） */
+        /* 控件移至左侧说明下方：缩短轨道以补足说明区，并去除右侧卡片下方空白 */
         .collection .card-carousel__controls {
-            margin-top: 36px;
+            gap: 16px;
+            margin-top: 24px;
+            width: min(280px, 100%);
         }
 
+        /* 轮播控件：深色 token（参考站 carousel-controls 深色模式实测值） */
         .collection .card-carousel__btn {
             background-color: #80868b;
             color: #fff;
@@ -896,10 +918,25 @@
             line-height: 1;
         }
 
+        .collection-card__wordmark {
+            color: #202124;
+            font-size: 32px;
+            font-weight: 500;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
         .collection-card__frame img {
             border-radius: 20px;
             height: 96px;
             width: 96px;
+        }
+
+        .collection-card__frame .collection-card__image--cover {
+            border-radius: inherit;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
         }
 
         .collection-card__frame--blue {
@@ -972,6 +1009,75 @@
             line-height: 22px;
             margin: 0;
             overflow: hidden;
+        }
+
+        /* 专家卡：以独立链接替代整卡跳转，避免嵌套链接并保留多个入口 */
+        .collection-card--expert {
+            cursor: default;
+        }
+
+        .collection-card__links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .collection-card__link {
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.72);
+            border-radius: 999px;
+            box-sizing: border-box;
+            color: #fff;
+            display: inline-flex;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 18px;
+            min-height: 30px;
+            padding: 5px 10px;
+            text-decoration: none;
+            transition: background-color 0.15s cubic-bezier(0.31, 0.94, 0.34, 1), border-color 0.15s cubic-bezier(0.31, 0.94, 0.34, 1);
+        }
+
+        .collection-card__link:hover {
+            background-color: rgba(255, 255, 255, 0.16);
+            border-color: #fff;
+        }
+
+        .collection-card__link:focus-visible {
+            outline: 2px solid #aecbfa;
+            outline-offset: 2px;
+        }
+
+        .collection-card__link-note {
+            align-items: center;
+            border: 1px dashed rgba(255, 255, 255, 0.48);
+            border-radius: 999px;
+            box-sizing: border-box;
+            color: rgba(255, 255, 255, 0.72);
+            display: inline-flex;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 18px;
+            min-height: 30px;
+            padding: 5px 10px;
+        }
+
+        /* 专家卡：介绍、姓名、链接顺序；介绍限制为一行以收紧卡片高度 */
+        .collection-card--expert .collection-card__content {
+            gap: 8px;
+        }
+
+        .collection-card--expert .collection-card__summary {
+            -webkit-line-clamp: 1;
+            display: block;
+            line-height: 20px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .collection-card--expert .collection-card__headline {
+            min-height: 0;
         }
 
         /* 配图：产品设计走查（设备 + 检查清单） */
@@ -1429,8 +1535,11 @@
             width: 154px;
         }
 
-        .feed-card__thumb span {
-            font-size: 28px;
+        .feed-card__thumb img {
+            display: block;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
         }
 
         /* 3 列网格内卡片变窄，缩略图用参考站窄屏宽度；≤768px 网格转单列后恢复通栏宽度 154px */

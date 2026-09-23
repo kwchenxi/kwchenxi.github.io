@@ -35,10 +35,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.card-carousel').forEach(carousel => {
         const viewport = carousel.querySelector('.card-carousel__viewport');
         const track = carousel.querySelector('.card-carousel__track');
-        const prev = carousel.querySelector('.card-carousel__btn--prev');
-        const next = carousel.querySelector('.card-carousel__btn--next');
-        const progressBar = carousel.querySelector('.card-carousel__progress-bar');
-        const progressIndicator = carousel.querySelector('.card-carousel__progress-indicator');
+        const controls = carousel.querySelector('.card-carousel__controls') ||
+            carousel.closest('.collection__inner')?.querySelector('.card-carousel__controls');
+        const prev = controls?.querySelector('.card-carousel__btn--prev');
+        const next = controls?.querySelector('.card-carousel__btn--next');
+        const progressBar = controls?.querySelector('.card-carousel__progress-bar');
+        const progressIndicator = controls?.querySelector('.card-carousel__progress-indicator');
         if (!viewport || !track) return;
 
         const step = () => {
