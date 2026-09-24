@@ -131,6 +131,181 @@
             overflow-x: clip;
         }
 
+        /* 首页顶部：参考 Google Blog 的轻量固定导航框架，具体导航项后续补充。 */
+        .site-topbar {
+            background: rgba(255, 255, 255, 0.94);
+            border-bottom: 1px solid #dadce0;
+            box-sizing: border-box;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+        }
+
+        .site-topbar__inner {
+            align-items: center;
+            box-sizing: border-box;
+            display: flex;
+            height: 72px;
+            justify-content: space-between;
+            margin: 0 auto;
+            max-width: 1440px;
+            padding: 0 72px;
+        }
+
+        .site-topbar__brand {
+            align-items: center;
+            color: #202124;
+            display: inline-flex;
+            gap: 14px;
+            text-decoration: none;
+        }
+
+        .site-topbar__mark {
+            align-items: center;
+            background: #202124;
+            border-radius: 50%;
+            color: #fff;
+            display: inline-flex;
+            font-size: 15px;
+            font-weight: 500;
+            height: 28px;
+            justify-content: center;
+            line-height: 1;
+            width: 28px;
+        }
+
+        .site-topbar__divider {
+            background: #dadce0;
+            height: 24px;
+            width: 1px;
+        }
+
+        .site-topbar__brand-copy {
+            display: grid;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .site-topbar__brand-name,
+        .site-topbar__scroll-message {
+            grid-area: 1 / 1;
+            white-space: nowrap;
+        }
+
+        .site-topbar__brand-name {
+            font-size: 20px;
+            font-weight: 400;
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+            margin: 0;
+            transform: translateY(0);
+            transition: opacity 220ms ease, transform 280ms cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .site-topbar__scroll-message {
+            color: #3c4043;
+            font-size: 16px;
+            font-weight: 400;
+            letter-spacing: -0.2px;
+            line-height: 1.2;
+            max-width: min(360px, calc(100vw - 280px));
+            opacity: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transform: translateY(10px);
+            transition: opacity 180ms ease 40ms, transform 280ms cubic-bezier(0.2, 0, 0, 1) 40ms;
+        }
+
+        .site-topbar--scrolled {
+            border-bottom-color: #c7c9cc;
+            box-shadow: 0 1px 3px rgba(60, 64, 67, 0.12);
+        }
+
+        .site-topbar--scrolled .site-topbar__brand-name {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .site-topbar--scrolled .site-topbar__scroll-message {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .site-topbar__actions {
+            align-items: center;
+            display: flex;
+            gap: 24px;
+        }
+
+        .site-topbar__link {
+            color: #3c4043;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 24px;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .site-topbar__link::after {
+            background: currentColor;
+            bottom: -2px;
+            content: "";
+            height: 1px;
+            left: 0;
+            position: absolute;
+            transform: scaleX(0);
+            transform-origin: right center;
+            transition: transform 160ms ease;
+            width: 100%;
+        }
+
+        .site-topbar__link:hover {
+            color: #1967d2;
+        }
+
+        .site-topbar__link:hover::after,
+        .site-topbar__link:focus-visible::after {
+            transform: scaleX(1);
+            transform-origin: left center;
+        }
+
+        .site-topbar__link:focus-visible {
+            border-radius: 2px;
+            outline: 2px solid #1a73e8;
+            outline-offset: 4px;
+        }
+
+        .site-topbar__icon {
+            align-items: center;
+            display: inline-flex;
+            height: 24px;
+            justify-content: center;
+            width: 24px;
+        }
+
+        .site-topbar__icon--search svg {
+            fill: none;
+            height: 21px;
+            stroke: #3c4043;
+            stroke-linecap: round;
+            stroke-width: 1.8;
+            width: 21px;
+        }
+
+        .site-topbar__icon--menu {
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .site-topbar__icon--menu i {
+            background: #3c4043;
+            display: block;
+            height: 1.5px;
+            width: 18px;
+        }
+
         .container {
             /* 参考 blog.google 分类页容器（.uni-layout-page）：内容宽 1260 + 两侧 32 内边距，总宽 1324 */
             max-width: 1324px;
@@ -316,6 +491,23 @@
             width: 100%;
         }
 
+        .editorial-card__image {
+            display: block;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        /* 实拍配图不叠加旧的示意插画元素。 */
+        .editorial-card__canvas--hike::before,
+        .editorial-card__canvas--hike::after,
+        .editorial-card__canvas--retro::before,
+        .editorial-card__canvas--retro::after,
+        .editorial-card__canvas--violin::before,
+        .editorial-card__canvas--violin::after {
+            display: none;
+        }
+
         .project-card.project-card--editorial:hover .editorial-card__canvas {
             transform: scale(1.03);
         }
@@ -409,6 +601,11 @@
             font-weight: 500;
             letter-spacing: 0.2px;
             padding: 0;
+        }
+
+        /* 首页前两组卡片仅保留标题和说明。 */
+        .editorial-carousel-section .editorial-card__tags {
+            display: none;
         }
 
         .editorial-card__meta {
@@ -754,10 +951,10 @@
                 grid-column: 4 / span 9;
             }
 
-            /* 桌面：卡片区不外出血，列间距 8px */
+            /* 桌面：保留左侧网格对齐，右侧轮播延展至浏览器边缘以展示更多内容。 */
             .collection .card-carousel__viewport {
                 margin-left: 0;
-                margin-right: 0;
+                margin-right: calc(min(720px, 50vw) - 50vw - 72px);
                 scroll-padding-left: 0;
                 scroll-padding-right: 0;
             }
@@ -771,6 +968,12 @@
             /* 卡片略缩窄：1440px 视口下为 272px，配合 9 列卡片区露出约 3.5 张 */
             .collection .collection-card {
                 width: calc((2 * min(1440px, 100vw) - 432px) / 9);
+            }
+
+            /* 两组 Collection 卡片均收窄一点，以呼应较小的配图。 */
+            .collection__part--experts .collection-card,
+            .collection__part--products .collection-card {
+                width: 240px;
             }
         }
 
@@ -790,15 +993,17 @@
                 margin-top: 36px;
             }
 
-            /* 参考站滚动容器留 4px 上下内边距（hover 放大不被裁切） */
+            /* 参考站滚动容器留 4px 上下内边距（hover 放大不被裁切）；右侧不预留空白。 */
             .collection .card-carousel__viewport {
                 overflow-y: hidden;
                 padding-block: 4px;
+                scroll-padding-right: 0;
             }
 
             /* 移动卡片间距：参考站 ≥481 为 spacer-1-plus 12px */
             .collection .card-carousel__track {
                 gap: 12px;
+                padding-right: 0;
             }
 
             /* 移动卡片宽：参考站 calc(100vw - 16px*2) */
@@ -815,19 +1020,24 @@
         }
 
         @media (min-width: 481px) and (max-width: 1024px) {
-            /* 参考站 ≥481 网格留白 48px：滑块可视区两端与容器内容对齐 48px */
+            /* 平板首张卡与左侧内容对齐，右侧贴齐浏览器边缘。 */
             .collection .card-carousel__viewport {
                 scroll-padding-left: 48px;
-                scroll-padding-right: 48px;
+                scroll-padding-right: 0;
             }
 
             .collection .card-carousel__track {
                 margin-left: 48px;
-                padding-right: 48px;
+                padding-right: 0;
             }
 
             .collection .collection-card {
                 width: 334px;
+            }
+
+            .collection__part--experts .collection-card,
+            .collection__part--products .collection-card {
+                width: 280px;
             }
         }
 
@@ -903,6 +1113,23 @@
             width: 100%;
         }
 
+        /* 精选推荐卡配图缩至通用尺寸的 3/4，并固定在同一媒体基线内左对齐。 */
+        .collection__part--experts .collection-card__media,
+        .collection__part--products .collection-card__media {
+            align-items: center;
+            aspect-ratio: 1.3 / 1;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .collection__part--experts .collection-card__frame,
+        .collection__part--products .collection-card__frame {
+            flex: 0 0 75%;
+            height: auto;
+            margin: 0;
+            width: auto;
+        }
+
         .collection-card__frame span,
         .collection-card__frame img {
             transition: transform 0.3s cubic-bezier(0.31, 0.94, 0.34, 1);
@@ -916,6 +1143,11 @@
         .collection-card__emoji {
             font-size: 64px;
             line-height: 1;
+        }
+
+        .collection-card__emoji--light {
+            color: #fff;
+            font-weight: 500;
         }
 
         .collection-card__wordmark {
@@ -945,6 +1177,10 @@
 
         .collection-card__frame--amber {
             background: linear-gradient(135deg, #fef7e0 0%, #feefc3 100%);
+        }
+
+        .collection-card__frame--yc {
+            background: #ff5a1f;
         }
 
         .collection-card__frame--green {
@@ -1011,6 +1247,27 @@
             overflow: hidden;
         }
 
+        /* 产品卡去除标签栏，标题与说明紧凑排列。 */
+        .collection__part--products .collection-card__eyebrow {
+            display: none;
+        }
+
+        .collection__part--products .collection-card__content {
+            gap: 4px;
+        }
+
+        .collection__part--products .collection-card__body {
+            flex: 0 0 auto;
+        }
+
+        .collection__part--products .collection-card__summary {
+            font-weight: 300;
+        }
+
+        .collection__part--products .collection-card__headline {
+            min-height: 0;
+        }
+
         /* 专家卡：以独立链接替代整卡跳转，避免嵌套链接并保留多个入口 */
         .collection-card--expert {
             cursor: default;
@@ -1062,7 +1319,7 @@
             padding: 5px 10px;
         }
 
-        /* 专家卡：介绍、姓名、链接顺序；介绍限制为一行以收紧卡片高度 */
+        /* 专家卡：姓名、介绍、链接顺序；介绍限制为一行以收紧卡片高度 */
         .collection-card--expert .collection-card__content {
             gap: 8px;
         }
@@ -1070,6 +1327,7 @@
         .collection-card--expert .collection-card__summary {
             -webkit-line-clamp: 1;
             display: block;
+            font-weight: 300;
             line-height: 20px;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -1078,6 +1336,11 @@
 
         .collection-card--expert .collection-card__headline {
             min-height: 0;
+            order: -1;
+        }
+
+        .collection-card--expert .collection-card__links {
+            margin-top: 4px;
         }
 
         /* 配图：产品设计走查（设备 + 检查清单） */
@@ -1749,6 +2012,42 @@
 
 
         @media (max-width: 768px) {
+            .site-topbar__inner {
+                height: 64px;
+                padding: 0 16px;
+            }
+
+            .site-topbar__brand {
+                gap: 10px;
+            }
+
+            .site-topbar__mark {
+                font-size: 14px;
+                height: 26px;
+                width: 26px;
+            }
+
+            .site-topbar__divider {
+                height: 20px;
+            }
+
+            .site-topbar__brand-name {
+                font-size: 17px;
+            }
+
+            .site-topbar__scroll-message {
+                font-size: 13px;
+                max-width: calc(100vw - 148px);
+            }
+
+            .site-topbar__actions {
+                gap: 18px;
+            }
+
+            .header.header--minimal {
+                padding: 24px 0 18px;
+            }
+
             .container {
                 /* 参考站移动端网格留白 16px */
                 padding: 0 var(--spacing-md);

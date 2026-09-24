@@ -7,16 +7,29 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Hoho的AI实验室</title>
-    <link rel="stylesheet" href="styles.css?v=49">
+    <link rel="stylesheet" href="styles.css?v=68">
 </head>
 <body>
 
-    <div class="container">
-        <header class="header header--minimal">
-            <h1>Hoho的AI实验室</h1>
-        </header>
+    <header class="site-topbar">
+        <div class="site-topbar__inner">
+            <a class="site-topbar__brand" href="/" aria-label="返回 Hoho的AI实验室首页">
+                <span class="site-topbar__mark" aria-hidden="true">H</span>
+                <span class="site-topbar__divider" aria-hidden="true"></span>
+                <span class="site-topbar__brand-copy">
+                    <h1 class="site-topbar__brand-name">Hoho的AI实验室</h1>
+                    <span class="site-topbar__scroll-message" aria-hidden="true">我是Hoho，这是我的 AI 探索实验室！</span>
+                </span>
+            </a>
+            <nav class="site-topbar__actions" aria-label="我的链接">
+                <a class="site-topbar__link" href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=Mzg2MzU1ODIxNw==&amp;action=getalbum&amp;album_id=2833843896706449413#wechat_redirect" target="_blank" rel="noopener noreferrer">公众号</a>
+                <a class="site-topbar__link" href="https://www.xiaohongshu.com/user/profile/5bfcafefedf09e0001a77109" target="_blank" rel="noopener noreferrer">小红书</a>
+            </nav>
+        </div>
+    </header>
 
-        <section style="margin-bottom: 40px;">
+    <div class="container">
+        <section class="editorial-carousel-section" style="margin: 32px 0 40px;">
             <h2 class="section-title">实用小工具</h2>
             <div class="card-carousel">
                 <div class="card-carousel__viewport">
@@ -168,7 +181,7 @@
             </div>
         </section>
 
-        <section style="margin-bottom: 40px;">
+        <section class="editorial-carousel-section" style="margin-bottom: 40px;">
             <h2 class="section-title">Vibe Coding 小尝试与早期探索</h2>
             <div class="card-carousel">
                 <div class="card-carousel__viewport">
@@ -176,7 +189,9 @@
                         <a class="project-card project-card--editorial editorial-card--mint" href="https://outdoor-guide-5cis.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="打开户外徒步线路">
                             <div class="editorial-card__media" aria-hidden="true">
                                 <div class="editorial-card__shape editorial-card__shape--circle">
-                                    <div class="editorial-card__canvas editorial-card__canvas--hike"></div>
+                                    <div class="editorial-card__canvas editorial-card__canvas--hike">
+                                        <img class="editorial-card__image" src="hoho-lab/VC户外徒步线路.png" alt="">
+                                    </div>
                                 </div>
                             </div>
                             <div class="editorial-card__content">
@@ -196,7 +211,9 @@
                         <a class="project-card project-card--editorial editorial-card--amber" href="hoho-lab/portal_simulator.html" target="_blank" rel="noopener noreferrer" aria-label="打开高龄领导办公模拟器">
                             <div class="editorial-card__media" aria-hidden="true">
                                 <div class="editorial-card__shape editorial-card__shape--squircle">
-                                    <div class="editorial-card__canvas editorial-card__canvas--retro"></div>
+                                    <div class="editorial-card__canvas editorial-card__canvas--retro">
+                                        <img class="editorial-card__image" src="hoho-lab/YC高龄领导.png" alt="">
+                                    </div>
                                 </div>
                             </div>
                             <div class="editorial-card__content">
@@ -213,10 +230,12 @@
                             </div>
                         </a>
 
-                        <a class="project-card project-card--editorial editorial-card--violet" href="hoho-lab/mac-violin.html" target="_blank" rel="noopener noreferrer" aria-label="打开Mac风格数字小提琴">
+                        <a class="project-card project-card--editorial editorial-card--violet" href="hoho-lab/mac-violin.html" target="_blank" rel="noopener noreferrer" aria-label="打开数字小提琴">
                             <div class="editorial-card__media" aria-hidden="true">
                                 <div class="editorial-card__shape">
-                                    <div class="editorial-card__canvas editorial-card__canvas--violin"></div>
+                                    <div class="editorial-card__canvas editorial-card__canvas--violin">
+                                        <img class="editorial-card__image" src="hoho-lab/YC小提琴.png" alt="">
+                                    </div>
                                 </div>
                             </div>
                             <div class="editorial-card__content">
@@ -226,8 +245,8 @@
                                         <span class="tag">复古设计</span>
                                         <span class="tag">交互</span>
                                     </div>
-                                    <h3 class="editorial-card__title">Mac风格数字小提琴</h3>
-                                    <p class="editorial-card__description">复古 Mac OS 风格的数字小提琴，结合现代交互。</p>
+                                    <h3 class="editorial-card__title">数字小提琴</h3>
+                                    <p class="editorial-card__description">我的第一个Vibe Coding项目，Mac风小提琴</p>
                                 </div>
                                 <p class="editorial-card__meta">2025-08</p>
                             </div>
@@ -420,7 +439,7 @@
 
             <!-- 精选推荐：深色 Collection 分区（参考 blog.google 首页第二屏） -->
             <section class="collection" id="fav-ai-products" aria-label="精选推荐">
-                <section class="collection__part" aria-labelledby="experts-title">
+                <section class="collection__part collection__part--experts" aria-labelledby="experts-title">
                     <div class="collection__inner">
                         <div class="collection__content">
                             <div class="collection__eyebrow">
@@ -560,13 +579,26 @@
                                             </nav>
                                         </div>
                                     </article>
+
+                                    <article class="collection-card collection-card--expert">
+                                        <div class="collection-card__media">
+                                            <div class="collection-card__frame collection-card__frame--yc"><img class="collection-card__image--cover" src="hoho-lab/YC.png" alt="Y Combinator 活动现场"></div>
+                                        </div>
+                                        <div class="collection-card__content">
+                                            <p class="collection-card__summary">创业者与技术团队的内容频道</p>
+                                            <h3 class="collection-card__headline">Y Combinator</h3>
+                                            <nav class="collection-card__links" aria-label="Y Combinator 链接">
+                                                <a class="collection-card__link" href="https://www.youtube.com/@ycombinator" target="_blank" rel="noopener noreferrer">YouTube</a>
+                                            </nav>
+                                        </div>
+                                    </article>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <section class="collection__part" aria-labelledby="products-title">
+                <section class="collection__part collection__part--products" aria-labelledby="products-title">
                     <div class="collection__inner">
                         <div class="collection__content">
                             <div class="collection__eyebrow">
@@ -643,7 +675,7 @@
                                                 <p class="collection-card__eyebrow">Google · Gemini · 开发平台</p>
                                                 <h3 class="collection-card__headline">Google AI Studio</h3>
                                             </div>
-                                            <p class="collection-card__summary">Google 的 AI 开发者平台，支持 Gemini 模型调用与 Prompt 调试。</p>
+                                            <p class="collection-card__summary">Google的AI模型实验与开发平台</p>
                                         </div>
                                     </a>
 
@@ -669,6 +701,6 @@
 
 
     </div>
-    <script src="script.js?v=8"></script>
+    <script src="script.js?v=9"></script>
 </body>
 </html>

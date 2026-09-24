@@ -18,6 +18,17 @@ document.addEventListener('DOMContentLoaded', function() {
         card.classList.add('visible');
     });
 
+    // 顶部导航滚动替换态：吸顶后显示一句简短自我介绍。
+    const topbar = document.querySelector('.site-topbar');
+    if (topbar) {
+        const updateTopbar = () => {
+            topbar.classList.toggle('site-topbar--scrolled', window.scrollY > 24);
+        };
+
+        window.addEventListener('scroll', updateTopbar, { passive: true });
+        updateTopbar();
+    }
+
     if ('ontouchstart' in window) {
         const interactiveElements = document.querySelectorAll('.project-icon, .project-detail-link, a, .version-btn');
         interactiveElements.forEach(element => {
