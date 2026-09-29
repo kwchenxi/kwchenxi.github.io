@@ -1319,19 +1319,20 @@
             padding: 5px 10px;
         }
 
-        /* 专家卡：姓名、介绍、链接顺序；介绍限制为一行以收紧卡片高度 */
+        /* 专家卡：姓名、介绍、链接顺序；介绍最多两行并固定两行高度，短文案留空第二行对齐 */
         .collection-card--expert .collection-card__content {
             gap: 8px;
         }
 
         .collection-card--expert .collection-card__summary {
-            -webkit-line-clamp: 1;
-            display: block;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            display: -webkit-box;
             font-weight: 300;
             line-height: 20px;
+            margin: 0;
+            min-height: 40px;
             overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
 
         .collection-card--expert .collection-card__headline {
