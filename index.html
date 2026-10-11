@@ -7,14 +7,53 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Hoho的AI实验室</title>
-    <link rel="stylesheet" href="styles.css?v=68">
+    <link rel="icon" type="image/svg+xml" href="hoho-lab/HohoIcon.svg">
+    <link rel="icon" type="image/png" href="hoho-lab/HohoIcon.png">
+    <link rel="apple-touch-icon" href="hoho-lab/HohoIcon.png">
+    <link rel="preload" as="image" href="hoho-lab/HohoIcon.svg">
+    <link rel="stylesheet" href="styles.css?v=71">
+    <script>
+        /* 标签页失焦彩蛋：切走后标题换梗，切回来恢复 */
+        (function () {
+            var originalTitle = document.title;
+            var awayTitle = '实验室开着，人咋溜了？';
+            function update() {
+                document.title = document.hidden ? awayTitle : originalTitle;
+            }
+            document.addEventListener('visibilitychange', update);
+            update();
+        })();
+    </script>
+    <script>
+        /* 首屏载入动画：仅本次会话首次访问播放，?intro 可强制重播 */
+        (function () {
+            var doc = document.documentElement;
+            try {
+                if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                var forced = /[?&]intro\b/.test(location.search);
+                var seen = sessionStorage.getItem('intro');
+                if (forced || (!seen && !location.hash)) {
+                    doc.classList.add('intro');
+                    setTimeout(function () {
+                        if (!window.introStarted && doc.classList.contains('intro')) {
+                            doc.classList.remove('intro');
+                            document.dispatchEvent(new Event('introdone'));
+                        }
+                    }, 4000);
+                }
+            } catch (e) {
+                doc.classList.remove('intro');
+            }
+        })();
+    </script>
+    <script src="intro.js?v=4" defer></script>
 </head>
 <body>
 
     <header class="site-topbar">
         <div class="site-topbar__inner">
             <a class="site-topbar__brand" href="/" aria-label="返回 Hoho的AI实验室首页">
-                <span class="site-topbar__mark" aria-hidden="true">H</span>
+                <span class="site-topbar__mark" aria-hidden="true"><img class="site-topbar__mark-image" src="hoho-lab/HohoIcon.svg" alt=""></span>
                 <span class="site-topbar__divider" aria-hidden="true"></span>
                 <span class="site-topbar__brand-copy">
                     <h1 class="site-topbar__brand-name">Hoho的AI实验室</h1>

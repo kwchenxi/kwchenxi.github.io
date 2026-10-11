@@ -131,6 +131,68 @@
             overflow-x: clip;
         }
 
+        /* 首屏载入动画：白色遮罩盖住页面，中央头像随后飞入顶栏头像位 */
+        .intro::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            background: var(--background);
+            transition: opacity 0.6s ease-out;
+        }
+
+        .intro.intro-out::before {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .intro-overlay {
+            position: fixed;
+            z-index: 9999;
+            width: 140px;
+            height: 140px;
+            pointer-events: none;
+        }
+
+        .intro-overlay__frame {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+
+        .intro-overlay__frame img {
+            display: block;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        /* 问候气泡：加载时头像上方弹出打招呼（台词在 intro.js 里改） */
+        .intro-overlay__say {
+            position: absolute;
+            left: 50%;
+            bottom: calc(100% + 14px);
+            transform: translateX(-50%);
+            z-index: 3;
+        }
+
+        .intro-overlay__say span {
+            display: block;
+            padding: 7px 13px 8px;
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 16px 16px 16px 4px;
+            font-size: 14px;
+            line-height: 1.25;
+            white-space: nowrap;
+            opacity: 0;
+            filter: blur(4px);
+            transform-origin: 0 100%;
+            transform: translate(-10px, 10px) scale(0.6) rotate(2deg);
+        }
+
         /* 首页顶部：参考 Google Blog 的轻量固定导航框架，具体导航项后续补充。 */
         .site-topbar {
             background: rgba(255, 255, 255, 0.94);
@@ -147,7 +209,7 @@
             align-items: center;
             box-sizing: border-box;
             display: flex;
-            height: 72px;
+            height: 60px;
             justify-content: space-between;
             margin: 0 auto;
             max-width: 1440px;
@@ -168,12 +230,21 @@
             border-radius: 50%;
             color: #fff;
             display: inline-flex;
+            flex-shrink: 0;
             font-size: 15px;
             font-weight: 500;
             height: 28px;
             justify-content: center;
             line-height: 1;
+            overflow: hidden;
             width: 28px;
+        }
+
+        .site-topbar__mark-image {
+            display: block;
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
         }
 
         .site-topbar__divider {
@@ -2014,7 +2085,7 @@
 
         @media (max-width: 768px) {
             .site-topbar__inner {
-                height: 64px;
+                height: 60px;
                 padding: 0 16px;
             }
 
